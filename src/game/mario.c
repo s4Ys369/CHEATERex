@@ -1259,7 +1259,7 @@ void debug_print_speed_action_normal(struct MarioState *m) {
     f32 steepness;
     f32 floor_nY;
 
-    if (gShowDebugText) {
+    // if (gShowDebugText) {
         steepness = sqrtf(
             ((m->floor->normal.x * m->floor->normal.x) + (m->floor->normal.z * m->floor->normal.z)));
         floor_nY = m->floor->normal.y;
@@ -1270,7 +1270,7 @@ void debug_print_speed_action_normal(struct MarioState *m) {
 
         // STA short for "status," the official action name via SMS map.
         print_text_fmt_int(210, 56, "STA %x", (m->action & ACT_ID_MASK));
-    }
+    // }
 }
 
 /**
