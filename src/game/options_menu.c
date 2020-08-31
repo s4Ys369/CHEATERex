@@ -50,6 +50,7 @@ static const u8 menuStr[][32] = {
     { TEXT_OPT_OPTIONS },
     { TEXT_OPT_CAMERA },
     { TEXT_OPT_CHEATS },
+    { TEXT_LEAVE_GAME },
     { TEXT_OPT_CONTROLS },
     { TEXT_OPT_VIDEO },
     { TEXT_OPT_AUDIO },
@@ -108,7 +109,8 @@ static const u8 bindStr[][32] = {
     { TEXT_BIND_LEFT },
     { TEXT_BIND_RIGHT },
     { TEXT_OPT_DEADZONE },
-    { TEXT_OPT_RUMBLE }
+    { TEXT_OPT_RUMBLE },
+    { TEXT_OPT_TIGHT },
 };
 
 static const u8 *filterChoices[] = {
@@ -189,6 +191,13 @@ static void optmenu_act_exit(UNUSED struct Option *self, s32 arg) {
     if (!arg) game_exit(); // only exit on A press and not directions
 }
 
+static void optmenu_act_leave(UNUSED struct Option *self, s32 arg) {
+    if (!arg)
+        optmenu_toggle();
+    unpause_game();
+    fade_into_special_warp(-2, 0);
+}
+
 static void optvideo_reset_window(UNUSED struct Option *self, s32 arg) {
     if (!arg) {
         // Restrict reset to A press and not directions
@@ -258,7 +267,8 @@ static struct Option optsControls[] = {
     // max deadzone is 31000; this is less than the max range of ~32768, but this
     // way, the player can't accidentally lock themselves out of using the stick
     DEF_OPT_SCROLL( bindStr[16], &configStickDeadzone, 0, 100, 1 ),
-    DEF_OPT_SCROLL( bindStr[17], &configRumbleStrength, 0, 100, 1)
+    DEF_OPT_SCROLL( bindStr[17], &configRumbleStrength, 0, 100, 1),
+    DEF_OPT_TOGGLE( bindStr[18], &configTight ),
 };
 
 static struct Option optsVideo[] = {
@@ -327,10 +337,11 @@ static struct Option optsMain[] = {
     DEF_OPT_SUBMENU( menuStr[4], &menuCamera ),
 #endif
     DEF_OPT_SUBMENU( menuStr[5], &menuCheats),
-    DEF_OPT_SUBMENU( menuStr[6], &menuControls ),
-    DEF_OPT_SUBMENU( menuStr[7], &menuVideo ),
-    DEF_OPT_SUBMENU( menuStr[8], &menuAudio ),
-    DEF_OPT_BUTTON ( menuStr[9], optmenu_act_exit ),
+    DEF_OPT_BUTTON( menuStr[6], optmenu_act_leave),
+    DEF_OPT_SUBMENU( menuStr[7], &menuControls ),
+    DEF_OPT_SUBMENU( menuStr[8], &menuVideo ),
+    DEF_OPT_SUBMENU( menuStr[9], &menuAudio ),
+    DEF_OPT_BUTTON ( menuStr[10], optmenu_act_exit ),
 };
 
 static struct SubMenu menuMain = DEF_SUBMENU( menuStr[3], optsMain );

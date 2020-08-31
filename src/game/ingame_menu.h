@@ -139,6 +139,7 @@ void create_dialog_inverted_box(s16 dialog);
 void create_dialog_box_with_response(s16 dialog);
 void reset_dialog_render_state(void);
 void set_menu_mode(s16 mode);
+void unpause_game(void);
 void reset_cutscene_msg_fade(void);
 void dl_rgba16_begin_cutscene_msg_fade(void);
 void dl_rgba16_stop_cutscene_msg_fade(void);

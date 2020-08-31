@@ -1851,6 +1851,14 @@ void set_menu_mode(s16 mode) {
     }
 }
 
+void unpause_game() {
+    optmenu_toggle();
+    level_set_transition(0, 0);
+    play_sound(SOUND_MENU_PAUSE_2, gDefaultSoundArgs);
+    gDialogBoxState = DIALOG_STATE_OPENING;
+    gMenuMode = -1;
+}
+
 void reset_cutscene_msg_fade(void) {
     gCutsceneMsgFade = 0;
 }
