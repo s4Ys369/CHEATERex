@@ -8,7 +8,6 @@
 #include "behavior_actions.h"
 #include "behavior_data.h"
 #include "camera.h"
-#include "engine/behavior_script.h"
 #include "engine/graph_node.h"
 #include "engine/math_util.h"
 #include "engine/surface_collision.h"
@@ -33,10 +32,7 @@
 #include "object_list_processor.h"
 #include "print.h"
 #include "save_file.h"
-#include "seq_ids.h"
 #include "sound_init.h"
-#include "object_list_processor.h"
-#include "debug.h"
 #include "thread6.h"
 #include "pc/configfile.h"
 #include "pc/cheats.h"
@@ -1413,60 +1409,6 @@ void update_mario_inputs(struct MarioState *m) {
     m->collidedObjInteractTypes = m->marioObj->collidedObjInteractTypes;
     m->flags &= 0xFFFFFF;
 
-    /*CAP Cheats*/
-    if (Cheats.EnableCheats) {
-        if (Cheats.WingCap) {
-            m->flags |= MARIO_WING_CAP;
-            if ((m->action & ACT_GROUP_MASK) == (!(ACT_GROUP_AIRBORNE) && !(ACT_GROUP_SUBMERGED))) {
-                set_mario_action(m, ACT_PUTTING_ON_CAP, 0);
-            }
-            Cheats.WingCap = false;
-        }
-
-        if (Cheats.MetalCap) {
-            m->flags |= MARIO_METAL_CAP;
-            if ((m->action & ACT_GROUP_MASK) == (!(ACT_GROUP_AIRBORNE) && !(ACT_GROUP_SUBMERGED))) {
-                set_mario_action(m, ACT_PUTTING_ON_CAP, 0);
-            }
-            Cheats.MetalCap = false;
-        }
-
-        Cheats.WingCap = false;
-        if (Cheats.VanishCap) {
-            m->flags |= MARIO_VANISH_CAP;
-            if ((m->action & ACT_GROUP_MASK) == (!(ACT_GROUP_AIRBORNE) && !(ACT_GROUP_SUBMERGED))) {
-                set_mario_action(m, ACT_PUTTING_ON_CAP, 0);
-            }
-            Cheats.VanishCap = false;
-        }
-
-        if (Cheats.RemoveCap) {
-            m->flags &= ~MARIO_CAP_ON_HEAD;
-            m->flags |= MARIO_CAP_IN_HAND;
-            if ((m->action & ACT_GROUP_MASK) == (!(ACT_GROUP_AIRBORNE) && !(ACT_GROUP_SUBMERGED))) {
-                set_mario_action(m, ACT_SHIVERING, 0);
-            }
-            Cheats.RemoveCap = false;
-        }
-
-        if (Cheats.NormalCap) {
-            m->flags &= ~MARIO_CAP_ON_HEAD;
-            m->flags &= ~(MARIO_WING_CAP | MARIO_METAL_CAP | MARIO_VANISH_CAP);
-            if ((m->action & ACT_GROUP_MASK) == (!(ACT_GROUP_AIRBORNE) && !(ACT_GROUP_SUBMERGED))) {
-                m->flags |= MARIO_CAP_IN_HAND;
-                set_mario_action(m, ACT_PUTTING_ON_CAP, 0);
-            }
-            else {
-                m->flags &= ~MARIO_CAP_IN_HAND;
-                m->flags |= MARIO_CAP_ON_HEAD;
-            }
-            Cheats.NormalCap = false;
-        }
-
-    }
-
-    /*End of CAP Cheats*/
-
     update_mario_button_inputs(m);
     update_mario_joystick_inputs(m);
     update_mario_geometry_inputs(m);
@@ -1481,113 +1423,6 @@ void update_mario_inputs(struct MarioState *m) {
         break;   // TODO: Unneeded break?
     }
     /*End of moonjump cheat */
-    
-    /* GetShell cheat */
-    while (Cheats.GetShell == true && Cheats.EnableCheats == true && m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & R_TRIG) {
-        if (m->action & ACT_FLAG_RIDING_SHELL) {
-            break;
-        }
-
-        struct Object* obj = (struct Object*)gObjectLists[OBJ_LIST_LEVEL].next;
-        struct Object* first = (struct Object*)&gObjectLists[OBJ_LIST_LEVEL];
-        while (obj != NULL && obj != first) {
-            if (obj->behavior == bhvKoopaShell) {
-                obj_mark_for_deletion(obj);
-                break;
-            }
-
-            obj = (struct Object*)obj->header.next;
-        }
-
-        if ((m->action & ACT_GROUP_MASK) == ACT_GROUP_SUBMERGED) {
-
-            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_KOOPA_SHELL, bhvKoopaShellUnderwater);
-            break;
-
-        } else {
- 
-            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_KOOPA_SHELL, bhvKoopaShell);
-            break;
-        }
-    }
-    /*End of GetShell cheat */
-
-    /* GetBobomb cheat */
-    while (Cheats.GetBob == true && Cheats.EnableCheats == true && m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & B_BUTTON) {
-
-        spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_BLACK_BOBOMB, bhvBobomb);
-        break;
-    }
-    /*End of GetBobomb cheat */
-
-    /* SpawnCommon cheat */
-    while (Cheats.Spamba > 0 && Cheats.EnableCheats == true && m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
-        if (Cheats.Spamba == 1) {
-            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_AMP, bhvHomingAmp);
-            break;
-        }
-
-        if (Cheats.Spamba == 2) {
-            spawn_object_relative(0, 0, 0, 150, gCurrentObject, MODEL_BLUE_COIN_SWITCH, bhvBlueCoinSwitch);
-            break;
-        }
-
-        if (Cheats.Spamba == 3) {
-            spawn_object_relative(0, 0, 300, 300, gCurrentObject, MODEL_BOWLING_BALL, bhvPitBowlingBall);
-            break;
-        }
-
-        if (Cheats.Spamba == 4) {
-            spawn_object_relative(0, 0, 0, 200, gCurrentObject, MODEL_BREAKABLE_BOX, bhvBreakableBox);
-            break;
-        }
-
-        if (Cheats.Spamba == 5) {
-            spawn_object_relative(0, 0, 50, 100, gCurrentObject, MODEL_BREAKABLE_BOX_SMALL, bhvBreakableBoxSmall);
-            break;
-        }
-
-        if (Cheats.Spamba == 6) {
-            spawn_object_relative(0, 0, 10, 300, gCurrentObject, MODEL_BREAKABLE_BOX_SMALL, bhvJumpingBox);
-            break;
-        }
-
-        if (Cheats.Spamba == 7) {
-            spawn_object_relative(0, 0, -10, 100, gCurrentObject, MODEL_CHECKERBOARD_PLATFORM, bhvCheckerboardPlatformSub);
-            break;
-        }
-
-        if (Cheats.Spamba == 8) {
-            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_CHUCKYA, bhvChuckya);
-            break;
-        }
-
-        if (Cheats.Spamba == 9) {
-            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_FLYGUY, bhvFlyGuy);
-            break;
-        }
-
-        if (Cheats.Spamba == 10) {
-            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_NONE, bhvGoombaTripletSpawner);
-            break;
-        }
-
-        if (Cheats.Spamba == 11) {
-            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_HEART, bhvRecoveryHeart);
-            break;
-        }
-
-        if (Cheats.Spamba == 12) {
-            spawn_object_relative(0, 0, 0, 200, gCurrentObject, MODEL_METAL_BOX, bhvPushableMetalBox);
-            break;
-        }
-
-        if (Cheats.Spamba == 13) {
-            spawn_object_relative(0, 0, 50, 50, gCurrentObject, MODEL_PURPLE_SWITCH, bhvPurpleSwitchHiddenBoxes);
-            break;
-        }
-    }
-    /*End of SpawnCommon cheat */
 
     if (gCameraMovementFlags & CAM_MOVE_C_UP_MODE) {
         if (m->action & ACT_FLAG_ALLOW_FIRST_PERSON) {
@@ -1903,7 +1738,6 @@ void func_sh_8025574C(void) {
  * Main function for executing Mario's behavior.
  */
 s32 execute_mario_action(UNUSED struct Object *o) {
-    s32 inLoop = TRUE;
     /**
     * Cheat stuff
     */
@@ -1927,7 +1761,9 @@ s32 execute_mario_action(UNUSED struct Object *o) {
         mario_reset_bodystate(gMarioState);
         update_mario_inputs(gMarioState);
         mario_handle_special_floors(gMarioState);
-        mario_process_interactions(gMarioState);
+        if (gMarioState->action != ACT_SMO_POSSESSION) {
+            mario_process_interactions(gMarioState);
+        }
 
         // If Mario is OOB, stop executing actions.
         if (gMarioState->floor == NULL) {
@@ -1937,44 +1773,21 @@ s32 execute_mario_action(UNUSED struct Object *o) {
         // The function can loop through many action shifts in one frame,
         // which can lead to unexpected sub-frame behavior. Could potentially hang
         // if a loop of actions were found, but there has not been a situation found.
-        while (inLoop) {
-            switch (gMarioState->action & ACT_GROUP_MASK) {
-                case ACT_GROUP_STATIONARY:
-                    inLoop = mario_execute_stationary_action(gMarioState);
-                    break;
-
-                case ACT_GROUP_MOVING:
-                    inLoop = mario_execute_moving_action(gMarioState);
-                    break;
-
-                case ACT_GROUP_AIRBORNE:
-                    inLoop = mario_execute_airborne_action(gMarioState);
-                    break;
-
-                case ACT_GROUP_SUBMERGED:
-                    inLoop = mario_execute_submerged_action(gMarioState);
-                    break;
-
-                case ACT_GROUP_CUTSCENE:
-                    inLoop = mario_execute_cutscene_action(gMarioState);
-                    break;
-
-                case ACT_GROUP_AUTOMATIC:
-                    inLoop = mario_execute_automatic_action(gMarioState);
-                    break;
-
-                case ACT_GROUP_OBJECT:
-                    inLoop = mario_execute_object_action(gMarioState);
-                    break;
-            }
-        }
+        mario_execute_action(gMarioState);
 
         sink_mario_in_quicksand(gMarioState);
         squish_mario_model(gMarioState);
         set_submerged_cam_preset_and_spawn_bubbles(gMarioState);
-        update_mario_health(gMarioState);
+        if (!smo_update_mario_health(gMarioState)) {
+            update_mario_health(gMarioState);
+        }
         update_mario_info_for_cam(gMarioState);
         mario_update_hitbox_and_cap_model(gMarioState);
+
+        // If Cappy exists, take off Mario's cap
+        if (get_cappy_object(gMarioState) != NULL) {
+            gMarioState->marioBodyState->capState = MARIO_HAS_DEFAULT_CAP_OFF;
+        }
 
         // Both of the wind handling portions play wind audio only in
         // non-Japanese releases.
@@ -2087,6 +1900,10 @@ void init_mario(void) {
 
         capObject->oMoveAngleYaw = 0;
     }
+
+    // Init Mario SMO fields
+    smo_unbind_all_fields();
+    smo_obj_bind_fields(gMarioState->marioObj);
 }
 
 void init_mario_from_save_file(void) {
