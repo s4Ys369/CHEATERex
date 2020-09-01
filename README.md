@@ -31,6 +31,13 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
   * JAGSTAX's Cap cheats
     - REMOVE cap and DISABLE Cap Music added
   * GateGuy's port of Kaze Emanuar's BLJ Anywhere
+  * Play as cheats (WIP), much thanks to ferris the crab(io12)
+    - Black Bobomb
+    - Bobomb Buddy
+    - Goomba
+    - Amp
+    - chuckya
+    - FlyGuy
 
 ## New features
 
