@@ -31,6 +31,15 @@
 #define TEXT_OPT_DCM       _("DISABLE CAP MUSIC")
 #define TEXT_OPT_NORMAL_CAP    _("RESET CAP")
 #define TEXT_OPT_BLJ   _("BLJ ANYWHERE")
+#define TEXT_OPT_PAC   _("PLAY AS")
+
+#define TEXT_OPT_PA1    _("DISABLED")
+#define TEXT_OPT_PA2    _("BLACK BOBOMB")
+#define TEXT_OPT_PA3    _("PINK BOBOMB")
+#define TEXT_OPT_PA4    _("GOOMBA")
+#define TEXT_OPT_PA5    _("AMP")
+#define TEXT_OPT_PA6    _("CHUCKYA")
+#define TEXT_OPT_PA7    _("FLYGUY")
 
 #define TEXT_OPT_SEQ1    _("INTRO")
 #define TEXT_OPT_SEQ2    _("GRASS")
@@ -116,6 +125,16 @@
 #define TEXT_OPT_DCM       _("DISABLE Cap Music")
 #define TEXT_OPT_NORMAL_CAP _("RESET Cap")
 #define TEXT_OPT_BLJ       _("BLJ Anywhere")
+#define TEXT_OPT_PAC   _("Play as")
+
+#define TEXT_OPT_PA1    _("Disabled")
+#define TEXT_OPT_PA2    _("Black Bobomb")
+#define TEXT_OPT_PA3    _("Pink Bobomb")
+#define TEXT_OPT_PA4    _("Goomba")
+#define TEXT_OPT_PA5    _("Amp")
+#define TEXT_OPT_PA6    _("Chuckya")
+#define TEXT_OPT_PA7    _("FlyGuy")
+
 
 #define TEXT_OPT_SEQ1    _("Intro")
 #define TEXT_OPT_SEQ2    _("Grass")

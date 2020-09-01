@@ -80,6 +80,17 @@ static const u8 optsCheatsStr[][64] = {
     { TEXT_OPT_DCM },
     { TEXT_OPT_NORMAL_CAP },
     { TEXT_OPT_BLJ },
+    { TEXT_OPT_PAC },
+};
+
+static const u8 optsPlayAsCheatStr[][32] = {
+    { TEXT_OPT_PA1 },
+    { TEXT_OPT_PA2 },
+    { TEXT_OPT_PA3 },
+    { TEXT_OPT_PA4 },
+    { TEXT_OPT_PA5 },
+    { TEXT_OPT_PA6 },
+    { TEXT_OPT_PA7 },
 };
 
 static const u8 optsHurtCheatStr[][32] = {
@@ -120,6 +131,16 @@ static const u8 optsBLJCheatStr[][32] = {
     { TEXT_OPT_BLJCHT11 },
     { TEXT_OPT_BLJCHT12 },
     { TEXT_OPT_BLJCHT13 },
+};
+
+static const u8 *PlayAsCheatChoices[] = {
+    optsPlayAsCheatStr[0],
+    optsPlayAsCheatStr[1],
+    optsPlayAsCheatStr[2],
+    optsPlayAsCheatStr[3],
+    optsPlayAsCheatStr[4],
+    optsPlayAsCheatStr[5],
+    optsPlayAsCheatStr[6],
 };
 
 static const u8 *HurtCheatChoices[] = {

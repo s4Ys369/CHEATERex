@@ -78,7 +78,6 @@ void cheats_long_jump(struct MarioState *m) {
     if (Cheats.BLJAnywhere >= 7 && Cheats.EnableCheats == true && m->forwardVel < 1.0f
         && (m->controller->buttonDown & A_BUTTON)) {
         set_jumping_action(m, ACT_LONG_JUMP, 0);
-        return m->action != ACT_LONG_JUMP;
     }
 }
 
@@ -89,6 +88,51 @@ void cheats_mario_inputs(struct MarioState *m) {
     m->flags &= 0xFFFFFF;
 
     while (Cheats.EnableCheats == true) {
+
+        while (Cheats.PAC > 0) {
+            while (Cheats.PAC == 1) {
+                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BLACK_BOBOMB];
+                m->marioObj->header.gfx.unk38.curAnim = bobomb_seg8_anims_0802396C[0];
+                break;
+            }
+            while (Cheats.PAC == 2) {
+                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BOBOMB_BUDDY];
+                m->marioObj->header.gfx.unk38.curAnim = bobomb_seg8_anims_0802396C[0];
+                break;
+            }
+            while (Cheats.PAC == 3) {
+                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_GOOMBA];
+                m->marioObj->header.gfx.unk38.curAnim = goomba_seg8_anims_0801DA4C[0];
+                break;
+            }
+            while (Cheats.PAC == 4) {
+                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_AMP];
+                m->marioObj->header.gfx.unk38.curAnim = amp_seg8_anims_08004034[0];
+                break;
+            }
+            while (Cheats.PAC == 5) {
+                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_CHUCKYA];
+                m->marioObj->header.gfx.unk38.curAnim = chuckya_seg8_anims_0800C070[0];
+                break;
+            }
+            while (Cheats.PAC == 6) {
+                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_FLYGUY];
+                m->marioObj->header.gfx.unk38.curAnim = flyguy_seg8_anims_08011A64[0];
+                break;
+            }
+            while (m->collidedObjInteractTypes & INTERACT_DOOR) {
+                obj_mark_for_deletion(m->usedObj);
+                spawn_object(gCurrentObject, MODEL_SMOKE, bhvBobombBullyDeathSmoke);
+                obj_scale(gCurrentObject, gCurrentObject->oTimer / 4.f + 1.0f);
+                gCurrentObject->oOpacity -= 14;
+                gCurrentObject->oAnimState++;
+                play_sound(SOUND_GENERAL2_BOBOMB_EXPLOSION, m->marioObj->header.gfx.cameraToObject);
+                m->particleFlags |= PARTICLE_TRIANGLE;
+                obj_set_pos(m->marioObj, 0, 0, 100);
+                break;
+            }
+            break;
+        }
 
         /*Speed Display*/
         if (Cheats.SPD == true) {
