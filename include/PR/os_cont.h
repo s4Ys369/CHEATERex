@@ -129,6 +129,8 @@ typedef struct {
 #define CONT_DOWN   0x0400
 #define CONT_LEFT   0x0200
 #define CONT_RIGHT  0x0100
+#define CONT_X      0x0080
+#define CONT_Y      0x0040
 #define CONT_L      0x0020
 #define CONT_R      0x0010
 #define CONT_E      0x0008
@@ -140,6 +142,8 @@ typedef struct {
 
 #define A_BUTTON	CONT_A
 #define B_BUTTON	CONT_B
+#define X_BUTTON    CONT_X
+#define Y_BUTTON    CONT_Y
 #define L_TRIG		CONT_L
 #define R_TRIG		CONT_R
 #define Z_TRIG		CONT_G
@@ -148,6 +152,10 @@ typedef struct {
 #define L_JPAD		CONT_LEFT
 #define R_JPAD		CONT_RIGHT
 #define D_JPAD		CONT_DOWN
+#define U_DPAD      CONT_UP
+#define L_DPAD      CONT_LEFT
+#define R_DPAD      CONT_RIGHT
+#define D_DPAD      CONT_DOWN
 #define U_CBUTTONS	CONT_E
 #define L_CBUTTONS	CONT_C
 #define R_CBUTTONS	CONT_F

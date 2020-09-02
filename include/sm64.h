@@ -61,9 +61,9 @@
 #define INPUT_IN_WATER               0x0200
 #define INPUT_UNKNOWN_10             0x0400
 #define INPUT_INTERACT_OBJ_GRABBABLE 0x0800
-#define INPUT_UNKNOWN_12             0x1000
+#define INPUT_X_PRESSED              0x1000
 #define INPUT_B_PRESSED              0x2000
-#define INPUT_Z_DOWN                 0x4000
+#define INPUT_Y_PRESSED              0x4000
 #define INPUT_Z_PRESSED              0x8000
 
 #define GROUND_STEP_LEFT_GROUND              0
@@ -425,7 +425,8 @@
 
 #define VALID_BUTTONS (A_BUTTON   | B_BUTTON   | Z_TRIG     | START_BUTTON | \
                        U_JPAD     | D_JPAD     | L_JPAD     | R_JPAD       | \
-                       L_TRIG     | R_TRIG     |                             \
+                       U_DPAD     | D_DPAD     | L_DPAD     | R_DPAD       | \
+                       L_TRIG     | R_TRIG     | X_BUTTON   | Y_BUTTON     | \
                        U_CBUTTONS | D_CBUTTONS | L_CBUTTONS | R_CBUTTONS   )
 
 #define C_BUTTONS     (U_CBUTTONS | D_CBUTTONS | L_CBUTTONS | R_CBUTTONS   )

@@ -1288,7 +1288,7 @@ s32 act_crawling(struct MarioState *m) {
         return set_mario_action(m, ACT_STOP_CRAWLING, 0);
     }
 
-    if (!(m->input & INPUT_Z_DOWN)) {
+    if (!(m->controller->buttonDown & Z_TRIG)) {
         return set_mario_action(m, ACT_STOP_CRAWLING, 0);
     }
 
@@ -1863,7 +1863,7 @@ s32 act_long_jump_land(struct MarioState *m) {
 #endif
     cheats_long_jump(m);
 
-    if (!(m->input & INPUT_Z_DOWN)) {
+    if (!(m->controller->buttonDown & Z_TRIG)) {
         m->input &= ~INPUT_A_PRESSED;
     }
 
@@ -1906,7 +1906,7 @@ s32 act_triple_jump_land(struct MarioState *m) {
 }
 
 s32 act_backflip_land(struct MarioState *m) {
-    if (!(m->input & INPUT_Z_DOWN)) {
+    if (!(m->controller->buttonDown & Z_TRIG)) {
         m->input &= ~INPUT_A_PRESSED;
     }
 

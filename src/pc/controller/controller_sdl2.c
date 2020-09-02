@@ -74,6 +74,8 @@ static void controller_sdl_bind(void) {
 
     controller_add_binds(A_BUTTON,     configKeyA);
     controller_add_binds(B_BUTTON,     configKeyB);
+    controller_add_binds(X_BUTTON,     configKeyX);
+    controller_add_binds(Y_BUTTON,     configKeyY);
     controller_add_binds(Z_TRIG,       configKeyZ);
     controller_add_binds(STICK_UP,     configKeyStickUp);
     controller_add_binds(STICK_LEFT,   configKeyStickLeft);
@@ -81,8 +83,12 @@ static void controller_sdl_bind(void) {
     controller_add_binds(STICK_RIGHT,  configKeyStickRight);
     controller_add_binds(U_CBUTTONS,   configKeyCUp);
     controller_add_binds(L_CBUTTONS,   configKeyCLeft);
-    controller_add_binds(D_CBUTTONS,   configKeyCDown);
     controller_add_binds(R_CBUTTONS,   configKeyCRight);
+    controller_add_binds(D_CBUTTONS,   configKeyCDown);
+    controller_add_binds(U_DPAD,       configKeyDUp);
+    controller_add_binds(L_DPAD,       configKeyDLeft);
+    controller_add_binds(R_DPAD,       configKeyDRight);
+    controller_add_binds(D_DPAD,       configKeyDDown);
     controller_add_binds(L_TRIG,       configKeyL);
     controller_add_binds(R_TRIG,       configKeyR);
     controller_add_binds(START_BUTTON, configKeyStart);

@@ -53,7 +53,7 @@ s32 check_common_idle_cancels(struct MarioState *m) {
         return set_mario_action(m, ACT_PUNCHING, 0);
     }
 
-    if (m->input & INPUT_Z_DOWN) {
+    if (m->controller->buttonDown & Z_TRIG) {
         return set_mario_action(m, ACT_START_CROUCHING, 0);
     }
 
@@ -96,7 +96,7 @@ s32 check_common_hold_idle_cancels(struct MarioState *m) {
         return set_mario_action(m, ACT_THROWING, 0);
     }
 
-    if (m->input & INPUT_Z_DOWN) {
+    if (m->controller->buttonDown & Z_TRIG) {
         return drop_and_set_mario_action(m, ACT_START_CROUCHING, 0);
     }
 
@@ -553,7 +553,7 @@ s32 act_crouching(struct MarioState *m) {
         return set_mario_action(m, ACT_STOP_CROUCHING, 0);
     }
 
-    if (!(m->input & INPUT_Z_DOWN)) {
+    if (!(m->controller->buttonDown & Z_TRIG)) {
         return set_mario_action(m, ACT_STOP_CROUCHING, 0);
     }
 
@@ -914,7 +914,7 @@ s32 act_triple_jump_land_stop(struct MarioState *m) {
 }
 
 s32 act_backflip_land_stop(struct MarioState *m) {
-    if (!(m->input & INPUT_Z_DOWN) || m->marioObj->header.gfx.unk38.animFrame >= 6) {
+    if (!(m->controller->buttonDown & Z_TRIG) || m->marioObj->header.gfx.unk38.animFrame >= 6) {
         m->input &= -3;
     }
 
