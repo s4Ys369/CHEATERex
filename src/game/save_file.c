@@ -72,6 +72,9 @@ static inline void bswap_menudata(struct MainMenuSaveData *data) {
     for (int i = 0; i < NUM_SAVE_FILES; ++i)
         data->coinScoreAges[i] = BSWAP32(data->coinScoreAges[i]);
     data->soundMode = BSWAP16(data->soundMode);
+    for (int i = 0; i < 118; ++i)
+        data->timeTrialTimes[i] = BSWAP16(data->timeTrialTimes[i]);
+    data->timeTrialTotalTime = BSWAP32(data->timeTrialTotalTime);
 #ifdef VERSION_EU
     data->language = BSWAP16(data->language);
 #endif
@@ -241,12 +244,20 @@ static void save_main_menu_data(void) {
 }
 
 static void wipe_main_menu_data(void) {
+    u8 i;
+
     bzero(&gSaveBuffer.menuData[0], sizeof(gSaveBuffer.menuData[0]));
 
     // Set score ages for all courses to 3, 2, 1, and 0, respectively.
     gSaveBuffer.menuData[0].coinScoreAges[0] = 0x3FFFFFFF;
     gSaveBuffer.menuData[0].coinScoreAges[1] = 0x2AAAAAAA;
     gSaveBuffer.menuData[0].coinScoreAges[2] = 0x15555555;
+
+    // Set all time trial times to the max amount
+    for (i = 0; i < 118; i++)
+        gSaveBuffer.menuData[0].timeTrialTimes[i] = 17999;
+    gSaveBuffer.menuData[0].timeTrialTotalTime = 17999 * 118;
+    
 
     gMainMenuDataModified = TRUE;
     save_main_menu_data();
@@ -758,4 +769,120 @@ s32 check_warp_checkpoint(struct WarpNode *warpNode) {
     }
 
     return isWarpCheckpointActive;
+}
+
+// If any times are equal to 0 (which is how they're initialized) or above the max allowed value, reset
+// all times
+void time_trial_verify_times(void) {
+    u8 i;
+    for (i = 0; i < 118; i++) {
+        if (gSaveBuffer.menuData[0].timeTrialTimes[i] == 0
+            || gSaveBuffer.menuData[0].timeTrialTimes[i] > 17999) {
+            u8 j;
+            for (j = 0; j < 118; j++) {
+                gSaveBuffer.menuData[0].timeTrialTimes[j] = 17999;
+                time_trial_update_total_time(0);
+            }
+            break;
+        }
+    }
+}
+
+void time_trial_save_file_set_time(s32 courseIndex, s16 starIndex, u16 time, u8 forceSet) {
+    u8 timeIndex;
+    u8 forceSave = 0;
+    time_trial_verify_times();
+    switch (courseIndex) {
+        case 15:
+            timeIndex = 112 + (3 * starIndex);
+            break;
+        case 16:
+            timeIndex = 113 + (3 * starIndex);
+            break;
+        case 17:
+            timeIndex = 114 + (3 * starIndex);
+            // Save times after final Bowser fight
+            if (starIndex == 1) {
+                forceSave = 1;
+            }
+            break;
+        case 18:
+            timeIndex = 105 + starIndex;
+            break;
+        case 23:
+            timeIndex = 107;
+            break;
+        case 20:
+            timeIndex = 108;
+            break;
+        case 21:
+            timeIndex = 109;
+            break;
+        case 19:
+            timeIndex = 110;
+            break;
+        case 22:
+            timeIndex = 111;
+            break;
+        default:
+            timeIndex = courseIndex * 7 + starIndex;
+            break;
+    }
+    if (forceSet || (gSaveBuffer.menuData[0].timeTrialTimes[timeIndex] > time)) {
+        gSaveBuffer.menuData[0].timeTrialTimes[timeIndex] = time;
+    }
+    time_trial_update_total_time(forceSave);
+}
+
+void time_trial_update_total_time(u8 forceSave) {
+    u8 i;
+    gSaveBuffer.menuData[0].timeTrialTotalTime = 0;
+    for (i = 0; i < 118; i++) {
+        gSaveBuffer.menuData[0].timeTrialTotalTime += gSaveBuffer.menuData[0].timeTrialTimes[i];
+    }
+    gMainMenuDataModified = TRUE;
+    if (forceSave) {
+        save_main_menu_data();
+    }
+}
+
+u16 time_trial_save_file_get_time(s32 courseIndex, s16 starIndex) {
+    u8 timeIndex;
+    switch (courseIndex) {
+        case 15:
+            timeIndex = 112 + (3 * starIndex);
+            break;
+        case 16:
+            timeIndex = 113 + (3 * starIndex);
+            break;
+        case 17:
+            timeIndex = 114 + (3 * starIndex);
+            break;
+        case 18:
+            timeIndex = 105 + starIndex;
+            break;
+        case 23:
+            timeIndex = 107;
+            break;
+        case 20:
+            timeIndex = 108;
+            break;
+        case 21:
+            timeIndex = 109;
+            break;
+        case 19:
+            timeIndex = 110;
+            break;
+        case 22:
+            timeIndex = 111;
+            break;
+        default:
+            timeIndex = courseIndex * 7 + starIndex;
+            break;
+    }
+    return gSaveBuffer.menuData[0].timeTrialTimes[timeIndex];
+}
+
+u32 time_trial_save_file_get_total_time(void) {
+    return gSaveBuffer.menuData[0].timeTrialTotalTime;
 }

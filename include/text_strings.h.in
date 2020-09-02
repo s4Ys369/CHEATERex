@@ -9,6 +9,31 @@
 #endif
 
 /**
+ * Time Trial Text
+ */
+#define TEXT_TIME_TRIAL_STAR _("STAR")
+#define TEXT_TIME_TRIAL_KEY _("KEY")
+#define TEXT_TIME_TRIAL_FINAL _("FINAL")
+#define TEXT_TIME_TRIAL_1 _("1")
+#define TEXT_TIME_TRIAL_2 _("2")
+#define TEXT_TIME_TRIAL_3 _("3")
+#define TEXT_TIME_TRIAL_4 _("4")
+#define TEXT_TIME_TRIAL_5 _("5")
+#define TEXT_TIME_TRIAL_6 _("6")
+#define TEXT_TIME_TRIAL_COURSE _("COURSE")
+#define TEXT_TIME_TRIAL_TOTAL _("TOTAL")
+#define TEXT_TIME_TRIAL_BOWSER _("BOWSER")
+#define TEXT_TIME_TRIAL_PSS1 _("PSS 1")
+#define TEXT_TIME_TRIAL_PSS2 _("PSS 2")
+#define TEXT_TIME_TRIAL_SA _("SA")
+#define TEXT_TIME_TRIAL_TOTWC _("TOTWC")
+#define TEXT_TIME_TRIAL_VCUTM _("VCUTM")
+#define TEXT_TIME_TRIAL_COTMC _("COTMC")
+#define TEXT_TIME_TRIAL_WMOTR _("WMOTR")
+#define TEXT_TIME_TRIAL_TIMER_TOGGLE _("C-UP, DOWN - TOGGLE TIMER")
+#define TEXT_TIME_TRIAL_RESET _("ZBLZBZLZZB - RESET COURSE TIMES")
+
+/**
  * Global Symbols
  */
 #define TEXT_ZERO _("0")

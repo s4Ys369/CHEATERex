@@ -335,6 +335,62 @@ void render_hud_timer(void) {
 
     hudLUT = segmented_to_virtual(&main_hud_lut);
     timerValFrames = gHudDisplay.timer;
+    if (gHudDisplay.flags & HUD_DISPLAY_FLAG_TIME_TRIAL_TIMER) {
+        timerMins = timerValFrames / (30 * 60);
+        timerSecs = (timerValFrames - (timerMins * 1800)) / 30;
+
+        timerFracSecs = ((timerValFrames - (timerMins * 1800) - (timerSecs * 30)) & 0xFFFF) / 3;
+
+        print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(91), 160, "%0d", timerMins);
+        print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(71), 160, "%02d", timerSecs);
+        print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(37), 160, "%d", timerFracSecs);
+        gSPDisplayList(gDisplayListHead++, dl_hud_img_begin);
+        render_hud_tex_lut(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(81), 57, (*hudLUT)[GLYPH_APOSTROPHE]);
+        render_hud_tex_lut(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(46), 57, (*hudLUT)[GLYPH_DOUBLE_QUOTE]);
+        gSPDisplayList(gDisplayListHead++, dl_hud_img_end);
+    } else {
+#ifdef VERSION_EU
+        switch (eu_get_language()) {
+            case LANGUAGE_ENGLISH:
+                print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(150), 185, "TIME");
+                break;
+            case LANGUAGE_FRENCH:
+                print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(155), 185, "TEMPS");
+                break;
+            case LANGUAGE_GERMAN:
+                print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(150), 185, "ZEIT");
+                break;
+        }
+#endif
+        timerMins = timerValFrames / (30 * 60);
+        timerSecs = (timerValFrames - (timerMins * 1800)) / 30;
+
+        timerFracSecs = ((timerValFrames - (timerMins * 1800) - (timerSecs * 30)) & 0xFFFF) / 3;
+#ifndef VERSION_EU
+        print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(150), 185, "TIME");
+#endif
+        print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(91), 185, "%0d", timerMins);
+        print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(71), 185, "%02d", timerSecs);
+        print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(37), 185, "%d", timerFracSecs);
+        gSPDisplayList(gDisplayListHead++, dl_hud_img_begin);
+        render_hud_tex_lut(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(81), 32, (*hudLUT)[GLYPH_APOSTROPHE]);
+        render_hud_tex_lut(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(46), 32, (*hudLUT)[GLYPH_DOUBLE_QUOTE]);
+        gSPDisplayList(gDisplayListHead++, dl_hud_img_end);
+    }
+}
+
+/**
+ * Renders the timer for time trials.
+ */
+void time_trial_render_hud_timer(void) {
+    u8 *(*hudLUT)[58];
+    u16 timerValFrames;
+    u16 timerMins;
+    u16 timerSecs;
+    u16 timerFracSecs;
+
+    hudLUT = segmented_to_virtual(&main_hud_lut);
+    timerValFrames = gHudDisplay.timeTrialTimer;
 #ifdef VERSION_EU
     switch (eu_get_language()) {
         case LANGUAGE_ENGLISH:
@@ -476,6 +532,9 @@ void render_hud(void) {
 
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_TIMER && configHUD) {
             render_hud_timer();
+        }
+        if (hudDisplayFlags & HUD_DISPLAY_FLAG_TIME_TRIAL_TIMER && configHUD) {
+            time_trial_render_hud_timer();
         }
     }
 }

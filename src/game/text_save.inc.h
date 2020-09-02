@@ -118,6 +118,13 @@ static s32 write_text_save(s32 fileIndex) {
         return -1;
     }
     
+    fprintf(file, "time_trial_times = ");
+    for (i = 0; i < 118; i++) {
+        fprintf(file, "%05d", menudata->timeTrialTimes[i]);
+    }
+    fprintf(file, "\n");
+    fprintf(file, "time_trial_total_time = %d\n", menudata->timeTrialTotalTime);
+
     fprintf(file, "\n[flags]\n");
     for (i = 1; i < NUM_FLAGS; i++) {
         if (strcmp(sav_flags[i], "")) {
@@ -239,6 +246,26 @@ static s32 read_text_save(s32 fileIndex) {
     else {
         printf("Invalid 'menu:sound_mode' flag!\n");
         return -1;
+    }
+
+    value = ini_get(savedata, "menu", "time_trial_times");
+    if (value) {
+        u16 currTTValue;
+        char subString[6];
+        for (i = 0; i < 118; i++) {
+            for (u8 j = 0; j < 5; j++) {
+                subString[j] = value[i * 5 + j];
+            }
+            subString[5] = '\0';
+            sscanf(subString, "%d", &currTTValue);
+            gSaveBuffer.menuData[0].timeTrialTimes[i] = currTTValue;
+        }
+    }
+    value = ini_get(savedata, "menu", "time_trial_total_time");
+    if (value) {
+        u32 tTTTValue;
+        sscanf(value, "%d", &tTTTValue);
+        gSaveBuffer.menuData[0].timeTrialTotalTime = tTTTValue;
     }
     
     for (i = 1; i < NUM_FLAGS; i++) {

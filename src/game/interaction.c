@@ -11,6 +11,7 @@
 #include "engine/math_util.h"
 #include "engine/surface_collision.h"
 #include "game_init.h"
+#include "hud.h"
 #include "interaction.h"
 #include "level_update.h"
 #include "mario.h"
@@ -802,6 +803,13 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
 
         starIndex = (o->oBehParams >> 24) & 0x1F;
         save_file_collect_star_or_key(m->numCoins, starIndex);
+        if ((!noExit)
+            && (gCurrLevelNum == LEVEL_BOWSER_1 || gCurrLevelNum == LEVEL_BOWSER_2
+                || gCurrLevelNum == LEVEL_BOWSER_3)) {
+            time_trial_save_file_set_time(gCurrCourseNum - 1, 1, gHudDisplay.timeTrialTimer, 0);
+        } else {
+            time_trial_save_file_set_time(gCurrCourseNum - 1, starIndex, gHudDisplay.timeTrialTimer, 0);
+        }
 
         m->numStars =
             save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
@@ -809,6 +817,7 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
         if (!noExit) {
             drop_queued_background_music();
             fadeout_level_music(126);
+            sTimeTrialTimerRunning = 0;
         }
 
         play_sound(SOUND_MENU_STAR_SOUND, m->marioObj->header.gfx.cameraToObject);

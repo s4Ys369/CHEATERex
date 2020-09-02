@@ -89,6 +89,10 @@ extern s32 sDelayedWarpArg;
 extern u8 unused4[2];
 extern s8 sTimerRunning;
 
+extern s8 sTimeTrialTimerRunning;
+extern u8 sTimeTrialTimerDisabled;
+extern u8 gTimeTrialResetIndex;
+
 struct HudDisplay {
     /*0x00*/ s16 lives;
     /*0x02*/ s16 coins;
@@ -97,6 +101,7 @@ struct HudDisplay {
     /*0x08*/ s16 keys;
     /*0x0A*/ s16 flags;
     /*0x0C*/ u16 timer;
+    /*0x0E*/ u16 timeTrialTimer;
 };
 
 extern struct HudDisplay gHudDisplay;
@@ -110,10 +115,11 @@ enum HUDDisplayFlag {
     HUD_DISPLAY_FLAG_KEYS = 0x0010,
     HUD_DISPLAY_FLAG_UNKNOWN_0020 = 0x0020,
     HUD_DISPLAY_FLAG_TIMER = 0x0040,
+    HUD_DISPLAY_FLAG_TIME_TRIAL_TIMER = 0x0080,
     HUD_DISPLAY_FLAG_EMPHASIZE_POWER = 0x8000,
 
     HUD_DISPLAY_NONE = 0x0000,
-    HUD_DISPLAY_DEFAULT = HUD_DISPLAY_FLAG_LIVES | HUD_DISPLAY_FLAG_COIN_COUNT | HUD_DISPLAY_FLAG_STAR_COUNT | HUD_DISPLAY_FLAG_CAMERA_AND_POWER | HUD_DISPLAY_FLAG_KEYS | HUD_DISPLAY_FLAG_UNKNOWN_0020
+    HUD_DISPLAY_DEFAULT = HUD_DISPLAY_FLAG_LIVES | HUD_DISPLAY_FLAG_COIN_COUNT | HUD_DISPLAY_FLAG_STAR_COUNT | HUD_DISPLAY_FLAG_CAMERA_AND_POWER | HUD_DISPLAY_FLAG_KEYS | HUD_DISPLAY_FLAG_UNKNOWN_0020 | HUD_DISPLAY_FLAG_TIME_TRIAL_TIMER
 };
 
 

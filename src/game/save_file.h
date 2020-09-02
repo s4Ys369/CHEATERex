@@ -8,7 +8,7 @@
 
 #include "course_table.h"
 
-#define EEPROM_SIZE 0x200
+#define EEPROM_SIZE 0x800 // increased from 0x200 for time trial times
 #define NUM_SAVE_FILES 4
 
 struct SaveBlockSignature
@@ -53,11 +53,14 @@ struct MainMenuSaveData
     u32 coinScoreAges[NUM_SAVE_FILES];
     u16 soundMode;
 
+    u16 timeTrialTimes[118];
+    u32 timeTrialTotalTime;
+
 #ifdef VERSION_EU
     u16 language;
-#define SUBTRAHEND 8
+#define SUBTRAHEND 252
 #else
-#define SUBTRAHEND 6
+#define SUBTRAHEND 250
 #endif
 
     // Pad to match the EEPROM size of 0x200 (10 bytes on JP/US, 8 bytes on EU)
@@ -148,6 +151,12 @@ void save_file_move_cap_to_default_location(void);
 void disable_warp_checkpoint(void);
 void check_if_should_set_warp_checkpoint(struct WarpNode *warpNode);
 s32 check_warp_checkpoint(struct WarpNode *warpNode);
+
+void time_trial_save_file_set_time(s32 courseIndex, s16 starIndex, u16 time, u8 forceSet);
+void time_trial_update_total_time(u8 forceSave);
+u16 time_trial_save_file_get_time(s32 courseIndex, s16 starIndex);
+u32 time_trial_save_file_get_total_time(void);
+void time_trial_verify_times(void);
 
 #ifdef VERSION_EU
 enum EuLanguages {

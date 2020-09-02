@@ -46,6 +46,10 @@ s8 gRedCoinsCollected;
 extern u8 gLastCompletedCourseNum;
 extern u8 gLastCompletedStarNum;
 
+u8 gTimeTrialResetIndex;
+s32 timeTrialResetIndexCombo[16] = { Z_TRIG, B_BUTTON, L_TRIG, Z_TRIG, B_BUTTON,
+                                     Z_TRIG, L_TRIG,   Z_TRIG, Z_TRIG, B_BUTTON };
+
 enum DialogBoxState {
     DIALOG_STATE_OPENING,
     DIALOG_STATE_VERTICAL,
@@ -897,6 +901,104 @@ void int_to_str(s32 num, u8 *dst) {
     }
 
     dst[pos++] = digit3;
+    dst[pos] = DIALOG_CHAR_TERMINATOR;
+}
+
+void time_trial_int_to_str(u16 num, u8 *dst) {
+    // Assumes a cap of <10 minutes
+    u16 timerMins = num / 1800;
+    u16 timerSecs = (num - (timerMins * 1800)) / 30;
+    u16 timerFracSecs = ((num - (timerMins * 1800) - (timerSecs * 30)) & 0xFFFF) * 100 / 30;
+    s32 secs1 = timerSecs / 10;
+    s32 secs2 = (timerSecs - secs1 * 10);
+    s32 fracSecs1 = timerFracSecs / 10;
+    s32 fracSecs2 = (timerFracSecs - fracSecs1 * 10);
+
+    dst[0] = timerMins;
+    dst[1] = 0x3E;
+
+    dst[2] = secs1;
+    dst[3] = secs2;
+    dst[4] = 0x3E;
+
+    dst[5] = fracSecs1;
+    dst[6] = fracSecs2;
+    dst[7] = DIALOG_CHAR_TERMINATOR;
+}
+
+void time_trial_int_to_str_course(u32 num, u8 *dst) {
+    // Assumes a cap of <100 minutes
+    u16 timerMins = num / 1800;
+    u16 timerSecs = (num - (timerMins * 1800)) / 30;
+    u16 timerFracSecs = ((num - (timerMins * 1800) - (timerSecs * 30)) & 0xFFFF) * 100 / 30;
+
+    s8 pos = 0;
+
+    s32 mins1 = timerMins / 100;
+    s32 mins2 = (timerMins - mins1 * 100) / 10;
+    s32 mins3 = (timerMins - mins1 * 100) - (mins2 * 10);
+    s32 secs1 = timerSecs / 10;
+    s32 secs2 = (timerSecs - secs1 * 10);
+    s32 fracSecs1 = timerFracSecs / 10;
+    s32 fracSecs2 = (timerFracSecs - fracSecs1 * 10);
+    if (mins1 != 0) {
+        dst[pos++] = mins1;
+    } else {
+        dst[pos++] = DIALOG_CHAR_SPACE;
+    }
+    if (mins2 != 0 || mins1 != 0) {
+        dst[pos++] = mins2;
+    } else {
+        dst[pos++] = DIALOG_CHAR_SPACE;
+    }
+    dst[pos++] = mins3;
+    dst[pos++] = 0x3E;
+    dst[pos++] = secs1;
+    dst[pos++] = secs2;
+    dst[pos++] = 0x3E;
+    dst[pos++] = fracSecs1;
+    dst[pos++] = fracSecs2;
+    dst[pos] = DIALOG_CHAR_TERMINATOR;
+}
+
+void time_trial_int_to_str_total(u32 num, u8 *dst) {
+    // Assumes a cap of <10000 minutes
+    u16 timerMins = num / 1800;
+    u16 timerSecs = (num - (timerMins * 1800)) / 30;
+    u16 timerFracSecs = ((num - (timerMins * 1800) - (timerSecs * 30)) & 0xFFFF) * 100 / 30;
+
+    s8 pos = 0;
+
+    s32 mins1 = timerMins / 1000;
+    s32 mins2 = (timerMins - mins1 * 1000) / 100;
+    s32 mins3 = ((timerMins - mins1 * 1000) - (mins2 * 100)) / 10;
+    s32 mins4 = (timerMins - mins1 * 1000) - (mins2 * 100) - (mins3 * 10);
+    s32 secs1 = timerSecs / 10;
+    s32 secs2 = (timerSecs - secs1 * 10);
+    s32 fracSecs1 = timerFracSecs / 10;
+    s32 fracSecs2 = (timerFracSecs - fracSecs1 * 10);
+    if (mins1 != 0) {
+        dst[pos++] = mins1;
+    } else {
+        dst[pos++] = DIALOG_CHAR_SPACE;
+    }
+    if (mins2 != 0 || mins1 != 0) {
+        dst[pos++] = mins2;
+    } else {
+        dst[pos++] = DIALOG_CHAR_SPACE;
+    }
+    if (mins3 != 0 || mins2 != 0 || mins1 != 0) {
+        dst[pos++] = mins3;
+    } else {
+        dst[pos++] = DIALOG_CHAR_SPACE;
+    }
+    dst[pos++] = mins4;
+    dst[pos++] = 0x3E;
+    dst[pos++] = secs1;
+    dst[pos++] = secs2;
+    dst[pos++] = 0x3E;
+    dst[pos++] = fracSecs1;
+    dst[pos++] = fracSecs2;
     dst[pos] = DIALOG_CHAR_TERMINATOR;
 }
 
@@ -2442,6 +2544,26 @@ void render_pause_castle_menu_box(s16 x, s16 y) {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
+void time_trial_render_pause_castle_menu_box(void) {
+    create_dl_translation_matrix(MENU_MTX_PUSH, 16, 194, 0); // position from bottom-left
+    create_dl_scale_matrix(MENU_MTX_NOPUSH, 2.215f, 1.925f,
+                           1.0f); // 2.2*130=286px wide, 1.925*80=154px high # 2.21538
+    gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 105);
+    gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+
+    create_dl_translation_matrix(MENU_MTX_PUSH, 166, 198, 0);
+    create_dl_rotation_matrix(MENU_MTX_NOPUSH, DEFAULT_DIALOG_BOX_ANGLE, 0, 0, 1.0f);
+    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
+    gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+
+    create_dl_translation_matrix(MENU_MTX_PUSH, 151, 36, 0);
+    create_dl_rotation_matrix(MENU_MTX_NOPUSH, 270.0f, 0, 0, 1.0f);
+    gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+}
+
 void highlight_last_course_complete_stars(void) {
     u8 courseDone;
 
@@ -2469,6 +2591,23 @@ void print_hud_pause_colorful_str(void) {
                          SCREEN_WIDTH / 2, textPause, 12.0f), 81, textPause);
 #else
     print_hud_lut_string(HUD_LUT_GLOBAL, 123, 81, textPause);
+#endif
+
+    gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
+}
+
+void time_trial_print_hud_pause_colorful_str(void) {
+    u8 textPause[] = { TEXT_PAUSE };
+
+    gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
+    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
+
+#ifdef VERSION_EU
+    print_hud_lut_string(HUD_LUT_GLOBAL,
+                         get_str_x_pos_from_center_scale(SCREEN_WIDTH / 2, textPause, 12.0f), 0,
+                         textPause);
+#else
+    print_hud_lut_string(HUD_LUT_GLOBAL, 123, 15, textPause);
 #endif
 
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
@@ -2513,6 +2652,116 @@ void render_pause_castle_course_stars(s16 x, s16 y, s16 fileNum, s16 courseNum) 
 
     print_generic_string(x + 14, y + 13, str);
 }
+
+void time_trial_render_pause_castle_course_stars(s16 fileNum, s16 courseNum) {
+    s16 hasStar = 0;
+
+    u8 textStar[] = { TEXT_STAR };
+    u8 textUnfilledStar[] = { TEXT_UNFILLED_STAR };
+
+    u8 starFlags = save_file_get_star_flags(fileNum, courseNum);
+
+    u16 nextStar = 0;
+
+    if (starFlags & 0x40) {
+        print_generic_string(190, 72, textStar);
+    } else {
+        print_generic_string(190, 72, textUnfilledStar);
+    }
+
+    while (hasStar != 6) {
+        if (starFlags & (1 << nextStar)) {
+            print_generic_string(88 + (144 * (nextStar / 3)), 144 - 24 * (nextStar % 3), textStar);
+            hasStar++;
+        } else {
+            print_generic_string(88 + (144 * (nextStar / 3)), 144 - 24 * (nextStar % 3),
+                                 textUnfilledStar);
+        }
+        nextStar++;
+    }
+}
+
+void time_trial_render_pause_castle_secret_stars(s16 fileNum) {
+    u8 textStar[] = { TEXT_STAR };
+    u8 textUnfilledStar[] = { TEXT_UNFILLED_STAR };
+
+    u8 starFlags = save_file_get_star_flags(fileNum, 18);
+    if (starFlags & 0x01) {
+        print_generic_string(88, 144, textStar);
+    } else {
+        print_generic_string(88, 144, textUnfilledStar);
+    }
+    if (starFlags & 0x02) {
+        print_generic_string(88, 120, textStar);
+    } else {
+        print_generic_string(88, 120, textUnfilledStar);
+    }
+    starFlags = save_file_get_star_flags(fileNum, 23);
+    if (starFlags & 0x01) {
+        print_generic_string(88, 96, textStar);
+    } else {
+        print_generic_string(88, 96, textUnfilledStar);
+    }
+    starFlags = save_file_get_star_flags(fileNum, 20);
+    if (starFlags & 0x01) {
+        print_generic_string(232, 144, textStar);
+    } else {
+        print_generic_string(232, 144, textUnfilledStar);
+    }
+    starFlags = save_file_get_star_flags(fileNum, 21);
+    if (starFlags & 0x01) {
+        print_generic_string(232, 120, textStar);
+    } else {
+        print_generic_string(232, 120, textUnfilledStar);
+    }
+    starFlags = save_file_get_star_flags(fileNum, 19);
+    if (starFlags & 0x01) {
+        print_generic_string(232, 96, textStar);
+    } else {
+        print_generic_string(232, 96, textUnfilledStar);
+    }
+    starFlags = save_file_get_star_flags(fileNum, 22);
+    if (starFlags & 0x01) {
+        print_generic_string(190, 72, textStar);
+    } else {
+        print_generic_string(190, 72, textUnfilledStar);
+    }
+}
+
+void time_trial_render_pause_castle_bowser_stars(s16 fileNum) {
+    u8 textStar[] = { TEXT_STAR };
+    u8 textUnfilledStar[] = { TEXT_UNFILLED_STAR };
+
+    u8 starFlags = save_file_get_star_flags(fileNum, 15);
+    if (starFlags & 0x01) {
+        print_generic_string(88, 144, textStar);
+    } else {
+        print_generic_string(88, 144, textUnfilledStar);
+    }
+    starFlags = save_file_get_star_flags(fileNum, 16);
+    if (starFlags & 0x01) {
+        print_generic_string(88, 120, textStar);
+    } else {
+        print_generic_string(88, 120, textUnfilledStar);
+    }
+    starFlags = save_file_get_star_flags(fileNum, 17);
+    if (starFlags & 0x01) {
+        print_generic_string(88, 96, textStar);
+    } else {
+        print_generic_string(88, 96, textUnfilledStar);
+    }
+    if (save_file_get_flags() & SAVE_FLAG_HAVE_KEY_1) {
+        print_generic_string(232, 144, textStar);
+    } else {
+        print_generic_string(232, 144, textUnfilledStar);
+    }
+    if (save_file_get_flags() & SAVE_FLAG_HAVE_KEY_2) {
+        print_generic_string(232, 120, textStar);
+    } else {
+        print_generic_string(232, 120, textUnfilledStar);
+    }
+}
+
 
 void render_pause_castle_main_strings(s16 x, s16 y) {
 #ifdef VERSION_EU
@@ -2605,6 +2854,356 @@ void render_pause_castle_main_strings(s16 x, s16 y) {
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
 }
 
+void time_trial_render_pause_castle_times(void) {
+#ifdef VERSION_EU
+    u8 textCoin[] = { TEXT_COIN };
+    u8 textX[] = { TEXT_VARIABLE_X };
+#else
+    u8 textCoin[] = { TEXT_COIN_X };
+#endif
+
+    u8 textStarWord[] = { TEXT_TIME_TRIAL_STAR };
+    u8 textNum1[] = { TEXT_TIME_TRIAL_1 };
+    u8 textNum2[] = { TEXT_TIME_TRIAL_2 };
+    u8 textNum3[] = { TEXT_TIME_TRIAL_3 };
+    u8 textNum4[] = { TEXT_TIME_TRIAL_4 };
+    u8 textNum5[] = { TEXT_TIME_TRIAL_5 };
+    u8 textNum6[] = { TEXT_TIME_TRIAL_6 };
+    u8 textCourse[] = { TEXT_TIME_TRIAL_COURSE };
+    u8 textTotal[] = { TEXT_TIME_TRIAL_TOTAL };
+    u8 timeStrVal[8];
+    u8 totalTimeStrVal[16];
+    u16 time1 = time_trial_save_file_get_time(gDialogLineNum, 0);
+    u16 time2 = time_trial_save_file_get_time(gDialogLineNum, 1);
+    u16 time3 = time_trial_save_file_get_time(gDialogLineNum, 2);
+    u16 time4 = time_trial_save_file_get_time(gDialogLineNum, 3);
+    u16 time5 = time_trial_save_file_get_time(gDialogLineNum, 4);
+    u16 time6 = time_trial_save_file_get_time(gDialogLineNum, 5);
+    u16 timeCoin = time_trial_save_file_get_time(gDialogLineNum, 6);
+
+    print_generic_string(40, 144, textStarWord);
+    print_generic_string(70, 144, textNum1);
+    time_trial_int_to_str(time1, timeStrVal);
+    print_generic_string(100, 144, timeStrVal);
+
+    print_generic_string(40, 120, textStarWord);
+    print_generic_string(70, 120, textNum2);
+    time_trial_int_to_str(time2, timeStrVal);
+    print_generic_string(100, 120, timeStrVal);
+
+    print_generic_string(40, 96, textStarWord);
+    print_generic_string(70, 96, textNum3);
+    time_trial_int_to_str(time3, timeStrVal);
+    print_generic_string(100, 96, timeStrVal);
+
+    print_generic_string(184, 144, textStarWord);
+    print_generic_string(214, 144, textNum4);
+    time_trial_int_to_str(time4, timeStrVal);
+    print_generic_string(244, 144, timeStrVal);
+
+    print_generic_string(184, 120, textStarWord);
+    print_generic_string(214, 120, textNum5);
+    time_trial_int_to_str(time5, timeStrVal);
+    print_generic_string(244, 120, timeStrVal);
+
+    print_generic_string(184, 96, textStarWord);
+    print_generic_string(214, 96, textNum6);
+    time_trial_int_to_str(time6, timeStrVal);
+    print_generic_string(244, 96, timeStrVal);
+
+    print_generic_string(112, 72, textStarWord);
+    print_generic_string(142, 72, textCoin);
+    time_trial_int_to_str(timeCoin, timeStrVal);
+    print_generic_string(202, 72, timeStrVal);
+
+#ifdef VERSION_EU
+    print_generic_string(152, 72, textX);
+#endif
+    print_generic_string(40, 48, textCourse);
+    time_trial_int_to_str_course(time1 + time2 + time3 + time4 + time5 + time6 + timeCoin,
+                                 totalTimeStrVal);
+    print_generic_string(82, 48, totalTimeStrVal);
+    print_generic_string(184, 48, textTotal);
+    time_trial_int_to_str_total(time_trial_save_file_get_total_time(), totalTimeStrVal);
+    print_generic_string(226, 48, totalTimeStrVal);
+
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
+}
+
+void time_trial_render_pause_secret_times(void) {
+    u8 textPSS1[] = { TEXT_TIME_TRIAL_PSS1 };
+    u8 textPSS2[] = { TEXT_TIME_TRIAL_PSS2 };
+    u8 textSA[] = { TEXT_TIME_TRIAL_SA };
+    u8 textTotWC[] = { TEXT_TIME_TRIAL_TOTWC };
+    u8 textVCUtM[] = { TEXT_TIME_TRIAL_VCUTM };
+    u8 textCotMC[] = { TEXT_TIME_TRIAL_COTMC };
+    u8 textWMOtR[] = { TEXT_TIME_TRIAL_WMOTR };
+    u8 textCourse[] = { TEXT_TIME_TRIAL_COURSE };
+    u8 textTotal[] = { TEXT_TIME_TRIAL_TOTAL };
+    u8 timeStrVal[8];
+    u8 totalTimeStrVal[16];
+    u16 time1 = time_trial_save_file_get_time(18, 0);
+    u16 time2 = time_trial_save_file_get_time(18, 1);
+    u16 time3 = time_trial_save_file_get_time(23, 0);
+    u16 time4 = time_trial_save_file_get_time(20, 0);
+    u16 time5 = time_trial_save_file_get_time(21, 0);
+    u16 time6 = time_trial_save_file_get_time(19, 0);
+    u16 time7 = time_trial_save_file_get_time(22, 0);
+
+    print_generic_string(40, 144, textPSS1);
+    time_trial_int_to_str(time1, timeStrVal);
+    print_generic_string(100, 144, timeStrVal);
+
+    print_generic_string(40, 120, textPSS2);
+    time_trial_int_to_str(time2, timeStrVal);
+    print_generic_string(100, 120, timeStrVal);
+
+    print_generic_string(40, 96, textSA);
+    time_trial_int_to_str(time3, timeStrVal);
+    print_generic_string(100, 96, timeStrVal);
+
+    print_generic_string(184, 144, textTotWC);
+    time_trial_int_to_str(time4, timeStrVal);
+    print_generic_string(244, 144, timeStrVal);
+
+    print_generic_string(184, 120, textVCUtM);
+    time_trial_int_to_str(time5, timeStrVal);
+    print_generic_string(244, 120, timeStrVal);
+
+    print_generic_string(184, 96, textCotMC);
+    time_trial_int_to_str(time6, timeStrVal);
+    print_generic_string(244, 96, timeStrVal);
+
+    print_generic_string(112, 72, textWMOtR);
+    time_trial_int_to_str(time7, timeStrVal);
+    print_generic_string(202, 72, timeStrVal);
+
+    print_generic_string(40, 48, textCourse);
+    time_trial_int_to_str_course(time1 + time2 + time3 + time4 + time5 + time6 + time7,
+                                 totalTimeStrVal);
+    print_generic_string(82, 48, totalTimeStrVal);
+    print_generic_string(184, 48, textTotal);
+    time_trial_int_to_str_total(time_trial_save_file_get_total_time(), totalTimeStrVal);
+    print_generic_string(226, 48, totalTimeStrVal);
+
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
+}
+
+void time_trial_render_pause_bowser_times(void) {
+    u8 textStarWord[] = { TEXT_TIME_TRIAL_STAR };
+    u8 textKeyWord[] = { TEXT_TIME_TRIAL_KEY };
+    u8 textFinal[] = { TEXT_TIME_TRIAL_FINAL };
+    u8 textNum1[] = { TEXT_TIME_TRIAL_1 };
+    u8 textNum2[] = { TEXT_TIME_TRIAL_2 };
+    u8 textNum3[] = { TEXT_TIME_TRIAL_3 };
+    u8 textCourse[] = { TEXT_TIME_TRIAL_COURSE };
+    u8 textTotal[] = { TEXT_TIME_TRIAL_TOTAL };
+    u8 timeStrVal[8];
+    u8 totalTimeStrVal[16];
+    u16 time1 = time_trial_save_file_get_time(15, 0);
+    u16 time2 = time_trial_save_file_get_time(16, 0);
+    u16 time3 = time_trial_save_file_get_time(17, 0);
+    u16 time4 = time_trial_save_file_get_time(15, 1);
+    u16 time5 = time_trial_save_file_get_time(16, 1);
+    u16 time6 = time_trial_save_file_get_time(17, 1);
+
+    print_generic_string(40, 144, textStarWord);
+    print_generic_string(70, 144, textNum1);
+    time_trial_int_to_str(time1, timeStrVal);
+    print_generic_string(100, 144, timeStrVal);
+
+    print_generic_string(40, 120, textStarWord);
+    print_generic_string(70, 120, textNum2);
+    time_trial_int_to_str(time2, timeStrVal);
+    print_generic_string(100, 120, timeStrVal);
+
+    print_generic_string(40, 96, textStarWord);
+    print_generic_string(70, 96, textNum3);
+    time_trial_int_to_str(time3, timeStrVal);
+    print_generic_string(100, 96, timeStrVal);
+
+    print_generic_string(184, 144, textKeyWord);
+    print_generic_string(208, 144, textNum1);
+    time_trial_int_to_str(time4, timeStrVal);
+    print_generic_string(244, 144, timeStrVal);
+
+    print_generic_string(184, 120, textKeyWord);
+    print_generic_string(208, 120, textNum2);
+    time_trial_int_to_str(time5, timeStrVal);
+    print_generic_string(244, 120, timeStrVal);
+
+    print_generic_string(184, 96, textFinal);
+    time_trial_int_to_str(time6, timeStrVal);
+    print_generic_string(244, 96, timeStrVal);
+
+    print_generic_string(40, 48, textCourse);
+    time_trial_int_to_str_course(time1 + time2 + time3 + time4 + time5 + time6, totalTimeStrVal);
+    print_generic_string(82, 48, totalTimeStrVal);
+    print_generic_string(184, 48, textTotal);
+    time_trial_int_to_str_total(time_trial_save_file_get_total_time(), totalTimeStrVal);
+    print_generic_string(226, 48, totalTimeStrVal);
+
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
+}
+
+void time_trial_render_pause_castle_main_strings(void) {
+#ifdef VERSION_EU
+    void **courseNameTbl;
+#else
+    void **courseNameTbl = segmented_to_virtual(seg2_course_name_table);
+#endif
+
+    void *courseName;
+
+    u8 strVal[8];
+    s16 starNum = gDialogLineNum;
+    u8 bowserStr[8] = { TEXT_TIME_TRIAL_BOWSER };
+
+#ifdef VERSION_EU
+    switch (gInGameLanguage) {
+        case LANGUAGE_ENGLISH:
+            courseNameTbl = segmented_to_virtual(course_name_table_eu_en);
+            break;
+        case LANGUAGE_FRENCH:
+            courseNameTbl = segmented_to_virtual(course_name_table_eu_fr);
+            break;
+        case LANGUAGE_GERMAN:
+            courseNameTbl = segmented_to_virtual(course_name_table_eu_de);
+            break;
+    }
+#endif
+
+    handle_menu_scrolling(MENU_SCROLL_VERTICAL, &gDialogLineNum, -1, COURSE_STAGES_COUNT + 2);
+
+    if (gDialogLineNum == COURSE_STAGES_COUNT + 2) {
+        gDialogLineNum = 0;
+    }
+
+    if (gDialogLineNum == -1) {
+        gDialogLineNum = COURSE_STAGES_COUNT + 1;
+    }
+
+    if (gDialogLineNum < COURSE_STAGES_COUNT) {
+        while (save_file_get_course_star_count(gCurrSaveFileNum - 1, gDialogLineNum) == 0) {
+            if (gDialogLineNum >= starNum) {
+                gDialogLineNum++;
+            } else {
+                gDialogLineNum--;
+            }
+
+            if (gDialogLineNum == COURSE_STAGES_COUNT || gDialogLineNum == -1) {
+                gDialogLineNum = COURSE_STAGES_COUNT;
+                break;
+            }
+        }
+    }
+
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
+    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
+
+    switch (gDialogLineNum) {
+        case COURSE_STAGES_COUNT:
+            courseName = segmented_to_virtual(courseNameTbl[COURSE_MAX]);
+            time_trial_render_pause_castle_secret_stars(gCurrSaveFileNum - 1);
+#ifdef VERSION_EU
+            print_generic_string(get_str_x_pos_from_center(155, courseName, 10.0f), 168, courseName);
+#else
+            print_generic_string(95, 168, courseName);
+#endif
+            time_trial_render_pause_secret_times();
+            break;
+        case COURSE_STAGES_COUNT + 1:
+            courseName = bowserStr;
+            time_trial_render_pause_castle_bowser_stars(gCurrSaveFileNum - 1);
+#ifdef VERSION_EU
+            print_generic_string(get_str_x_pos_from_center(155, courseName, 10.0f), 168, courseName);
+#else
+            print_generic_string(143, 168, courseName);
+#endif
+            time_trial_render_pause_bowser_times();
+            break;
+        default:
+            courseName = segmented_to_virtual(courseNameTbl[gDialogLineNum]);
+            time_trial_render_pause_castle_course_stars(gCurrSaveFileNum - 1, gDialogLineNum);
+            int_to_str(save_file_get_course_coin_score(gCurrSaveFileNum - 1, gDialogLineNum), strVal);
+            print_generic_string(162, 72, strVal);
+#ifdef VERSION_EU
+            print_generic_string(87, 168, courseName);
+#else
+            print_generic_string(95, 168, courseName);
+#endif
+            time_trial_render_pause_castle_times();
+            break;
+    }
+}
+
+void time_trial_render_pause_timer_toggle(void) {
+    u8 timerToggleText[32] = { TEXT_TIME_TRIAL_TIMER_TOGGLE };
+
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
+    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
+
+    print_generic_string(88, 20, timerToggleText);
+
+    if (gPlayer3Controller->buttonPressed & (U_CBUTTONS | D_CBUTTONS)) {
+        sTimeTrialTimerDisabled = !sTimeTrialTimerDisabled;
+        gHudDisplay.flags ^= HUD_DISPLAY_FLAG_TIME_TRIAL_TIMER;
+        play_sound(SOUND_MENU_CHANGE_SELECT, gDefaultSoundArgs);
+    }
+
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
+}
+
+void time_trial_check_input_for_course_times_reset(void) {
+    u8 resetCodeStr[] = { TEXT_TIME_TRIAL_RESET };
+
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
+    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
+
+    print_generic_string(64, 8, resetCodeStr);
+
+    if (gPlayer3Controller->buttonPressed & timeTrialResetIndexCombo[gTimeTrialResetIndex]) {
+        gTimeTrialResetIndex++;
+        if (gTimeTrialResetIndex >= 10) {
+            // TODO: actually reset times here
+            switch (gDialogLineNum) {
+                case COURSE_STAGES_COUNT:
+                    time_trial_save_file_set_time(18, 0, 17999, 1);
+                    time_trial_save_file_set_time(18, 1, 17999, 1);
+                    time_trial_save_file_set_time(23, 0, 17999, 1);
+                    time_trial_save_file_set_time(20, 0, 17999, 1);
+                    time_trial_save_file_set_time(21, 0, 17999, 1);
+                    time_trial_save_file_set_time(19, 0, 17999, 1);
+                    time_trial_save_file_set_time(22, 0, 17999, 1);
+                    break;
+                case COURSE_STAGES_COUNT + 1:
+                    time_trial_save_file_set_time(15, 0, 17999, 1);
+                    time_trial_save_file_set_time(15, 1, 17999, 1);
+                    time_trial_save_file_set_time(16, 0, 17999, 1);
+                    time_trial_save_file_set_time(16, 1, 17999, 1);
+                    time_trial_save_file_set_time(17, 0, 17999, 1);
+                    time_trial_save_file_set_time(17, 1, 17999, 1);
+                    break;
+                default:
+                    time_trial_save_file_set_time(gDialogLineNum, 0, 17999, 1);
+                    time_trial_save_file_set_time(gDialogLineNum, 1, 17999, 1);
+                    time_trial_save_file_set_time(gDialogLineNum, 2, 17999, 1);
+                    time_trial_save_file_set_time(gDialogLineNum, 3, 17999, 1);
+                    time_trial_save_file_set_time(gDialogLineNum, 4, 17999, 1);
+                    time_trial_save_file_set_time(gDialogLineNum, 5, 17999, 1);
+                    time_trial_save_file_set_time(gDialogLineNum, 6, 17999, 1);
+                    break;
+            }
+            play_sound(SOUND_MENU_LET_GO_MARIO_FACE, gDefaultSoundArgs);
+            gTimeTrialResetIndex = 0;
+        }
+    } else if (gPlayer3Controller->buttonPressed > 0) {
+        gTimeTrialResetIndex = 0;
+    }
+
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
+}
+
 s8 gCourseCompleteCoinsEqual = 0;
 s32 gCourseDoneMenuTimer = 0;
 s32 gCourseCompleteCoins = 0;
@@ -2642,8 +3241,9 @@ s16 render_pause_courses_and_castle(void) {
             shade_screen();
             render_pause_my_score_coins();
             render_pause_red_coins();
-            
-/* Added support for the "Exit course at any time" cheat */
+            time_trial_render_pause_timer_toggle();
+
+            /* Added support for the "Exit course at any time" cheat */
             if ((gMarioStates[0].action & ACT_FLAG_PAUSE_EXIT) || (Cheats.EnableCheats && Cheats.ExitAnywhere)) {
                 render_pause_course_options(99, 93, &gDialogLineNum, 15);
             }
@@ -2671,9 +3271,10 @@ s16 render_pause_courses_and_castle(void) {
             break;
         case DIALOG_STATE_HORIZONTAL:
             shade_screen();
-            print_hud_pause_colorful_str();
-            render_pause_castle_menu_box(160, 143);
-            render_pause_castle_main_strings(104, 60);
+            time_trial_print_hud_pause_colorful_str();
+            time_trial_render_pause_castle_menu_box();
+            time_trial_render_pause_castle_main_strings();
+            time_trial_check_input_for_course_times_reset();
 
 #ifdef VERSION_EU
             if (gPlayer3Controller->buttonPressed & (A_BUTTON | Z_TRIG | START_BUTTON))
