@@ -48,20 +48,21 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
 
 
 ## How to add cheats/mods
- * Use `mario_cheats.c` for code
+ * Use `src/game/mario_cheats.c` for code
   - each of the actions files of a single line function
   - Use with `mario_cheats.h` to add new functionality
- * Use cheats_menu.h for in game options
-  - add TEXT_OPT_<NAME> to optsCheatsStr
-  - if using a list, you make make an array for TEXT_OPT
+ * Use `src/game/cheats_menu.h` for in game options
+  - add `TEXT_OPT_<NAME>` to `optsCheatsStr`
+  - if using a list, you make make an array for `TEXT_OPT`
     as well as one for the strings (see file for example)
- * Use text_cheats_strings to tell the game what to print
+ * Use `include/text_cheats_strings.h.in` to tell the game what to print
  - ie `#define TEXT_OPT_HEY _("Hey")`
  - should be done for both JP and US
   + JP only uses capital letters
-  + In game buttons example _("[A]") or _("[C]<") no L though
- * Use options_menu.c to add to `static struct Option optCheats`
- * If adding new files, the Makefile will mostly need to be edited
+  + In game buttons examples `_("[A]")` or `_("[C]<")` no L though
+ * Use `src/game/options_menu.c` to add to `static struct Option optCheats`
+ * If adding new files, the `Makefile` will mostly need to be edited
+  - External Data aka `build/res/base.zip` is handle partly in `Makefile.split`
   - tutorial soon-ish
 
 # feel free to ask questions, request pulls, open issues
