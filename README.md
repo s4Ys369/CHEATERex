@@ -10,7 +10,7 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
   * T Pose Float?
   * Jukebox song selector
   * Quick Ending
-    -w hile Enabled, if player has 120 stars, warp directly to End Cutscene
+    - while Enabled, if player has 120 stars, warp directly to End Cutscene
   * Hurt Mario = L Trigger + A Button
     - Burn
     - Shock
@@ -40,13 +40,30 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
     - FlyGuy
 
 ## New features
-
+ * X, Y, and D PAD added (check `sm64.h` for defines)
  * Tighter Controls by Keanine included as a configurable option under Controls
  * Exit to Main Menu by Adya included
  * Optional patches in /enhancements
  * Most data pertaining to external cheats have their own new files : cheats_menu.h, mario_cheats.c, text_cheats_strings.h.in 
 
-## Building
-For building instructions, please refer to the [wiki](https://github.com/sm64pc/sm64ex/wiki).
 
+## How to add cheats/mods
+ * Use `mario_cheats.c` for code
+  - each of the actions files of a single line function
+  - Use with `mario_cheats.h` to add new functionality
+ * Use cheats_menu.h for in game options
+  - add TEXT_OPT_<NAME> to optsCheatsStr
+  - if using a list, you make make an array for TEXT_OPT
+    as well as one for the strings (see file for example)
+ * Use text_cheats_strings to tell the game what to print
+ - ie `#define TEXT_OPT_HEY _("Hey")`
+ - should be done for both JP and US
+  + JP only uses capital letters
+  + In game buttons example _("[A]") or _("[C]<") no L though
+ * Use options_menu.c to add to `static struct Option optCheats`
+ * If adding new files, the Makefile will mostly need to be edited
+  - tutorial soon-ish
+
+# feel free to ask questions, request pulls, open issues
+ 
 **Make sure you have MXE first before attempting to compile for Windows on Linux and WSL. Follow the guide on the wiki.**
