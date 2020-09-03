@@ -43,13 +43,13 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
  * X, Y, and D PAD added (check `sm64.h` for defines)
  * Tighter Controls by Keanine included as a configurable option under Controls
  * Exit to Main Menu by Adya included
- * Optional patches in /enhancements
+ * Optional patches in `/enhancements`
  * Most data pertaining to external cheats have their own new files : cheats_menu.h, mario_cheats.c, text_cheats_strings.h.in 
 
 
 ## How to add cheats/mods
  * Use `src/game/mario_cheats.c` for code
-  - each of the actions files of a single line function
+  - each of the `actions` files has a single line function
   - Use with `mario_cheats.h` to add new functionality
  * Use `src/game/cheats_menu.h` for in game options
   - add `TEXT_OPT_<NAME>` to `optsCheatsStr`
@@ -62,7 +62,7 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
   + In game buttons examples `_("[A]")` or `_("[C]<")` no L though
  * Use `src/game/options_menu.c` to add to `static struct Option optCheats`
  * If adding new files, the `Makefile` will mostly need to be edited
-  - External Data aka `build/res/base.zip` is handle partly in `Makefile.split`
+  - External Data aka `build/res/base.zip` is handled partly in `Makefile.split`
   - tutorial soon-ish
 
 # feel free to ask questions, request pulls, open issues
