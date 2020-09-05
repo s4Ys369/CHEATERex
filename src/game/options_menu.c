@@ -50,10 +50,10 @@ static const u8 menuStr[][32] = {
     { TEXT_OPT_OPTIONS },
     { TEXT_OPT_CAMERA },
     { TEXT_OPT_CHEATS },
-    { TEXT_LEAVE_GAME },
     { TEXT_OPT_CONTROLS },
     { TEXT_OPT_VIDEO },
     { TEXT_OPT_AUDIO },
+    { TEXT_LEAVE_GAME },
     { TEXT_EXIT_GAME },
 
 };

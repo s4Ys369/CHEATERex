@@ -6,7 +6,6 @@
 #include "macros.h"
 #include "types.h"
 
-void cheats_set_model(struct MarioState *m);
 void cheats_swimming_speed(struct MarioState *m);
 void cheats_air_step(struct MarioState *m);
 void cheats_long_jump(struct MarioState *m);
