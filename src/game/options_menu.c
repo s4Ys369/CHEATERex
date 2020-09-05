@@ -362,10 +362,11 @@ static struct Option optsMain[] = {
     DEF_OPT_SUBMENU( menuStr[4], &menuCamera ),
 #endif
     DEF_OPT_SUBMENU( menuStr[5], &menuCheats),
-    DEF_OPT_BUTTON( menuStr[6], optmenu_act_leave),
-    DEF_OPT_SUBMENU( menuStr[7], &menuControls ),
-    DEF_OPT_SUBMENU( menuStr[8], &menuVideo ),
-    DEF_OPT_SUBMENU( menuStr[9], &menuAudio ),
+    DEF_OPT_BUTTON( menuStr[9], optmenu_act_leave),
+    DEF_OPT_SUBMENU( menuStr[6], &menuControls ),
+    DEF_OPT_SUBMENU( menuStr[7], &menuVideo ),
+    DEF_OPT_SUBMENU( menuStr[8], &menuAudio ),
+    DEF_OPT_BUTTON( menuStr[9], optmenu_act_leave),
     DEF_OPT_BUTTON ( menuStr[10], optmenu_act_exit ),
 };
 
