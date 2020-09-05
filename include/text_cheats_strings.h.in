@@ -33,7 +33,7 @@
 #define TEXT_OPT_BLJ   _("BLJ ANYWHERE")
 #define TEXT_OPT_PAC   _("PLAY AS")
 
-#define TEXT_OPT_PA1    _("DISABLED")
+#define TEXT_OPT_PA1    _("OFF")
 #define TEXT_OPT_PA2    _("BLACK BOBOMB")
 #define TEXT_OPT_PA3    _("PINK BOBOMB")
 #define TEXT_OPT_PA4    _("GOOMBA")
@@ -127,7 +127,7 @@
 #define TEXT_OPT_BLJ       _("BLJ Anywhere")
 #define TEXT_OPT_PAC   _("Play as")
 
-#define TEXT_OPT_PA1    _("Disabled")
+#define TEXT_OPT_PA1    _("OFF must exit level")
 #define TEXT_OPT_PA2    _("Black Bobomb")
 #define TEXT_OPT_PA3    _("Pink Bobomb")
 #define TEXT_OPT_PA4    _("Goomba")
