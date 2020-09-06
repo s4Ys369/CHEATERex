@@ -59,10 +59,10 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
    - if using a list, you need to make an array for `TEXT_OPT`
      as well as one for the strings (see file for example)
  * Use `include/text_cheats_strings.h.in` to tell the game what to print
-  - ie `#define TEXT_OPT_HEY _("Hey")`
-  - should be done for both JP and US
-  - JP only uses capital letters
-  - In game buttons examples `_("[A]")` or `_("[C]<")` no L though
+   - ie `#define TEXT_OPT_HEY _("Hey")`
+   - should be done for both JP and US
+   - JP only uses capital letters
+   - In game buttons examples `_("[A]")` or `_("[C]<")` no L though
  * Use `src/game/options_menu.c` to add to `static struct Option optCheats`
  * If adding new files, the `Makefile` will mostly need to be edited
    - External Data aka `build/res/base.zip` is handled partly in `Makefile.split`
