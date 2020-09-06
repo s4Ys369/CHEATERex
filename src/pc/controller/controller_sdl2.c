@@ -33,6 +33,7 @@ int mouse_y;
 
 #ifdef BETTERCAMERA
 extern u8 newcam_mouse;
+extern s8 sSelectedFileNum;
 #endif
 
 static bool init_ok;
@@ -158,8 +159,11 @@ static void controller_sdl_read(OSContPad *pad) {
     }
 
 #ifdef BETTERCAMERA
-    if (newcam_mouse == 1 && sCurrPlayMode != 2)
+    u32 mouse;
+    if (newcam_mouse == 1 && sCurrPlayMode != 2 && sSelectedFileNum != 0) {
         SDL_SetRelativeMouseMode(SDL_TRUE);
+        mouse = SDL_GetMouseState(&mouse_x, &mouse_y);
+    }
     else
         SDL_SetRelativeMouseMode(SDL_FALSE);
     
