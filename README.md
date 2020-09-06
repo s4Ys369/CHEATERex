@@ -43,6 +43,9 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
  * X, Y, and D PAD added (check `sm64.h` for defines)
  * Tighter Controls by Keanine included as a configurable option under Controls
  * Exit to Main Menu by Adya included
+ * Time Trials by GateGuy
+ * Menu C button support by engima907
+ * General mouse support improvements by ineedhelpbad
  * Optional patches in `/enhancements`
  * Most data pertaining to external cheats have their own new files : cheats_menu.h, mario_cheats.c, text_cheats_strings.h.in 
 
@@ -58,8 +61,8 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
  * Use `include/text_cheats_strings.h.in` to tell the game what to print
   - ie `#define TEXT_OPT_HEY _("Hey")`
   - should be done for both JP and US
-   + JP only uses capital letters
-   + In game buttons examples `_("[A]")` or `_("[C]<")` no L though
+  - JP only uses capital letters
+  - In game buttons examples `_("[A]")` or `_("[C]<")` no L though
  * Use `src/game/options_menu.c` to add to `static struct Option optCheats`
  * If adding new files, the `Makefile` will mostly need to be edited
    - External Data aka `build/res/base.zip` is handled partly in `Makefile.split`
