@@ -44,6 +44,7 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
  * Tighter Controls by Keanine included as a configurable option under Controls
  * Exit to Main Menu by Adya included
  * Time Trials by GateGuy
+ * Stay In Level After Star by GateGuy included as configurable option under Controls with a Cheat state
  * Menu C button support by engima907
  * General mouse support improvements by ineedhelpbad
  * Optional patches in `/enhancements`
