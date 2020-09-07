@@ -17,7 +17,7 @@
 #include "level_table.h"
 #include "thread6.h"
 #ifdef BETTERCAMERA
-#include "pc\controller\controller_mouse.h"
+#include "pc/controller/controller_mouse.h"
 extern u8 newcam_mouse;
 #endif
 

@@ -166,8 +166,6 @@ static void controller_sdl_read(OSContPad *pad) {
     }
     else
         SDL_SetRelativeMouseMode(SDL_FALSE);
-    
-    u32 mouse = SDL_GetRelativeMouseState(&mouse_x, &mouse_y);
 
     for (u32 i = 0; i < num_mouse_binds; ++i)
         if (mouse & SDL_BUTTON(mouse_binds[i][0]))

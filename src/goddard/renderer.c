@@ -23,6 +23,7 @@
 
 #include "config.h"
 #include "gfx_dimensions.h"
+
 #ifdef BETTERCAMERA
 
 #include "pc/controller/controller_mouse.h"
@@ -2451,9 +2452,9 @@ void parse_p1_controller(void) {
     // deadzone checks?
     if (ABS(gdctrl->stickX) >= 6) {
         gdctrl->csrX += gdctrl->stickX * 0.1; //? 0.1f
-#ifdef BETTERCAMERA
+       #ifdef BETTERCAMERA 
         mouseControl = FALSE;
-#endif
+        #endif
     }
 
     if (ABS(gdctrl->stickY) >= 6) {
@@ -2464,31 +2465,30 @@ void parse_p1_controller(void) {
     }
 #ifdef BETTERCAMERA
 
+
     if (mouse_x - oldMouse_x != 0 || mouse_y - oldMouse_y != 0)
         mouseControl = true;
     if (mouseControl) {
-        float screenScale = (float) gfx_current_dimensions.height / (float) SCREEN_HEIGHT;
+        float screenScale = (float) gfx_current_dimensions.height / (float)SCREEN_HEIGHT;
         if (configCameraMouse) {
-            gdctrl->csrX =
-                (mouse_x - (gfx_current_dimensions.width - (screenScale * (float) SCREEN_WIDTH)) / 2)
-                / screenScale;
+            gdctrl->csrX = (mouse_x - (gfx_current_dimensions.width - (screenScale * (float)SCREEN_WIDTH))/ 2)/ screenScale;
             gdctrl->csrY = mouse_y / screenScale;
         }
     }
     oldMouse_x = mouse_x;
     oldMouse_y = mouse_y;
 
-    if (!mouseControl) {
+if (!mouseControl) {
 #endif
     // border checks? is this for the cursor finger movement?
-    if ((f32) gdctrl->csrX < (sScreenView2->parent->upperLeft.x + (16.0f/aspect))) {
-        gdctrl->csrX = (s32)(sScreenView2->parent->upperLeft.x + (16.0f/aspect));
+    if ((f32) gdctrl->csrX < (sScreenView2->parent->upperLeft.x + (16.0f / aspect))) {
+        gdctrl->csrX = (s32)(sScreenView2->parent->upperLeft.x + (16.0f / aspect));
     }
 
     if ((f32) gdctrl->csrX
-        > (sScreenView2->parent->upperLeft.x + sScreenView2->parent->lowerRight.x - (48.0/aspect))) {
-        gdctrl->csrX =
-            (s32)(sScreenView2->parent->upperLeft.x + sScreenView2->parent->lowerRight.x - (48.0/aspect));
+        > (sScreenView2->parent->upperLeft.x + sScreenView2->parent->lowerRight.x - (48.0 / aspect))) {
+        gdctrl->csrX = (s32)(sScreenView2->parent->upperLeft.x + sScreenView2->parent->lowerRight.x
+                             - (48.0 / aspect));
     }
 
     if ((f32) gdctrl->csrY < (sScreenView2->parent->upperLeft.y + 16.0f)) {
@@ -2504,8 +2504,11 @@ void parse_p1_controller(void) {
     for (i = 0; i < sizeof(OSContPad); i++) {
         ((u8 *) p1contPrev)[i] = ((u8 *) p1cont)[i];
     }
-}
 
+#ifdef BETTERCAMERA
+}
+#endif
+}
 /* 251A1C -> 251AC4 */
 void Unknown801A324C(f32 arg0) {
     return;
