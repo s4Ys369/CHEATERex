@@ -370,6 +370,11 @@ struct MarioState
     f32 unkC4;
     f32 spareFloat;
     s32 spareInt;
+    s16 stickLastAngle;
+    s16 spinState;
+    u16 spinIndex;
+    u16 spinTimer;
+    u16 spinBufferTimer;
 };
 
 #endif // _SM64_TYPES_H_
