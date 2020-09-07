@@ -81,6 +81,7 @@ static const u8 optsCheatsStr[][64] = {
     { TEXT_OPT_NORMAL_CAP },
     { TEXT_OPT_BLJ },
     { TEXT_OPT_PAC },
+    { TEXT_OPT_STAY },
 };
 
 static const u8 optsPlayAsCheatStr[][32] = {

@@ -117,6 +117,7 @@ static const u8 bindStr[][32] = {
     { TEXT_OPT_DEADZONE },
     { TEXT_OPT_RUMBLE },
     { TEXT_OPT_TIGHT },
+    { TEXT_OPT_SILAS },
 };
 
 static const u8 *filterChoices[] = {
@@ -293,6 +294,7 @@ static struct Option optsControls[] = {
     DEF_OPT_SCROLL( bindStr[22], &configStickDeadzone, 0, 100, 1 ),
     DEF_OPT_SCROLL( bindStr[23], &configRumbleStrength, 0, 100, 1),
     DEF_OPT_TOGGLE( bindStr[24], &configTight ),
+    DEF_OPT_TOGGLE( bindStr[25], &configStayInLevel),
 };
 
 static struct Option optsVideo[] = {
@@ -341,6 +343,7 @@ static struct Option optsCheats[] = {
     DEF_OPT_BUTTON(optsCheatsStr[26], setCap_Normal),
     DEF_OPT_CHOICE(optsCheatsStr[27], &Cheats.BLJAnywhere, bljCheatChoices),
     DEF_OPT_CHOICE(optsCheatsStr[28], &Cheats.PAC, PlayAsCheatChoices),
+    DEF_OPT_TOGGLE(optsCheatsStr[29], &Cheats.NonStop ),
 
 };
 

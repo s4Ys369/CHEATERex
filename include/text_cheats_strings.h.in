@@ -32,6 +32,7 @@
 #define TEXT_OPT_NORMAL_CAP    _("RESET CAP")
 #define TEXT_OPT_BLJ   _("BLJ ANYWHERE")
 #define TEXT_OPT_PAC   _("PLAY AS")
+#define TEXT_OPT_STAY  _("NON STOP")
 
 #define TEXT_OPT_PA1    _("OFF")
 #define TEXT_OPT_PA2    _("BLACK BOBOMB")
@@ -126,6 +127,7 @@
 #define TEXT_OPT_NORMAL_CAP _("RESET Cap")
 #define TEXT_OPT_BLJ       _("BLJ Anywhere")
 #define TEXT_OPT_PAC   _("Play as")
+#define TEXT_OPT_STAY  _("Stay in Level Non Stop")
 
 #define TEXT_OPT_PA1    _("OFF must exit level")
 #define TEXT_OPT_PA2    _("Black Bobomb")

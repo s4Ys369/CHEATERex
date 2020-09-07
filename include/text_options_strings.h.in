@@ -83,6 +83,7 @@
 #define TEXT_OPT_DEADZONE  _("STICK DEADZONE")
 #define TEXT_OPT_RUMBLE    _("RUMBLE STRENGTH")
 #define TEXT_OPT_TIGHT     _("TIGHTER CONTROLS")
+#define TEXT_OPT_SILAS   _("STAY IN LEVEL AFTER STAR")
 
 #else // VERSION
 
@@ -144,6 +145,7 @@
 #define TEXT_OPT_DEADZONE  _("Stick Deadzone")
 #define TEXT_OPT_RUMBLE    _("Rumble Strength")
 #define TEXT_OPT_TIGHT     _("Tighter Controls")
+#define TEXT_OPT_SILAS   _("Stay In Level After Star")
 
 #endif // VERSION
 

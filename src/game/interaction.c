@@ -24,6 +24,8 @@
 #include "sm64.h"
 #include "sound_init.h"
 #include "thread6.h"
+#include "pc/cheats.h"
+#include "pc/configfile.h"
 
 #define INT_GROUND_POUND_OR_TWIRL (1 << 0) // 0x01
 #define INT_PUNCH                 (1 << 1) // 0x02
@@ -764,6 +766,11 @@ u32 interact_water_ring(struct MarioState *m, UNUSED u32 interactType, struct Ob
 u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
     u32 starIndex;
     u32 starGrabAction = ACT_STAR_DANCE_EXIT;
+    u8 stayInLevelCommon = (configStayInLevel > 0 && !(m->controller->buttonDown & L_TRIG) &&
+        !(gCurrLevelNum == LEVEL_BOWSER_1 || gCurrLevelNum == LEVEL_BOWSER_2 || gCurrLevelNum == LEVEL_BOWSER_3));
+    if (configStayInLevel > 0 && stayInLevelCommon == TRUE) {
+        u32 noExit = TRUE;
+    }
     u32 noExit = (o->oInteractionSubtype & INT_SUBTYPE_NO_EXIT) != 0;
     u32 grandStar = (o->oInteractionSubtype & INT_SUBTYPE_GRAND_STAR) != 0;
 
@@ -830,7 +837,11 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
             return set_mario_action(m, ACT_JUMBO_STAR_CUTSCENE, 0);
         }
 
-        return set_mario_action(m, starGrabAction, noExit + 2 * grandStar);
+        if (Cheats.NonStop == FALSE && configStayInLevel == 0 || stayInLevelCommon == FALSE) {
+            return set_mario_action(m, starGrabAction, noExit + 2 * grandStar);
+        }
+        //If nonstop StayInLevel is enabled, autosave
+        save_file_do_save(gCurrSaveFileNum - 1);
     }
 
     return FALSE;
