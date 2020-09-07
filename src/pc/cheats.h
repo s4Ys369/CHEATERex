@@ -33,7 +33,7 @@ struct CheatList {
     bool         NormalCap;
     unsigned int BLJAnywhere;
     unsigned int PAC;
-    bool         Nonstop;
+    bool         NonStop;
 };
 
 extern struct CheatList Cheats;
