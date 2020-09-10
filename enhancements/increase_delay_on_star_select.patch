@@ -1,0 +1,23 @@
+From bbbae76d4d47836b94461fca6b67099fc19220af Mon Sep 17 00:00:00 2001
+From: GateGuy <57763469+GateGuy@users.noreply.github.com>
+Date: Tue, 26 May 2020 20:46:47 -0400
+Subject: [PATCH] Increased delay between star selection and level load
+
+Now you can hear "Let's a go" without it cutting out early
+---
+ levels/menu/script.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/levels/menu/script.c b/levels/menu/script.c
+index 4e955c12..82549e55 100644
+--- a/levels/menu/script.c
++++ b/levels/menu/script.c
+@@ -88,7 +88,7 @@ const LevelScript level_main_menu_entry_2[] = {
+     /*37*/ TRANSITION(/*transType*/ WARP_TRANSITION_FADE_INTO_COLOR, /*time*/ 16, /*color*/ 0xFF, 0xFF, 0xFF),
+     /*39*/ SLEEP(/*frames*/ 16),
+     /*40*/ CLEAR_LEVEL(),
+-    /*41*/ SLEEP_BEFORE_EXIT(/*frames*/ 1),
++    /*41*/ SLEEP_BEFORE_EXIT(/*frames*/ 9),
+     // L1:
+     /*42*/ EXIT(),
+ };
