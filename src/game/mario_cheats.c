@@ -89,7 +89,6 @@ void cheats_mario_inputs(struct MarioState *m) {
 
     while (Cheats.EnableCheats == true) {
 
-<<<<<<< HEAD
         switch(Cheats.PAC) {
             case 0:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO];
@@ -115,35 +114,6 @@ void cheats_mario_inputs(struct MarioState *m) {
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_CHUCKYA];
                 m->marioObj->header.gfx.unk38.curAnim = chuckya_seg8_anims_0800C070[0];
             case 6:
-=======
-        while (Cheats.PAC > 0) {
-            while (Cheats.PAC == 1) {
-                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BLACK_BOBOMB];
-                m->marioObj->header.gfx.unk38.curAnim = bobomb_seg8_anims_0802396C[0];
-                break;
-            }
-            while (Cheats.PAC == 2) {
-                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BOBOMB_BUDDY];
-                m->marioObj->header.gfx.unk38.curAnim = bobomb_seg8_anims_0802396C[0];
-                break;
-            }
-            while (Cheats.PAC == 3) {
-                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_GOOMBA];
-                m->marioObj->header.gfx.unk38.curAnim = goomba_seg8_anims_0801DA4C[0];
-                break;
-            }
-            while (Cheats.PAC == 4) {
-                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_AMP];
-                m->marioObj->header.gfx.unk38.curAnim = amp_seg8_anims_08004034[0];
-                break;
-            }
-            while (Cheats.PAC == 5) {
-                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_CHUCKYA];
-                m->marioObj->header.gfx.unk38.curAnim = chuckya_seg8_anims_0800C070[0];
-                break;
-            }
-            while (Cheats.PAC == 6) {
->>>>>>> d3e682b6824e17d905dfd43902c0fb92e038bd7b
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_FLYGUY];
                 m->marioObj->header.gfx.unk38.curAnim = flyguy_seg8_anims_08011A64[0];
                 break;
@@ -159,12 +129,7 @@ void cheats_mario_inputs(struct MarioState *m) {
                 obj_set_pos(m->marioObj, 0, 0, 100);
                 break;
             }
-<<<<<<< HEAD
 
-=======
-            break;
-        }
->>>>>>> d3e682b6824e17d905dfd43902c0fb92e038bd7b
 
         /*Speed Display*/
         if (Cheats.SPD == true) {
@@ -195,10 +160,6 @@ void cheats_mario_inputs(struct MarioState *m) {
             m->faceAngle[1] += 0x8000;
             set_mario_action(m, ACT_WALL_KICK_AIR, 0);
             m->wallKickTimer = 0;
-<<<<<<< HEAD
-=======
-            break;
->>>>>>> d3e682b6824e17d905dfd43902c0fb92e038bd7b
         }
 
         /*HurtMario cheat*/
@@ -223,20 +184,12 @@ void cheats_mario_inputs(struct MarioState *m) {
         if (Cheats.Cann == true && m->controller->buttonDown & L_TRIG
             && m->controller->buttonPressed & U_CBUTTONS) {
             spawn_object_relative(1, 0, 200, 0, gCurrentObject, MODEL_NONE, bhvCannon);
-<<<<<<< HEAD
-=======
-            break;
->>>>>>> d3e682b6824e17d905dfd43902c0fb92e038bd7b
         }
 
         /*InstantDeath cheat*/
         if (m->controller->buttonDown & L_TRIG && m->controller->buttonDown & A_BUTTON
             && m->controller->buttonPressed & B_BUTTON && m->controller->buttonDown & R_TRIG) {
             level_trigger_warp(m, WARP_OP_DEATH);
-<<<<<<< HEAD
-=======
-            break;
->>>>>>> d3e682b6824e17d905dfd43902c0fb92e038bd7b
         }
 
         /*CAP Cheats*/
@@ -410,7 +363,6 @@ void cheats_mario_inputs(struct MarioState *m) {
 
         /*Jukebox*/
         if (Cheats.JBC == true) {
-<<<<<<< HEAD
             switch(Cheats.JB) {
                 case 0:
                     play_secondary_music(SEQ_EVENT_CUTSCENE_INTRO, 0, 100, 0);
@@ -450,64 +402,6 @@ void cheats_mario_inputs(struct MarioState *m) {
                     play_secondary_music(SEQ_EVENT_MERRY_GO_ROUND, 0, 80, 0);
                 case 18:
                     play_secondary_music(SEQ_EVENT_CUTSCENE_CREDITS, 0, 100, 0);
-=======
-            if (Cheats.JB == 0) {
-                play_secondary_music(SEQ_EVENT_CUTSCENE_INTRO, 0, 100, 0);
-            }
-            if (Cheats.JB == 1) {
-                play_secondary_music(SEQ_LEVEL_GRASS, 0, 80, 0);
-            }
-            if (Cheats.JB == 2) {
-                play_secondary_music(SEQ_LEVEL_INSIDE_CASTLE, 0, 80, 0);
-            }
-            if (Cheats.JB == 3) {
-                play_secondary_music(SEQ_LEVEL_WATER, 0, 80, 0);
-            }
-            if (Cheats.JB == 4) {
-                play_secondary_music(SEQ_LEVEL_HOT, 0, 80, 0);
-            }
-            if (Cheats.JB == 5) {
-                play_secondary_music(SEQ_LEVEL_BOSS_KOOPA, 0, 80, 0);
-            }
-            if (Cheats.JB == 6) {
-                play_secondary_music(SEQ_LEVEL_SNOW, 0, 80, 0);
-            }
-            if (Cheats.JB == 7) {
-                play_secondary_music(SEQ_LEVEL_SLIDE, 0, 80, 0);
-            }
-            if (Cheats.JB == 8) {
-                play_secondary_music(SEQ_LEVEL_SPOOKY, 0, 100, 0);
-            }
-            if (Cheats.JB == 9) {
-                play_secondary_music(SEQ_LEVEL_UNDERGROUND, 0, 100, 0);
-            }
-            if (Cheats.JB == 10) {
-                play_secondary_music(SEQ_LEVEL_KOOPA_ROAD, 0, 80, 0);
-            }
-            if (Cheats.JB == 11) {
-                play_secondary_music(SEQ_LEVEL_BOSS_KOOPA_FINAL, 0, 80, 0);
-            }
-            if (Cheats.JB == 12) {
-                play_secondary_music(SEQ_MENU_TITLE_SCREEN, 0, 80, 0);
-            }
-            if (Cheats.JB == 13) {
-                play_secondary_music(SEQ_MENU_FILE_SELECT, 0, 80, 0);
-            }
-            if (Cheats.JB == 14) {
-                play_secondary_music(SEQ_EVENT_POWERUP, 0, 80, 0);
-            }
-            if (Cheats.JB == 15) {
-                play_secondary_music(SEQ_EVENT_METAL_CAP, 0, 80, 0);
-            }
-            if (Cheats.JB == 16) {
-                play_secondary_music(SEQ_EVENT_BOSS, 0, 80, 0);
-            }
-            if (Cheats.JB == 17) {
-                play_secondary_music(SEQ_EVENT_MERRY_GO_ROUND, 0, 80, 0);
-            }
-            if (Cheats.JB == 18) {
-                play_secondary_music(SEQ_EVENT_CUTSCENE_CREDITS, 0, 100, 0);
->>>>>>> d3e682b6824e17d905dfd43902c0fb92e038bd7b
             }
         } else {
             play_secondary_music(0, 120, 0, 0);

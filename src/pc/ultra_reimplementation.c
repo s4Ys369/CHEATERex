@@ -124,7 +124,7 @@ s32 osEepromProbe(UNUSED OSMesgQueue *mq) {
 }
 
 s32 osEepromLongRead(UNUSED OSMesgQueue *mq, u8 address, u8 *buffer, int nbytes) {
-    u8 content[2048];
+    u8 content[512];
     s32 ret = -1;
 
 #ifdef TARGET_WEB
@@ -133,8 +133,8 @@ s32 osEepromLongRead(UNUSED OSMesgQueue *mq, u8 address, u8 *buffer, int nbytes)
         if (s && s.length === 684) {
             try {
                 var binary = atob(s);
-                if (binary.length === 2048) {
-                    for (var i = 0; i < 2048; i++) {
+                if (binary.length === 512) {
+                    for (var i = 0; i < 512; i++) {
                         HEAPU8[$0 + i] = binary.charCodeAt(i);
                     }
                     return 1;
@@ -152,7 +152,7 @@ s32 osEepromLongRead(UNUSED OSMesgQueue *mq, u8 address, u8 *buffer, int nbytes)
     if (fp == NULL) {
         return -1;
     }
-    if (fs_read(fp, content, 2048) == 2048) {
+    if (fs_read(fp, content, 512) == 512) {
         memcpy(buffer, content + address * 8, nbytes);
         ret = 0;
     }
@@ -162,16 +162,16 @@ s32 osEepromLongRead(UNUSED OSMesgQueue *mq, u8 address, u8 *buffer, int nbytes)
 }
 
 s32 osEepromLongWrite(UNUSED OSMesgQueue *mq, u8 address, u8 *buffer, int nbytes) {
-    u8 content[2048] = {0};
-    if (address != 0 || nbytes != 2048) {
-        osEepromLongRead(mq, 0, content, 2048);
+    u8 content[512] = {0};
+    if (address != 0 || nbytes != 512) {
+        osEepromLongRead(mq, 0, content, 512);
     }
     memcpy(content + address * 8, buffer, nbytes);
 
 #ifdef TARGET_WEB
     EM_ASM({
         var str = "";
-        for (var i = 0; i < 2048; i++) {
+        for (var i = 0; i < 512; i++) {
             str += String.fromCharCode(HEAPU8[$0 + i]);
         }
         localStorage.sm64_save_file = btoa(str);
@@ -182,7 +182,7 @@ s32 osEepromLongWrite(UNUSED OSMesgQueue *mq, u8 address, u8 *buffer, int nbytes
     if (fp == NULL) {
         return -1;
     }
-    s32 ret = fwrite(content, 1, 2048, fp) == 2048 ? 0 : -1;
+    s32 ret = fwrite(content, 1, 512, fp) == 512 ? 0 : -1;
     fclose(fp);
 #endif
     return ret;
