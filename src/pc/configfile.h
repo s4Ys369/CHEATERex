@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#define CONFIGFILE_DEFAULT "sm64config.txt"
+#define CONFIGFILE_DEFAULT "CHEATER64config.txt"
 
 #define MAX_BINDS  3
 #define MAX_VOLUME 127
@@ -25,6 +25,8 @@ extern unsigned int configSfxVolume;
 extern unsigned int configEnvVolume;
 extern unsigned int configKeyA[];
 extern unsigned int configKeyB[];
+extern unsigned int configKeyX[];
+extern unsigned int configKeyY[];
 extern unsigned int configKeyStart[];
 extern unsigned int configKeyL[];
 extern unsigned int configKeyR[];
@@ -33,12 +35,17 @@ extern unsigned int configKeyCUp[];
 extern unsigned int configKeyCDown[];
 extern unsigned int configKeyCLeft[];
 extern unsigned int configKeyCRight[];
+extern unsigned int configKeyDUp[];
+extern unsigned int configKeyDDown[];
+extern unsigned int configKeyDLeft[];
+extern unsigned int configKeyDRight[];
 extern unsigned int configKeyStickUp[];
 extern unsigned int configKeyStickDown[];
 extern unsigned int configKeyStickLeft[];
 extern unsigned int configKeyStickRight[];
 extern unsigned int configStickDeadzone;
 extern unsigned int configRumbleStrength;
+extern bool configTight;
 #ifdef EXTERNAL_DATA
 extern bool         configPrecacheRes;
 #endif

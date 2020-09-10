@@ -299,6 +299,9 @@ ULTRA_BIN_DIRS := lib/bin
 
 GODDARD_SRC_DIRS := src/goddard src/goddard/dynlists
 
+# SMO Stuff
+SRC_DIRS += data/smo data/smo/system data/smo/timetrial data/smo/object data/smo/mario data/smo/cappy data/smo/capture data/smo/debug
+
 MIPSISET := -mips2
 MIPSBIT := -32
 
@@ -553,6 +556,12 @@ else
 endif
 
 # Check for enhancement options
+
+# Debug
+ifeq ($(DEBUG),1)
+  CC_CHECK += -DDEBUG
+  CFLAGS += -DDEBUG
+endif
 
 # Check for Puppycam option
 ifeq ($(BETTERCAMERA),1)

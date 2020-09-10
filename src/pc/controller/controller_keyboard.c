@@ -67,11 +67,17 @@ static void keyboard_bindkeys(void) {
     keyboard_add_binds(STICK_RIGHT,  configKeyStickRight);
     keyboard_add_binds(A_BUTTON,     configKeyA);
     keyboard_add_binds(B_BUTTON,     configKeyB);
+    keyboard_add_binds(X_BUTTON,     configKeyX);
+    keyboard_add_binds(Y_BUTTON,     configKeyY);
     keyboard_add_binds(Z_TRIG,       configKeyZ);
     keyboard_add_binds(U_CBUTTONS,   configKeyCUp);
     keyboard_add_binds(L_CBUTTONS,   configKeyCLeft);
     keyboard_add_binds(D_CBUTTONS,   configKeyCDown);
     keyboard_add_binds(R_CBUTTONS,   configKeyCRight);
+    keyboard_add_binds(U_DPAD,       configKeyDUp);
+    keyboard_add_binds(L_DPAD,       configKeyDLeft);
+    keyboard_add_binds(D_DPAD,       configKeyDDown);
+    keyboard_add_binds(R_DPAD,       configKeyDRight);
     keyboard_add_binds(L_TRIG,       configKeyL);
     keyboard_add_binds(R_TRIG,       configKeyR);
     keyboard_add_binds(START_BUTTON, configKeyStart);

@@ -24,10 +24,14 @@
  * The maximum number of objects that can be loaded at once.
  */
 
+#ifdef DEBUG
+#define OBJECT_POOL_CAPACITY 1200
+#else
 #ifdef NODRAWINGDISTANCE
 #define OBJECT_POOL_CAPACITY 960
 #else
 #define OBJECT_POOL_CAPACITY 240
+#endif
 #endif
 
 /**

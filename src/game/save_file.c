@@ -404,6 +404,7 @@ void save_file_load_all(void) {
 
     bzero(&gSaveBuffer, sizeof(gSaveBuffer));
 
+    smo_tt_init_times();
 #ifdef TEXTSAVES
     for (file = 0; file < NUM_SAVE_FILES; file++) {
         read_text_save(file);

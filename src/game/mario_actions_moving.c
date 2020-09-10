@@ -9,6 +9,7 @@
 #include "area.h"
 #include "interaction.h"
 #include "mario_actions_object.h"
+#include "mario_cheats.h"
 #include "memory.h"
 #include "behavior_data.h"
 #include "thread6.h"
@@ -465,8 +466,14 @@ void update_walking_speed(struct MarioState *m) {
 
     /* Handles the "Super responsive controls" cheat. The content of the "else" is Mario's original code for turning around.*/
 
-    if (Cheats.Responsive == true && Cheats.EnableCheats == true ) {
-        m->faceAngle[1] = m->intendedYaw;
+    if (configTight == true ) {
+        if (analog_stick_held_back(m)) {
+            m->faceAngle[1] = m->intendedYaw;
+        } else {
+            m->faceAngle[1] =
+                m->intendedYaw - approach_s32((s16)(m->intendedYaw - m->faceAngle[1]), 0, 0xC00, 0xC00);
+        }
+        apply_slope_accel(m);
     }
     else {
          m->faceAngle[1] = m->intendedYaw - approach_s32((s16)(m->intendedYaw - m->faceAngle[1]), 0, 0x800, 0x800);
@@ -1280,7 +1287,7 @@ s32 act_crawling(struct MarioState *m) {
         return set_mario_action(m, ACT_STOP_CRAWLING, 0);
     }
 
-    if (!(m->input & INPUT_Z_DOWN)) {
+    if (!(m->controller->buttonDown & Z_TRIG)) {
         return set_mario_action(m, ACT_STOP_CRAWLING, 0);
     }
 
@@ -1853,8 +1860,9 @@ s32 act_long_jump_land(struct MarioState *m) {
         m->forwardVel = 0.0f;
     }
 #endif
-    
-    if (!(m->input & INPUT_Z_DOWN)) {
+    cheats_long_jump(m);
+
+    if (!(m->controller->buttonDown & Z_TRIG)) {
         m->input &= ~INPUT_A_PRESSED;
     }
 
@@ -1897,7 +1905,7 @@ s32 act_triple_jump_land(struct MarioState *m) {
 }
 
 s32 act_backflip_land(struct MarioState *m) {
-    if (!(m->input & INPUT_Z_DOWN)) {
+    if (!(m->controller->buttonDown & Z_TRIG)) {
         m->input &= ~INPUT_A_PRESSED;
     }
 
@@ -1975,7 +1983,7 @@ s32 check_common_moving_cancels(struct MarioState *m) {
 }
 
 s32 mario_execute_moving_action(struct MarioState *m) {
-    s32 cancel;
+    s32 cancel = 0;
 
     if (check_common_moving_cancels(m)) {
         return TRUE;

@@ -379,6 +379,9 @@ Gfx *geo_act_selector_strings(s16 callContext, UNUSED struct GraphNode *node) {
 #endif
     if (callContext == GEO_CONTEXT_RENDER) {
         print_act_selector_strings();
+        if (IS_SMO_TIME_TRIALS) {
+            smo_tt_render_star_select_time(gCurrSaveFileNum - 1, gCurrCourseNum, sSelectedActIndex);
+        }
     }
     return NULL;
 }

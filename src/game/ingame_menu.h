@@ -116,6 +116,8 @@ extern s8 gRedCoinsCollected;
 
 void create_dl_identity_matrix(void);
 void create_dl_translation_matrix(s8 pushOp, f32 x, f32 y, f32 z);
+void create_dl_rotation_matrix(s8 pushOp, f32 a, f32 x, f32 y, f32 z);
+void create_dl_scale_matrix(s8 pushOp, f32 x, f32 y, f32 z);
 void create_dl_ortho_matrix(void);
 void print_generic_string(s16 x, s16 y, const u8 *str);
 void print_hud_lut_string(s8 hudLUT, s16 x, s16 y, const u8 *str);
@@ -139,6 +141,7 @@ void create_dialog_inverted_box(s16 dialog);
 void create_dialog_box_with_response(s16 dialog);
 void reset_dialog_render_state(void);
 void set_menu_mode(s16 mode);
+void unpause_game();
 void reset_cutscene_msg_fade(void);
 void dl_rgba16_begin_cutscene_msg_fade(void);
 void dl_rgba16_stop_cutscene_msg_fade(void);
