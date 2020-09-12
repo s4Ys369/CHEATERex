@@ -1,5 +1,6 @@
 # CHEATERex
-Fork of [sm64pc/sm64ex](https://github.com/sm64pc/sm64ex) with additional features. 
+Fork of [sm64pc/sm64ex](https://github.com/sm64pc/sm64ex) with additional patches built-in.
+To be used as a template for modders, hackers and cheaters.
 
 **no upload of any copyrighted asset**. 
 Run `./extract_assets.py --clean && make clean` or `make distclean` to remove ROM-originated content.
@@ -44,7 +45,7 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
  * Tighter Controls by Keanine included as a configurable option under Controls
  * Exit to Main Menu by Adya included
  * SMO featuring Time Trials v2 by PeachyPeach (Time Trials by GateGuy)
-  - must include https://discordapp.com/channels/723992725870870619/723992726319792140/754402820932763730
+  - must include https://cdn.discordapp.com/attachments/723992726319792140/754402820588961882/smo.cappy_assets.zip
  * Stay In Level After Star v2 by GateGuy
  * Menu C button support by engima907
  * Optional patches in `/enhancements`
