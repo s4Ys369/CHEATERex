@@ -42,14 +42,17 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
 
 ## New features
  * X, Y, and D PAD added (check `sm64.h` for defines)
+ * 60 FPS by Emil included
+ * Enable Debug Level Select by KiritoDev included
  * Tighter Controls by Keanine included as a configurable option under Controls
+ * Leave Ending Screen by GateGuy included
  * Exit to Main Menu by Adya included
- * SMO featuring Time Trials v2 by PeachyPeach (Time Trials by GateGuy)
+ * 50 Coin 1UP by Keanine included
+ * Odyssey Moveset featuring Time Trials v2 by PeachyPeach (Time Trials by GateGuy)
   - must include https://cdn.discordapp.com/attachments/723992726319792140/754402820588961882/smo.cappy_assets.zip
  * Stay In Level After Star v2 by GateGuy
  * Menu C button support by engima907
- * Optional patches in `/enhancements`
-
+ * And of course, CHEATERv6.5 by $4Y$, me
 
 ## How to add cheats/mods
  * Use `src/game/mario_cheats.c` for code
