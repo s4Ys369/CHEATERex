@@ -7,6 +7,7 @@
 #endif
 
 #include "sm64.h"
+#include "dynamic_options.h"
 
 #include "game/memory.h"
 #include "audio/external.h"
@@ -199,6 +200,7 @@ void main_func(void) {
     const char *gamedir = gCLIOpts.GameDir[0] ? gCLIOpts.GameDir : FS_BASEDIR;
     const char *userpath = gCLIOpts.SavePath[0] ? gCLIOpts.SavePath : sys_user_path();
     fs_init(sys_ropaths, gamedir, userpath);
+    dynos_init();
 
     configfile_load(configfile_name());
 

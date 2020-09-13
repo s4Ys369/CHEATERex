@@ -52,6 +52,7 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
   - must include https://cdn.discordapp.com/attachments/723992726319792140/754402820588961882/smo.cappy_assets.zip
  * Stay In Level After Star v2 by GateGuy
  * Menu C button support by engima907
+ * Dynamic Options (DynOS.0.2) by PeachyPeach included
  * And of course, CHEATERv6.5 by $4Y$, me
 
 ## How to add cheats/mods

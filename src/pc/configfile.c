@@ -13,6 +13,7 @@
 #include "gfx/gfx_window_manager_api.h"
 #include "controller/controller_api.h"
 #include "fs/fs.h"
+#include "pc/dynamic_options.h"
 
 #define ARRAY_LEN(arr) (sizeof(arr) / sizeof(arr[0]))
 
@@ -275,7 +276,7 @@ void configfile_load(const char *filename) {
                     }
                 }
                 if (option == NULL)
-                    printf("unknown option '%s'\n", tokens[0]);
+                    dynos_load_bind((const char *) tokens[0], (const char **) &tokens[1]);
                 else {
                     switch (option->type) {
                         case CONFIG_TYPE_BOOL:
@@ -346,5 +347,6 @@ void configfile_save(const char *filename) {
         }
     }
 
+    dynos_save_binds(file);
     fclose(file);
 }

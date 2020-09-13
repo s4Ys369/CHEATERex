@@ -77,4 +77,7 @@
 # define LE_TO_HOST32(x) (x)
 #endif
 
+// Dynamic Options System
+#define DYNOS
+
 #endif // MACROS_H
