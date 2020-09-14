@@ -88,9 +88,9 @@ void cheats_mario_inputs(struct MarioState *m) {
     m->flags &= 0xFFFFFF;
 
     while (Cheats.EnableCheats == true) {
+        /*Speed Modifier Cheat*/
         switch (Cheats.SuperSpeed) {
             case 0:
-                vec3f_set(m->vel, 0, 0, 0);
                 break;
             case 1:
                 if (m->action == ACT_WALKING) {
@@ -113,8 +113,9 @@ void cheats_mario_inputs(struct MarioState *m) {
                 }
                 break;
         }
-
+        /*Play As Cheat*/
         switch(Cheats.PAC) {
+            /*Model Choices*/
             case 0:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO];
                 m->animation = &D_80339D10;
@@ -122,27 +123,36 @@ void cheats_mario_inputs(struct MarioState *m) {
             case 1:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BLACK_BOBOMB];
                 m->marioObj->header.gfx.unk38.curAnim = bobomb_seg8_anims_0802396C[0];
+                is_anim_past_end(m);
                 break;
             case 2:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BOBOMB_BUDDY];
                 m->marioObj->header.gfx.unk38.curAnim = bobomb_seg8_anims_0802396C[0];
+                is_anim_past_end(m);
                 break;
             case 3:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_GOOMBA];
                 m->marioObj->header.gfx.unk38.curAnim = goomba_seg8_anims_0801DA4C[0];
+                is_anim_past_end(m);
                 break;
             case 4:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_AMP];
                 m->marioObj->header.gfx.unk38.curAnim = amp_seg8_anims_08004034[0];
+                is_anim_past_end(m);
                 break;
             case 5:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_CHUCKYA];
                 m->marioObj->header.gfx.unk38.curAnim = chuckya_seg8_anims_0800C070[0];
+                is_anim_past_end(m);
             case 6:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_FLYGUY];
                 m->marioObj->header.gfx.unk38.curAnim = flyguy_seg8_anims_08011A64[0];
+                is_anim_past_end(m);
                 break;
             }
+        while (Cheats.PAC > 0) {
+                /*Instead of making a custom hitbox for each character,
+                I neutralized the only consistent problem, doors*/
             while (m->collidedObjInteractTypes & INTERACT_DOOR) {
                 obj_mark_for_deletion(m->usedObj);
                 spawn_object(gCurrentObject, MODEL_SMOKE, bhvBobombBullyDeathSmoke);
@@ -154,6 +164,8 @@ void cheats_mario_inputs(struct MarioState *m) {
                 obj_set_pos(m->marioObj, 0, 0, 100);
                 break;
             }
+            break;
+        }
 
 
         /*Speed Display*/
@@ -198,7 +210,7 @@ void cheats_mario_inputs(struct MarioState *m) {
                 drop_and_set_mario_action(m, ACT_SHOCKED, 0);
             }
             if (Cheats.Hurt == 3) {
-                m->health = 0x100;
+                hurt_and_set_mario_action(m, ACT_GROUND_BONK, 0, 1);
                 play_sound(SOUND_MARIO_OOOF, m->marioObj->header.gfx.cameraToObject);
                 queue_rumble_data(5, 80);
             }
@@ -217,7 +229,8 @@ void cheats_mario_inputs(struct MarioState *m) {
             level_trigger_warp(m, WARP_OP_DEATH);
         }
 
-        /*CAP Cheats*/
+        /*CAP Cheats, this whole thing needs to be refactored, but
+        I've only been adding to JAGSTAX's original patch*/
         if (Cheats.EnableCheats) {
             if (Cheats.WingCap) {
                 m->flags |= MARIO_WING_CAP;
@@ -281,10 +294,11 @@ void cheats_mario_inputs(struct MarioState *m) {
                 break;
             }
 
+            /*This check should be added when creating a spawn cheat to prevent spamming*/
             struct Object *obj = (struct Object *) gObjectLists[OBJ_LIST_LEVEL].next;
             struct Object *first = (struct Object *) &gObjectLists[OBJ_LIST_LEVEL];
             while (obj != NULL && obj != first) {
-                if (obj->behavior == bhvKoopaShell) {
+                if (obj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_KOOPA_SHELL]) {
                     obj_mark_for_deletion(obj);
                     break;
                 }
@@ -308,86 +322,103 @@ void cheats_mario_inputs(struct MarioState *m) {
             break;
         }
 
-        /* SpawnCommon0 aka Spamba cheat */
-        while (Cheats.Spamba > 0 && m->controller->buttonDown & L_TRIG
-               && m->controller->buttonPressed & Z_TRIG) {
-            if (Cheats.Spamba == 1) {
-                spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_AMP, bhvHomingAmp);
+        /* SpawnCommon0 aka Spamba cheat*/
+        switch (Cheats.Spamba) {
+            case 0:
                 break;
-            }
-
-            if (Cheats.Spamba == 2) {
-                spawn_object_relative(0, 0, 0, 150, gCurrentObject, MODEL_BLUE_COIN_SWITCH,
-                                      bhvBlueCoinSwitch);
+            case 1:
+                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
+                    spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_AMP, bhvHomingAmp);
+                    break;
+                }
                 break;
-            }
-
-            if (Cheats.Spamba == 3) {
-                spawn_object_relative(0, 0, 300, 300, gCurrentObject, MODEL_BOWLING_BALL,
-                                      bhvPitBowlingBall);
+            case 2:
+                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
+                    spawn_object_relative(0, 0, 0, 150, gCurrentObject, MODEL_BLUE_COIN_SWITCH,
+                                          bhvBlueCoinSwitch);
+                    break;
+                }
                 break;
-            }
-
-            if (Cheats.Spamba == 4) {
-                spawn_object_relative(0, 0, 0, 200, gCurrentObject, MODEL_BREAKABLE_BOX,
-                                      bhvBreakableBox);
+            case 3:
+                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
+                    spawn_object_relative(0, 0, 300, 300, gCurrentObject, MODEL_BOWLING_BALL,
+                                          bhvPitBowlingBall);
+                    break;
+                }
                 break;
-            }
-
-            if (Cheats.Spamba == 5) {
-                spawn_object_relative(0, 0, 50, 100, gCurrentObject, MODEL_BREAKABLE_BOX_SMALL,
-                                      bhvBreakableBoxSmall);
+            case 4:
+                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
+                    spawn_object_relative(0, 0, 0, 200, gCurrentObject, MODEL_BREAKABLE_BOX,
+                                          bhvBreakableBox);
+                    break;
+                }
                 break;
-            }
-
-            if (Cheats.Spamba == 6) {
-                spawn_object_relative(0, 0, 10, 300, gCurrentObject, MODEL_BREAKABLE_BOX_SMALL,
-                                      bhvJumpingBox);
+            case 5:
+                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
+                    spawn_object_relative(0, 0, 50, 100, gCurrentObject, MODEL_BREAKABLE_BOX_SMALL,
+                                          bhvBreakableBoxSmall);
+                    break;
+                }
                 break;
-            }
-
-            if (Cheats.Spamba == 7) {
-                spawn_object_relative(0, 0, -10, 100, gCurrentObject, MODEL_CHECKERBOARD_PLATFORM,
-                                      bhvCheckerboardPlatformSub);
+            case 6:
+                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
+                    spawn_object_relative(0, 0, 10, 300, gCurrentObject, MODEL_BREAKABLE_BOX_SMALL,
+                                          bhvJumpingBox);
+                    break;
+                }
                 break;
-            }
-
-            if (Cheats.Spamba == 8) {
-                spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_CHUCKYA, bhvChuckya);
+            case 7:
+                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
+                    spawn_object_relative(0, 0, -10, 100, gCurrentObject, MODEL_CHECKERBOARD_PLATFORM,
+                                          bhvCheckerboardPlatformSub);
+                    break;
+                }
                 break;
-            }
-
-            if (Cheats.Spamba == 9) {
-                spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_FLYGUY, bhvFlyGuy);
+            case 8:
+                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
+                    spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_CHUCKYA, bhvChuckya);
+                    break;
+                }
                 break;
-            }
-
-            if (Cheats.Spamba == 10) {
-                spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_NONE,
-                                      bhvGoombaTripletSpawner);
+            case 9:
+                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
+                    spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_FLYGUY, bhvFlyGuy);
+                    break;
+                }
                 break;
-            }
-
-            if (Cheats.Spamba == 11) {
-                spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_HEART, bhvRecoveryHeart);
+            case 10:
+                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
+                    spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_NONE,
+                                          bhvGoombaTripletSpawner);
+                    break;
+                }
                 break;
-            }
-
-            if (Cheats.Spamba == 12) {
-                spawn_object_relative(0, 0, 0, 200, gCurrentObject, MODEL_METAL_BOX,
-                                      bhvPushableMetalBox);
+            case 11:
+                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
+                    spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_HEART,
+                                          bhvRecoveryHeart);
+                    break;
+                }
                 break;
-            }
-
-            if (Cheats.Spamba == 13) {
-                spawn_object_relative(0, 0, 50, 50, gCurrentObject, MODEL_PURPLE_SWITCH,
-                                      bhvPurpleSwitchHiddenBoxes);
+            case 12:
+                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
+                    spawn_object_relative(0, 0, 0, 200, gCurrentObject, MODEL_METAL_BOX,
+                                          bhvPushableMetalBox);
+                    break;
+                }
                 break;
-            }
+            case 13:
+                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
+                    spawn_object_relative(0, 0, 50, 50, gCurrentObject, MODEL_PURPLE_SWITCH,
+                                          bhvPurpleSwitchHiddenBoxes);
+                    break;
+                }
+                break;
         }
 
         /*Jukebox*/
         if (Cheats.JBC == true) {
+            /*JBC is the bool, acting like the on/off*/
             switch(Cheats.JB) {
                 case 0:
                     play_secondary_music(SEQ_EVENT_CUTSCENE_INTRO, 0, 100, 0);
@@ -429,6 +460,7 @@ void cheats_mario_inputs(struct MarioState *m) {
                     play_secondary_music(SEQ_EVENT_CUTSCENE_CREDITS, 0, 100, 0);
             }
         } else {
+            fadeout_background_music(0, 28);
             play_secondary_music(0, 120, 0, 0);
         }
         break;
