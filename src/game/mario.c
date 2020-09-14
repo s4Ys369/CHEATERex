@@ -1745,9 +1745,6 @@ s32 execute_mario_action(UNUSED struct Object *o) {
 
         if (Cheats.InfiniteLives && gMarioState->numLives < 99)
             gMarioState->numLives += 1;
-
-        if (Cheats.SuperSpeed && gMarioState->forwardVel > 0)
-            gMarioState->forwardVel += 100;
     }
     /**
     * End of cheat stuff

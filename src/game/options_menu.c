@@ -131,8 +131,23 @@ static const u8 *SeqChoices[] = {
     optsSeqStr[16],
     optsSeqStr[17],
     optsSeqStr[18],
-}
-;
+};
+
+static const u8 optsSpeedStr[][16] = {
+    { TEXT_OPT_SS1 },
+    { TEXT_OPT_SS2 },
+    { TEXT_OPT_SS3 },
+    { TEXT_OPT_SS4 },
+    { TEXT_OPT_SS5 },
+};
+
+static const u8 *SpeedChoices[] = {
+    optsSpeedStr[0],
+    optsSpeedStr[1],
+    optsSpeedStr[2],
+    optsSpeedStr[3],
+    optsSpeedStr[4],
+};
 
 static const u8 optsCheatsStr[][64] = {
     { TEXT_OPT_CHEAT1 },
@@ -473,7 +488,7 @@ static struct Option optsCheats[] = {
     DEF_OPT_TOGGLE(optsCheatsStr[1], &Cheats.MoonJump),
     DEF_OPT_TOGGLE(optsCheatsStr[2], &Cheats.GodMode),
     DEF_OPT_TOGGLE(optsCheatsStr[3], &Cheats.InfiniteLives),
-    DEF_OPT_TOGGLE(optsCheatsStr[4], &Cheats.SuperSpeed),
+    DEF_OPT_CHOICE(optsCheatsStr[4], &Cheats.SuperSpeed, SpeedChoices),
     DEF_OPT_TOGGLE(optsCheatsStr[5], &Cheats.ExitAnywhere),
     DEF_OPT_TOGGLE(optsCheatsStr[6], &Cheats.HugeMario),
     DEF_OPT_TOGGLE(optsCheatsStr[7], &Cheats.TinyMario),

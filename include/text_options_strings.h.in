@@ -87,7 +87,7 @@
 #define TEXT_OPT_CHEAT2    _("MOONJUMP (PRESS L)")
 #define TEXT_OPT_CHEAT3    _("INVINCIBLE MARIO")
 #define TEXT_OPT_CHEAT4    _("INFINITE LIVES")
-#define TEXT_OPT_CHEAT5    _("SUPER SPEED")
+#define TEXT_OPT_CHEAT5    _("SPEED MODIFIER")
 #define TEXT_OPT_CHEAT6    _("EXIT COURSE AT ANY TIME")
 #define TEXT_OPT_CHEAT7    _("HUGE MARIO")
 #define TEXT_OPT_CHEAT8    _("TINY MARIO")
@@ -111,6 +111,12 @@
 #define TEXT_OPT_NORMAL_CAP    _("RESET CAP")
 #define TEXT_OPT_BLJ   _("BLJ ANYWHERE")
 #define TEXT_OPT_PAC   _("PLAY AS")
+
+#define TEXT_OPT_SS1   _("NORMAL")
+#define TEXT_OPT_SS2   _("SLOW")
+#define TEXT_OPT_SS3   _("SLOWER")
+#define TEXT_OPT_SS4   _("FAST")
+#define TEXT_OPT_SS5   _("FASTER")
 
 #define TEXT_OPT_PA1    _("DISABLED")
 #define TEXT_OPT_PA2    _("BLACK BOBOMB")
@@ -239,7 +245,7 @@
 #define TEXT_OPT_CHEAT2    _("Moonjump (Press Ｌ)")
 #define TEXT_OPT_CHEAT3    _("Invincible Mario")
 #define TEXT_OPT_CHEAT4    _("Infinite lives")
-#define TEXT_OPT_CHEAT5    _("Super speed")
+#define TEXT_OPT_CHEAT5    _("Speed Modifier")
 #define TEXT_OPT_CHEAT6    _("Exit course at any time")
 #define TEXT_OPT_CHEAT7    _("Huge Mario")
 #define TEXT_OPT_CHEAT8    _("Tiny Mario")
@@ -263,6 +269,12 @@
 #define TEXT_OPT_NORMAL_CAP _("RESET Cap")
 #define TEXT_OPT_BLJ       _("BLJ Anywhere")
 #define TEXT_OPT_PAC   _("Play as")
+
+#define TEXT_OPT_SS1   _("Normal")
+#define TEXT_OPT_SS2   _("Slow")
+#define TEXT_OPT_SS3   _("Slower")
+#define TEXT_OPT_SS4   _("Fast")
+#define TEXT_OPT_SS5   _("Faster")
 
 #define TEXT_OPT_PA1    _("Disabled")
 #define TEXT_OPT_PA2    _("Black Bobomb")

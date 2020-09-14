@@ -88,6 +88,31 @@ void cheats_mario_inputs(struct MarioState *m) {
     m->flags &= 0xFFFFFF;
 
     while (Cheats.EnableCheats == true) {
+        switch (Cheats.SuperSpeed) {
+            case 0:
+                vec3f_set(m->vel, 0, 0, 0);
+                break;
+            case 1:
+                if (m->action == ACT_WALKING) {
+                    m->forwardVel = (m->forwardVel - 0.5f);
+                }
+                break;
+            case 2:
+                if (m->action == ACT_WALKING) {
+                    m->forwardVel = (m->forwardVel - 0.7f);
+                }
+                break;
+            case 3:
+                if (m->action == ACT_WALKING) {
+                    m->forwardVel = (m->forwardVel * 1.2f);
+                }
+                break;
+            case 4:
+                if (m->action == ACT_WALKING) {
+                    m->forwardVel = (m->forwardVel * 1.8f);
+                }
+                break;
+        }
 
         switch(Cheats.PAC) {
             case 0:

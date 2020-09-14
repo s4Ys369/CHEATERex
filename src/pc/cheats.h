@@ -8,7 +8,7 @@ struct CheatList {
     bool         MoonJump;
     bool         GodMode;
     bool         InfiniteLives;
-    bool         SuperSpeed;
+    unsigned int SuperSpeed;
     bool         ExitAnywhere;
     bool         HugeMario;
     bool         TinyMario;
