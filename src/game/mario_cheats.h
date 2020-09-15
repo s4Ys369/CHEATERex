@@ -11,5 +11,6 @@ void cheats_swimming_speed(struct MarioState *m);
 void cheats_air_step(struct MarioState *m);
 void cheats_long_jump(struct MarioState *m);
 void cheats_mario_inputs(struct MarioState *m);
+void level_reset(struct MarioState *m);
 
 #endif // MARIO_CHEATS_H

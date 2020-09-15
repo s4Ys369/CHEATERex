@@ -8,6 +8,9 @@
 #include "behavior_actions.h"
 #include "behavior_data.h"
 #include "camera.h"
+#include "data/smo/smo_c_includes.h"
+#include "data/smo/smo_defines.h"
+#include "data/smo/smo_includes.h"
 #include "engine/behavior_script.h"
 #include "engine/graph_node.h"
 #include "engine/level_script.h"
@@ -235,10 +238,17 @@ void cheats_mario_inputs(struct MarioState *m) {
             spawn_object_relative(1, 0, 200, 0, gCurrentObject, MODEL_NONE, bhvCannon);
         }
 
-        /*InstantDeath cheat*/
+        /*Level Reset cheat, swapping with ferris the crab's version*/
         if (m->controller->buttonDown & L_TRIG && m->controller->buttonDown & A_BUTTON
             && m->controller->buttonPressed & B_BUTTON && m->controller->buttonDown & R_TRIG) {
-            level_trigger_warp(m, WARP_OP_DEATH);
+            m->health = 0x880;
+            m->numCoins = 0;
+            gHudDisplay.coins = 0;
+            smo_tt_stop_timer();
+            sWarpDest.type = 2;
+            Cheats.LevelReset = true;
+            smo_tt_start_timer(gCurrSaveFileNum - 1, gCurrCourseNum, gCurrActNum - 1);
+            Cheats.LevelReset = false;
         }
 
         /*CAP Cheats, this whole thing needs to be refactored, but
@@ -476,5 +486,14 @@ void cheats_mario_inputs(struct MarioState *m) {
             play_secondary_music(0, 120, 0, 0);
         }
         break;
+    }
+}
+
+/*Function inject for object_list_processor.c*/
+void level_reset(struct MarioState *m) {
+    if (Cheats.EnableCheats == true && m->controller->buttonDown & L_TRIG
+        && m->controller->buttonDown & A_BUTTON && m->controller->buttonPressed & B_BUTTON
+        && m->controller->buttonDown & R_TRIG) {
+        return;
     }
 }

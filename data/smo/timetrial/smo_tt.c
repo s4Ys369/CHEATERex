@@ -1,5 +1,6 @@
 #include "../smo_c_includes.h"
 #include "pc/fs/fs.h"
+#include "pc/cheats.h"
 #include <time.h>
 
 static const char *smo_tt_get_save_filename() {
@@ -626,6 +627,12 @@ void smo_tt_start_timer(s32 fileIndex, s32 course, s32 star) {
         // Runs timer if course is TTable
         if (smo_tt_get_slot_index(course, 0) != -1) {
             sSmoTimeTrialTimerState = TT_TIMER_RUNNING;
+            
+            if (Cheats.LevelReset) {
+                sSmoTimeTrialTimer = 0;
+                star = smo_tt_get_ghost_data_star_to_load(course, star);
+                smo_tt_read_ghost_data(fileIndex, smo_tt_get_slot_index(course, star), FALSE);
+            }
 
             // Restart timer and init ghost data if different course
             if (course != sPrevCourse) {

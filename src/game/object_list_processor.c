@@ -12,6 +12,7 @@
 #include "interaction.h"
 #include "level_update.h"
 #include "mario.h"
+#include "mario_cheats.h"
 #include "memory.h"
 #include "object_collision.h"
 #include "object_helpers.h"
@@ -408,7 +409,7 @@ s32 unload_deactivated_objects_in_list(struct ObjectNode *objList) {
 void set_object_respawn_info_bits(struct Object *obj, u8 bits) {
     u32 *info32;
     u16 *info16;
-
+    level_reset(gMarioState);
     switch (obj->respawnInfoType) {
         case RESPAWN_INFO_TYPE_32:
             info32 = (u32 *) obj->respawnInfo;
