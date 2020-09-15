@@ -7,6 +7,13 @@ Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para elim
 
 ## Trucos adicionales
   * Muerte Instantanea/Salir del Nivel Gatillo L + Gatillo R + Boton A + Boton B
+  * Modificador de velocidad
+    -Lento x.75
+    -Más lento x.5
+    -Rápido x2
+    -Más rápido ~ x3
+  * Sin barrera de muerte
+  * Todos los saltos más altos
   * Mostrar la velocidad, portado por ferris the crab(io12)
   * ¿Levitación en T-pose?
   * Tocadiscos con seleccion de musica
@@ -53,7 +60,7 @@ Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para elim
  * "Stay In Level After Star v2" por GateGuy
  * "Menu C button support" por engima907
  * "Dynamic Options" (DynOS.0.2) por PeachyPeach incluido
- * Y por supuesto, CHEATERv6.5 por $4Y$, yo mismo
+ * Y por supuesto, CHEATERv7 por $4Y$, yo mismo
 
 ## Como agregar los trucos/mods
  * Usa `src/game/mario_cheats.c` para el código

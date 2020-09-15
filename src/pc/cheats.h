@@ -9,9 +9,12 @@ struct CheatList {
     bool         GodMode;
     bool         InfiniteLives;
     unsigned int SuperSpeed;
+    bool         Responsive;
     bool         ExitAnywhere;
     bool         HugeMario;
     bool         TinyMario;
+    bool         NDB;
+    bool         Jump;
     bool         SPD;
     bool         TPF;
     unsigned int JB;

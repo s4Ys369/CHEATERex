@@ -88,6 +88,18 @@ void cheats_mario_inputs(struct MarioState *m) {
     m->flags &= 0xFFFFFF;
 
     while (Cheats.EnableCheats == true) {
+        /*Jump Modifier*/
+        while (Cheats.Jump) {
+            while ((m->action & ACT_GROUP_MASK) == ACT_GROUP_AIRBORNE) {
+                if (m->action != ACT_FREEFALL) {
+                    m->vel[1] += 1;
+                    break;
+                }
+                break;
+            }
+            break;
+        }
+
         /*Speed Modifier Cheat*/
         switch (Cheats.SuperSpeed) {
             case 0:
@@ -123,31 +135,31 @@ void cheats_mario_inputs(struct MarioState *m) {
             case 1:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BLACK_BOBOMB];
                 m->marioObj->header.gfx.unk38.curAnim = bobomb_seg8_anims_0802396C[0];
-                is_anim_past_end(m);
+                is_anim_at_end(m);
                 break;
             case 2:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BOBOMB_BUDDY];
                 m->marioObj->header.gfx.unk38.curAnim = bobomb_seg8_anims_0802396C[0];
-                is_anim_past_end(m);
+                is_anim_at_end(m);
                 break;
             case 3:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_GOOMBA];
                 m->marioObj->header.gfx.unk38.curAnim = goomba_seg8_anims_0801DA4C[0];
-                is_anim_past_end(m);
+                is_anim_at_end(m);
                 break;
             case 4:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_AMP];
                 m->marioObj->header.gfx.unk38.curAnim = amp_seg8_anims_08004034[0];
-                is_anim_past_end(m);
+                is_anim_at_end(m);
                 break;
             case 5:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_CHUCKYA];
                 m->marioObj->header.gfx.unk38.curAnim = chuckya_seg8_anims_0800C070[0];
-                is_anim_past_end(m);
+                is_anim_at_end(m);
             case 6:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_FLYGUY];
                 m->marioObj->header.gfx.unk38.curAnim = flyguy_seg8_anims_08011A64[0];
-                is_anim_past_end(m);
+                is_anim_at_end(m);
                 break;
             }
         while (Cheats.PAC > 0) {

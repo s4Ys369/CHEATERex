@@ -5,8 +5,18 @@ To be used as a template for modders, hackers and cheaters.
 **no upload of any copyrighted asset**. 
 Run `./extract_assets.py --clean && make clean` or `make distclean` to remove ROM-originated content.
 
+*Read this in other languages: [Español](README_es_ES.md)
+ -Please feel free to translate this into any other languages 
+
 ## Additional Cheats
   * Instant Death/Level Exit L Trigger + R Trigger + A Button + B Button
+  * Speed Modifier
+    -Slow x.75
+    -Slower x.5
+    -Fast x2
+    -Faster ~x3
+  * No Death Barrier
+  * All Jumps Higher
   * Speed Display, ported by ferris the crab(io12)
   * T Pose Float?
   * Jukebox song selector
@@ -53,7 +63,7 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
  * Stay In Level After Star v2 by GateGuy
  * Menu C button support by engima907
  * Dynamic Options (DynOS.0.2) by PeachyPeach included
- * And of course, CHEATERv6.5 by $4Y$, me
+ * And of course, CHEATERv7 by $4Y$, me
 
 ## How to add cheats/mods
  * Use `src/game/mario_cheats.c` for code
