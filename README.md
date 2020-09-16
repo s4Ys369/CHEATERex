@@ -5,7 +5,7 @@ To be used as a template for modders, hackers and cheaters.
 **no upload of any copyrighted asset**. 
 Run `./extract_assets.py --clean && make clean` or `make distclean` to remove ROM-originated content.
 
-*Read this in other languages: [Español](README_es_ES.md)
+*Read this in other languages: [EspaÃ±ol](README_es_ES.md)
  -Please feel free to translate this into any other languages 
 
 ## Additional Cheats
@@ -62,7 +62,6 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
   - must include https://cdn.discordapp.com/attachments/723992726319792140/754402820588961882/smo.cappy_assets.zip
  * Stay In Level After Star v2 by GateGuy
  * Menu C button support by engima907
- * Dynamic Options (DynOS.0.2) by PeachyPeach included
  * And of course, CHEATERv7 by $4Y$, me
 
 ## How to add cheats/mods
