@@ -19,7 +19,6 @@
 #include "../fs/fs.h"
 
 #include "game/level_update.h"
-#include "pc/dynamic_options.h"
 
 // mouse buttons are also in the controller namespace (why), just offset 0x100
 #define VK_OFS_SDL_MOUSE 0x0100
@@ -101,7 +100,6 @@ static void controller_sdl_bind(void) {
     controller_add_binds(L_TRIG,       configKeyL);
     controller_add_binds(R_TRIG,       configKeyR);
     controller_add_binds(START_BUTTON, configKeyStart);
-    dynos_add_binds((void (*)(u32, u32 *)) controller_add_binds);
 }
 
 static void controller_sdl_init(void) {
