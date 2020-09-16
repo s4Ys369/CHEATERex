@@ -18,19 +18,22 @@
     #define BAD_RETURN(cmd) cmd
 #endif
 
+#define ANGLE_QUEUE_SIZE 9
 
 struct Controller
 {
-  /*0x00*/ s16 rawStickX;       //
-  /*0x02*/ s16 rawStickY;       //
-  /*0x04*/ float stickX;        // [-64, 64] positive is right
-  /*0x08*/ float stickY;        // [-64, 64] positive is up
-  /*0x0C*/ float stickMag;      // distance from center [0, 64]
-  /*0x10*/ u16 buttonDown;
-  /*0x12*/ u16 buttonPressed;
-  /*0x14*/ OSContStatus *statusData;
-  /*0x18*/ OSContPad *controllerData;
-  /*0x1C*/ int port;
+  /*0x00*/ s32 angleDeltaQueue[ANGLE_QUEUE_SIZE];
+  /*0x24*/ s16 rawStickX;       //
+  /*0x26*/ s16 rawStickY;       //
+  /*0x28*/ float stickX;        // [-64, 64] positive is right
+  /*0x2C*/ float stickY;        // [-64, 64] positive is up
+  /*0x30*/ float stickMag;      // distance from center [0, 64]
+  /*0x34*/ u16 buttonDown;
+  /*0x36*/ u16 buttonPressed;
+  /*0x38*/ OSContStatus *statusData;
+  /*0x3C*/ OSContPad *controllerData;
+  /*0x40*/ s16 stickLastAngle;
+  /*0x42*/ int port;
   /*ext */ s16 extStickX;       // additional (right) stick values
   /*ext */ s16 extStickY;
 };
@@ -370,10 +373,7 @@ struct MarioState
     f32 unkC4;
     f32 spareFloat;
     s32 spareInt;
-    s16 stickLastAngle;
-    s16 spinState;
-    u16 spinIndex;
-    u16 spinTimer;
+    s16 spinDirection;
     u16 spinBufferTimer;
 };
 
