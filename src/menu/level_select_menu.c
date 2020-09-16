@@ -162,16 +162,24 @@ int intro_default(void) {
 
 #ifndef VERSION_JP
     if (D_U_801A7C34 == 1) {
-        play_sound(SOUND_MARIO_HELLO, gDefaultSoundArgs);
+        if (gGlobalTimer < 0x81) {
+            play_sound(SOUND_MARIO_HELLO, gDefaultSoundArgs);
+        } else {
+            play_sound(SOUND_MARIO_PRESS_START_TO_PLAY, gDefaultSoundArgs);
+        }
         D_U_801A7C34 = 0;
     }
 #endif
     print_intro_text();
 
     if (gPlayer1Controller->buttonPressed & START_BUTTON) {
+#ifdef VERSION_JP
         play_sound(SOUND_MENU_STAR_SOUND, gDefaultSoundArgs);
         sp1C = 100 + gDebugLevelSelect;
-#ifndef VERSION_JP        
+
+#else
+        play_sound(SOUND_MENU_STAR_SOUND, gDefaultSoundArgs);
+        sp1C = 100 + gDebugLevelSelect;
         D_U_801A7C34 = 1;
 #endif
     }
