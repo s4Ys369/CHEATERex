@@ -222,11 +222,7 @@ static void smo_render_power_meter(struct MarioState *m) {
     if (gHudDisplay.flags & HUD_DISPLAY_FLAG_CAMERA_AND_POWER) {
         f32 x = GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(36);
         f32 y = 204.f;
-<<<<<<< HEAD
         s32 hp = m->oHpCounter;
-=======
-        s32 hp = m->marioObj->oHpCounter;
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         if (smo_is_mario_losing_hp(m)) {
             x += (random_float() * 12.f) - 6.f;
             y += (random_float() * 12.f) - 6.f;
@@ -243,20 +239,14 @@ static void smo_render_power_meter(struct MarioState *m) {
     }
 }
 
-<<<<<<< HEAD
 #ifdef SMO_SGI
-=======
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 static void smo_render_hud_glyph(s32 x, s32 y, u8 *texture) {
     gDPPipeSync(gDisplayListHead++);
     gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, texture);
     gSPDisplayList(gDisplayListHead++, &dl_hud_img_load_tex_block);
     gSPTextureRectangle(gDisplayListHead++, x << 2, y << 2, (x + 15) << 2, (y + 15) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10);
 }
-<<<<<<< HEAD
 #endif
-=======
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 
 static u32 sO2DisplayTimer = 60;
 static void smo_render_values(struct MarioState *m) {
@@ -275,11 +265,7 @@ static void smo_render_values(struct MarioState *m) {
     if (gHudDisplay.flags & HUD_DISPLAY_FLAG_KEYS) {
         if (m->numKeys > 0 && m->numKeys < 10) {
             gSPDisplayList(gDisplayListHead++, dl_hud_img_begin);
-<<<<<<< HEAD
             smo_render_hud_glyph(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(22), 224 - y, (u8 *) "textures/segment2/boo_key.rgba16");
-=======
-            smo_render_hud_glyph(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(22), 35, (u8 *) "textures/segment2/boo_key.rgba16");
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
             gSPDisplayList(gDisplayListHead++, dl_hud_img_end);
             print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(38), y, "*"); // 'X' glyph
             print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(54), y, int_to_string(m->numKeys, "%d"));
@@ -298,28 +284,19 @@ static void smo_render_values(struct MarioState *m) {
 
     // O2 level
     if (gHudDisplay.flags & HUD_DISPLAY_FLAG_STAR_COUNT) {
-<<<<<<< HEAD
         if (m->oO2 > 0) {
-=======
-        if (m->marioObj->oO2 > 0) {
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
             sO2DisplayTimer = 0;
         }
         if (sO2DisplayTimer++ < 60) {
             print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(22), y - 6, "2");
             print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(13), y, "O");
             print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(38), y, "*"); // 'X' glyph
-<<<<<<< HEAD
             print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(54), y, int_to_string(MAX((((s32)(MARIO_BREATH_MAX_DURATION - m->oO2) * 100) / MARIO_BREATH_MAX_DURATION), 0), "%03d"));
-=======
-            print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(54), y, int_to_string(MAX((((s32)(MARIO_BREATH_MAX_DURATION - m->marioObj->oO2) * 100) / MARIO_BREATH_MAX_DURATION), 0), "%03d"));
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
             y -= 20;
         }
     }
 }
 
-<<<<<<< HEAD
 static const u8 sTextTime[] = { 29, 18, 22, 14, DIALOG_CHAR_TERMINATOR };
 static const u8 sTextApostrophe[] = { GLYPH_APOSTROPHE, DIALOG_CHAR_TERMINATOR };
 static const u8 sTextDoubleQuote[] = { GLYPH_DOUBLE_QUOTE, DIALOG_CHAR_TERMINATOR };
@@ -338,8 +315,6 @@ static void smo_render_timer() {
     }
 }
 
-=======
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 void smo_render_hud(struct MarioState *m) {
     if (gHudDisplay.flags != HUD_DISPLAY_NONE && configHUD) {
         create_dl_ortho_matrix();
@@ -354,12 +329,9 @@ void smo_render_hud(struct MarioState *m) {
 
         // Power meter
         smo_render_power_meter(m);
-<<<<<<< HEAD
 
         // KtQ Timer
         smo_render_timer();
-=======
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     }
 }
 

@@ -55,11 +55,7 @@ static void smo_debug_print_string(u32 i) {
 //
 
 void smo_debug_add_string(s32 x, s32 y, u32 rgbaFront, u32 rgbaBack, const char *fmt, ...) {
-<<<<<<< HEAD
     if (!fmt || sDebugStringCount == DEBUG_MAX_STRINGS) {
-=======
-    if (!gSmoDebug || !fmt || sDebugStringCount == DEBUG_MAX_STRINGS) {
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         return;
     }
 

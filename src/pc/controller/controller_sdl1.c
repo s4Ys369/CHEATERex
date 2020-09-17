@@ -91,7 +91,6 @@ static void controller_sdl_bind(void) {
 
     controller_add_binds(A_BUTTON,     configKeyA);
     controller_add_binds(B_BUTTON,     configKeyB);
-    controller_add_binds(X_BUTTON,     configKeyX);
     controller_add_binds(Z_TRIG,       configKeyZ);
     controller_add_binds(STICK_UP,     configKeyStickUp);
     controller_add_binds(STICK_LEFT,   configKeyStickLeft);

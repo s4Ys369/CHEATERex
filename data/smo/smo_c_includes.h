@@ -37,9 +37,6 @@
 
 /* pc */
 #include "pc/configfile.h"
-<<<<<<< HEAD
 #include "pc/controller/controller_api.h"
-=======
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 
 #endif // SMO_C_INCLUDES_H

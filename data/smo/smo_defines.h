@@ -5,21 +5,11 @@
 #define SMO_FALL_DAMAGE_HEIGHT					1600.f
 #define MARIO_BREATH_MAX_DURATION               1800        // 60 seconds, 20 seconds in cold water, 15 seconds in poison gas
 #define MARIO_ABOUT_TO_DROWN                    1350        // 45 seconds, 15 seconds in cold water, ~11 seconds in poison gas
-<<<<<<< HEAD
 
 /* Models */
 #define MODEL_SHOCK_WAVE                        0xFC        // invisible_bowser_accessory_geo
 #define MODEL_DBG_CYLINDER_HITBOX               0xFD        // dbg_cylinder_hitbox_geo
 #define MODEL_DBG_CYLINDER_HURTBOX              0xFE        // dbg_cylinder_hurtbox_geo
-=======
-#define HUD_DISPLAY_FLAG_TIME_TRIAL_TIMER       (1 << 7)    // 0x0080
-
-/* Models */
-#define MODEL_SHOCK_WAVE                        0xFC        // invisible_bowser_accessory_geo
-#define MODEL_COSMIC_MARIO                      0xFD        // mario_ghost_geo
-#define MODEL_DBG_CYLINDER_HITBOX               0xFE        // dbg_cylinder_hitbox_geo
-#define MODEL_DBG_CYLINDER_HURTBOX              0xFF        // dbg_cylinder_hurtbox_geo
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 
 /* Dialogs */
 enum DialogSmoId {
@@ -82,7 +72,6 @@ enum DialogSmoId {
 #define oMarioObj                               smoData->mario->marioObj
 
 /* Mario fields */
-<<<<<<< HEAD
 #define oWallSlide								marioObj->SMO_FIELD_AS_S8(0x00, 0)
 #define oCappyJumped							marioObj->SMO_FIELD_AS_S8(0x00, 1)
 #define oPossessionLock                         marioObj->SMO_FIELD_AS_S8(0x00, 2)
@@ -109,44 +98,6 @@ enum DialogSmoId {
 #define oCappyCeilObject                        marioObj->SMO_REF_AS_OBJ(0x03)
 #define oPossessedObject                        marioObj->SMO_REF_AS_OBJ(0x04)
 #define oObjectCap                              marioObj->SMO_REF_AS_OBJ(0x05)
-=======
-#define oWallSlide								SMO_FIELD_AS_S8(0x00, 0)
-#define oCappyJumped							SMO_FIELD_AS_S8(0x00, 1)
-#define oPossessionLock                         SMO_FIELD_AS_S8(0x00, 2)
-#define oCoinCounter							SMO_FIELD_AS_S16(0x01, 0)
-#define oHpCounter							    SMO_FIELD_AS_S16(0x01, 1)
-#define oO2										SMO_FIELD_AS_S16(0x02, 0)
-#define oPossessionTimer                        SMO_FIELD_AS_S16(0x02, 1)
-#define oPeakHeight								SMO_FIELD_AS_F32(0x03)
-#define oInputStickX                            SMO_FIELD_AS_F32(0x04) // [-1, +1], positive is right
-#define oInputStickY                            SMO_FIELD_AS_F32(0x05) // [-1, +1], positive is up
-#define oInputStickMag                          SMO_FIELD_AS_F32(0x06) // [0, 1]
-#define oInputStickYaw                          SMO_FIELD_AS_S32(0x07) // intended yaw
-#define oInputButtonPressed                     SMO_FIELD_AS_S16(0x08, 0)
-#define oInputButtonDown                        SMO_FIELD_AS_S16(0x08, 1)
-#define oPossessAnimPos(i, j)					SMO_FIELD_AS_F32(0x09 + (3 * i) + j)
-
-#define oPossessedObject                        SMO_REF_AS_OBJ(0x00)
-#define oObjectCap                              SMO_REF_AS_OBJ(0x01)
-
-/* Cappy fields */
-#define oCappyVelX								SMO_FIELD_AS_F32(0x00)
-#define oCappyVelY								SMO_FIELD_AS_F32(0x01)
-#define oCappyVelZ								SMO_FIELD_AS_F32(0x02)
-#define oCappyRadius							SMO_FIELD_AS_F32(0x00)
-#define oCappyRadiusGrowth						SMO_FIELD_AS_F32(0x01)
-#define oCappyAngleVel							SMO_FIELD_AS_S16(0x02, 0)
-#define oCappyYaw0								SMO_FIELD_AS_S16(0x02, 1)
-#define oCappyActionFlag						SMO_FIELD_AS_S16(0x03, 0)
-#define oCappyYaw								SMO_FIELD_AS_S16(0x03, 1)
-#define oCappyTimer                             SMO_FIELD_AS_S16(0x04, 0)
-#define oCappyInvincible                        SMO_FIELD_AS_S8(0x04, 2)
-#define oCappyInteractMario                     SMO_FIELD_AS_S8(0x04, 3)
-
-#define oCappyWallObj                           SMO_REF_AS_OBJ(0x00)
-#define oCappyFloorObj                          SMO_REF_AS_OBJ(0x01)
-#define oCappyCeilObj                           SMO_REF_AS_OBJ(0x02)
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 
 /* Capture data fields (scaled) */
 #define cdWalkSpeed                             smoData->captureData->walkSpeed * pobj->oScaleX
@@ -194,21 +145,12 @@ enum DialogSmoId {
 #define COMMON_REF_END                          0x00
 
 /* Inputs for possessed object */
-<<<<<<< HEAD
 #define oStickX                                 oMario->oInputStickX // [-1, +1], positive is right
 #define oStickY                                 oMario->oInputStickY // [-1, +1], positive is up
 #define oStickMag                               oMario->oInputStickMag // [0, 1]
 #define oStickYaw                               oMario->oInputStickYaw // intended yaw
 #define oButtonPressed                          oMario->oInputButtonPressed
 #define oButtonDown                             oMario->oInputButtonDown
-=======
-#define oStickX                                 oMarioObj->oInputStickX // [-1, +1], positive is right
-#define oStickY                                 oMarioObj->oInputStickY // [-1, +1], positive is up
-#define oStickMag                               oMarioObj->oInputStickMag // [0, 1]
-#define oStickYaw                               oMarioObj->oInputStickYaw // intended yaw
-#define oButtonPressed                          oMarioObj->oInputButtonPressed
-#define oButtonDown                             oMarioObj->oInputButtonDown
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 
 /* Goomba */
 #define oCappyGoombaStackCount					SMO_FIELD_AS_S32(COMMON_FIELD_END + 0x00)

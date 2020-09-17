@@ -10,10 +10,6 @@
 #include "system/smo_hud.h"
 #include "object/smo_object.h"
 #include "object/smo_helpers.h"
-<<<<<<< HEAD
-=======
-#include "timetrial/smo_tt.h"
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 #include "mario/smo_mario.h"
 #include "cappy/smo_mario_cappy.h"
 #include "capture/capture_all.h"

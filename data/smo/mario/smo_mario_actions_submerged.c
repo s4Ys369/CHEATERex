@@ -92,123 +92,68 @@ static u32 smo_perform_water_step(struct MarioState *m) {
 //
 
 static s32 smo_act_water_idle(struct MarioState *m) {
-<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_WATER_DESCENT, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_WATER, SMO_CAPPY != 0);
-=======
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_WATER_DESCENT, IS_SMO_MARIO);
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_WATER, IS_SMO_CAPPY_AVAILABLE);
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_water_action_end(struct MarioState *m) {
-<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_WATER_DESCENT, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_WATER, SMO_CAPPY != 0);
-=======
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_WATER_DESCENT, IS_SMO_MARIO);
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_WATER, IS_SMO_CAPPY_AVAILABLE);
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_breaststroke(struct MarioState *m) {
-<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_WATER_DESCENT, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_WATER, SMO_CAPPY != 0);
-=======
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_WATER_DESCENT, IS_SMO_MARIO);
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_WATER, IS_SMO_CAPPY_AVAILABLE);
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_swimming_end(struct MarioState *m) {
-<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_WATER_DESCENT, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_WATER, SMO_CAPPY != 0);
-=======
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_WATER_DESCENT, IS_SMO_MARIO);
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_WATER, IS_SMO_CAPPY_AVAILABLE);
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_flutter_kick(struct MarioState *m) {
-<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_WATER_DESCENT, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_WATER, SMO_CAPPY != 0);
-=======
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_WATER_DESCENT, IS_SMO_MARIO);
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_WATER, IS_SMO_CAPPY_AVAILABLE);
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_metal_water_standing(struct MarioState *m) {
-<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_METAL_WATER_PUNCH, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_METAL_WATER_FLOOR, SMO_CAPPY != 0);
-=======
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_METAL_WATER_PUNCH, IS_SMO_MARIO);
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_METAL_WATER_FLOOR, IS_SMO_CAPPY_AVAILABLE);
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_metal_water_walking(struct MarioState *m) {
-<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_METAL_WATER_PUNCH, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_METAL_WATER_FLOOR, SMO_CAPPY != 0);
-=======
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_METAL_WATER_PUNCH, IS_SMO_MARIO);
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_METAL_WATER_FLOOR, IS_SMO_CAPPY_AVAILABLE);
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_metal_water_jump(struct MarioState *m) {
-<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_METAL_WATER_KICK, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_METAL_WATER_AIR, SMO_CAPPY != 0);
-=======
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_METAL_WATER_KICK, IS_SMO_MARIO);
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_METAL_WATER_AIR, IS_SMO_CAPPY_AVAILABLE);
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_metal_water_falling(struct MarioState *m) {
-<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_METAL_WATER_KICK, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_METAL_WATER_AIR, SMO_CAPPY != 0);
-=======
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_METAL_WATER_KICK, IS_SMO_MARIO);
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_METAL_WATER_AIR, IS_SMO_CAPPY_AVAILABLE);
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_metal_water_jump_land(struct MarioState *m) {
-<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_METAL_WATER_PUNCH, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_METAL_WATER_FLOOR, SMO_CAPPY != 0);
-=======
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_METAL_WATER_PUNCH, IS_SMO_MARIO);
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_METAL_WATER_FLOOR, IS_SMO_CAPPY_AVAILABLE);
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_metal_water_fall_land(struct MarioState *m) {
-<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_METAL_WATER_PUNCH, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_METAL_WATER_FLOOR, SMO_CAPPY != 0);
-=======
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_METAL_WATER_PUNCH, IS_SMO_MARIO);
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_METAL_WATER_FLOOR, IS_SMO_CAPPY_AVAILABLE);
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
@@ -220,11 +165,7 @@ static s32 smo_act_water_dash(struct MarioState *m) {
     }
 
     if (m->actionTimer >= WATER_DASH_START_REPEAT) {
-<<<<<<< HEAD
         RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_WATER_DASH, SMO_MARIO == 1);
-=======
-        RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_WATER_DASH, IS_SMO_MARIO);
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     }
 
     if ((m->actionTimer % 4) == 0) {
@@ -259,11 +200,7 @@ static s32 smo_act_water_descent(struct MarioState *m) {
         m->vel[1] = 0;
         m->vel[2] = 0;
 
-<<<<<<< HEAD
         RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_WATER_DASH, SMO_MARIO == 1);
-=======
-        RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_WATER_DASH, IS_SMO_MARIO);
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 
         set_mario_animation(m, MARIO_ANIM_START_GROUND_POUND);
         if (m->actionTimer == 0) {
@@ -400,11 +337,7 @@ static s32 smo_act_cappy_throw_metal_water_floor(struct MarioState *m) {
 }
 
 static s32 smo_act_cappy_throw_metal_water_air(struct MarioState *m) {
-<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_METAL_WATER_KICK, SMO_MARIO == 1);
-=======
-    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_METAL_WATER_KICK, IS_SMO_MARIO);
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     update_mario_throw_anim(m, ACT_METAL_WATER_FALLING);
     switch (perform_air_step(m, 0)) {
         case AIR_STEP_LANDED:
@@ -419,7 +352,6 @@ static s32 smo_act_cappy_throw_metal_water_air(struct MarioState *m) {
 }
 
 s32 mario_check_smo_submerged_action(struct MarioState *m) {
-<<<<<<< HEAD
     m->oCappyJumped = FALSE;
     m->oWallSlide = TRUE;
 
@@ -427,15 +359,6 @@ s32 mario_check_smo_submerged_action(struct MarioState *m) {
     if (SMO_MARIO == 1) {
         m->peakHeight = m->pos[1];
         m->oPeakHeight = m->pos[1];
-=======
-    m->marioObj->oCappyJumped = FALSE;
-    m->marioObj->oWallSlide = TRUE;
-
-    // Fall height
-    if (IS_SMO_MARIO) {
-        m->peakHeight = m->pos[1];
-        m->marioObj->oPeakHeight = m->pos[1];
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     }
 
     switch (m->action) {

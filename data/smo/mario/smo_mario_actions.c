@@ -63,11 +63,7 @@ s32 mario_set_smo_action(struct MarioState *m, u32 action) {
         case ACT_SMO_CAPPY_THROW_WATER:
         case ACT_SMO_CAPPY_THROW_METAL_WATER_FLOOR:
         case ACT_SMO_CAPPY_THROW_METAL_WATER_AIR:
-<<<<<<< HEAD
             if (m->controller->buttonPressed & SMO_CAPPY_BUTTON) {
-=======
-            if (m->controller->buttonPressed & X_BUTTON) {
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
                 if (mario_throw_cappy(m, action)) {
                     return TRUE;
                 }
@@ -174,11 +170,7 @@ s32 mario_set_smo_action(struct MarioState *m, u32 action) {
 
 s32 mario_check_wall_slide(struct MarioState *m) {
     // Wall slide available
-<<<<<<< HEAD
     if (SMO_MARIO == 0 || !m->oWallSlide) {
-=======
-    if (!IS_SMO_MARIO || !m->marioObj->oWallSlide) {
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         return FALSE;
     }
 

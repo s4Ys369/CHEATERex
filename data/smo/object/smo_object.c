@@ -1,8 +1,5 @@
 #include "../smo_c_includes.h"
-<<<<<<< HEAD
 #include "actors/group12.h"
-=======
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 
 //
 // SMO Fields
@@ -46,7 +43,6 @@ void smo_free_all_data() {
 
 void smo_object_reset() {
     smo_free_all_data();
-<<<<<<< HEAD
 }
 
 //
@@ -60,6 +56,3 @@ void smo_load_models() {
     DEBUG_ONLY(gLoadedGraphNodes[MODEL_DBG_CYLINDER_HURTBOX] = process_geo_layout(pool, (void *) dbg_cylinder_hurtbox_geo);)
     alloc_only_pool_resize(pool, pool->usedSpace);
 }
-=======
-}
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8

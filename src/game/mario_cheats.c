@@ -8,12 +8,6 @@
 #include "behavior_actions.h"
 #include "behavior_data.h"
 #include "camera.h"
-<<<<<<< HEAD
-=======
-#include "data/smo/smo_c_includes.h"
-#include "data/smo/smo_defines.h"
-#include "data/smo/smo_includes.h"
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 #include "engine/behavior_script.h"
 #include "engine/graph_node.h"
 #include "engine/level_script.h"
@@ -241,27 +235,12 @@ void cheats_mario_inputs(struct MarioState *m) {
             spawn_object_relative(1, 0, 200, 0, gCurrentObject, MODEL_NONE, bhvCannon);
         }
 
-<<<<<<< HEAD
         /*InstantDeath cheat*/
         if (m->controller->buttonDown & L_TRIG && m->controller->buttonDown & A_BUTTON
             && m->controller->buttonPressed & B_BUTTON && m->controller->buttonDown & R_TRIG) {
             level_trigger_warp(m, WARP_OP_DEATH);
             break;
         };
-=======
-        /*Level Reset cheat, swapping with ferris the crab's version*/
-        if (m->controller->buttonDown & L_TRIG && m->controller->buttonDown & A_BUTTON
-            && m->controller->buttonPressed & B_BUTTON && m->controller->buttonDown & R_TRIG) {
-            m->health = 0x880;
-            m->numCoins = 0;
-            gHudDisplay.coins = 0;
-            smo_tt_stop_timer();
-            sWarpDest.type = 2;
-            Cheats.LevelReset = true;
-            smo_tt_start_timer(gCurrSaveFileNum - 1, gCurrCourseNum, gCurrActNum - 1);
-            Cheats.LevelReset = false;
-        }
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 
         /*CAP Cheats, this whole thing needs to be refactored, but
         I've only been adding to JAGSTAX's original patch*/
@@ -499,17 +478,4 @@ void cheats_mario_inputs(struct MarioState *m) {
         }
         break;
     }
-<<<<<<< HEAD
 }
-=======
-}
-
-/*Function inject for object_list_processor.c*/
-void level_reset(struct MarioState *m) {
-    if (Cheats.EnableCheats == true && m->controller->buttonDown & L_TRIG
-        && m->controller->buttonDown & A_BUTTON && m->controller->buttonPressed & B_BUTTON
-        && m->controller->buttonDown & R_TRIG) {
-        return;
-    }
-}
->>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8

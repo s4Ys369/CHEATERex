@@ -45,7 +45,6 @@ extern unsigned int configKeyStickLeft[];
 extern unsigned int configKeyStickRight[];
 extern unsigned int configStickDeadzone;
 extern unsigned int configRumbleStrength;
-extern bool configTight;
 #ifdef EXTERNAL_DATA
 extern bool         configPrecacheRes;
 #endif
