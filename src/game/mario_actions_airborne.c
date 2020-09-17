@@ -1,5 +1,6 @@
 #include <PR/ultratypes.h>
 
+#include "mario_cheats.h"
 #include "sm64.h"
 #include "area.h"
 #include "audio/data.h"
@@ -14,6 +15,7 @@
 #include "mario_step.h"
 #include "save_file.h"
 #include "thread6.h"
+#include "pc/cheats.h"
 #ifdef BETTERCAMERA
 #include "bettercamera.h"
 #endif
@@ -193,7 +195,15 @@ void update_air_with_turn(struct MarioState *m) {
             intendedMag = m->intendedMag / 32.0f;
 
             m->forwardVel += 1.5f * coss(intendedDYaw) * intendedMag;
-            m->faceAngle[1] += 512.0f * sins(intendedDYaw) * intendedMag;
+            if (SMO_MARIO == 1) {
+                if (Cheats.Responsive == true && Cheats.EnableCheats == true) {
+                    m->faceAngle[1] = m->intendedYaw;
+                } else {
+                    m->faceAngle[1] += 1024.f * sins(intendedDYaw) * intendedMag;
+                }
+            } else {
+                m->faceAngle[1] += 512.0f * sins(intendedDYaw) * intendedMag;
+            }
         }
 
         //! Uncapped air speed. Net positive when moving forward.
@@ -210,6 +220,11 @@ void update_air_with_turn(struct MarioState *m) {
 }
 
 void update_air_without_turn(struct MarioState *m) {
+    // Give Mario some air control
+    if (SMO_MARIO == 1) {
+        return update_air_with_turn(m);
+    }
+
     f32 sidewaysSpeed = 0.0f;
     f32 dragThreshold;
     s16 intendedDYaw;
@@ -372,6 +387,8 @@ u32 common_air_action_step(struct MarioState *m, u32 landAction, s32 animation, 
     stepResult = perform_air_step(m, stepArg);
     switch (stepResult) {
         case AIR_STEP_NONE:
+            // BLJ anywhere cheat
+            cheats_air_step(m);
             set_mario_animation(m, animation);
             break;
 
@@ -2112,7 +2129,7 @@ s32 check_common_airborne_cancels(struct MarioState *m) {
 }
 
 s32 mario_execute_airborne_action(struct MarioState *m) {
-    u32 cancel;
+    u32 cancel = 0;
 
     if (check_common_airborne_cancels(m)) {
         return TRUE;

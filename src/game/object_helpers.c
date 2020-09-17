@@ -126,6 +126,23 @@ Gfx *geo_update_layer_transparency(s32 callContext, struct GraphNode *node, UNUS
     return dlStart;
 }
 
+Gfx *geo_rotate_coin(s32 callContext, struct GraphNode *node, UNUSED void *context) {
+    struct Object *obj;
+
+    if (callContext == GEO_CONTEXT_RENDER) {
+        obj = (struct Object *) gCurGraphNodeObject; // TODO: change global type to Object pointer
+
+        struct GraphNodeRotation *rotNode = (struct GraphNodeRotation *) node->next;
+        vec3s_set(rotNode->rotation, 0, obj->oAnimState, 0);
+
+        obj->oAnimState += 0x0800;
+        if (obj->oAnimState > 0xFFFF) {
+            obj->oAnimState = 0;
+        }
+    }
+    return NULL;
+}
+
 /**
  * @bug Every geo function declares the 3 parameters of callContext, node, and
  * the matrix array. This one (see also geo_switch_area) doesn't. When executed,
@@ -1554,6 +1571,7 @@ void cur_obj_set_pos_to_home(void) {
     o->oPosX = o->oHomeX;
     o->oPosY = o->oHomeY;
     o->oPosZ = o->oHomeZ;
+    o->header.gfx.skipInterpolationTimestamp = gGlobalTimer;
 }
 
 void cur_obj_set_pos_to_home_and_stop(void) {
@@ -1623,6 +1641,14 @@ static void obj_spawn_loot_coins(struct Object *obj, s32 numCoins, f32 sp30,
 
         coin = spawn_object(obj, model, coinBehavior);
         obj_translate_xz_random(coin, posJitter);
+        coin->header.gfx.angle[0] = 0;
+        coin->header.gfx.angle[1] = 0;
+        coin->header.gfx.angle[2] = 0;
+        coin->oFaceAnglePitch = 0;
+        coin->oFaceAngleYaw = 0;
+        coin->oFaceAngleRoll = 0;
+        coin->oPosY = spawnHeight;
+        coin->oCoinUnk110 = sp30;
         coin->oPosY = spawnHeight;
         coin->oCoinUnk110 = sp30;
     }

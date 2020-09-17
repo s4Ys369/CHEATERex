@@ -1,0 +1,34 @@
+# Dynamic Options System aka DynOS v0.2
+# By PeachyPeach
+#
+# This is a comment
+# Here are the available commands:
+# ID [Id] - Mandatory, must be placed in first
+# TITLE [Name] - Mandatory
+# TOGGLE [Name] [InitialValue]
+# SCROLL [Name] [InitialValue] [Min] [Max] [Step]
+# CHOICE [Name] [InitialValue] [ChoiceStrings...]
+# BUTTON [Name] [FuncName]
+# BIND [Name] [Key] [Mask] [DefaultValues]
+#
+# Valid characters:
+# 0-9 A-Z a-z
+# '".:,-?!/
+# ^ | < > [A] [B] [C] [Z] [R] for buttons
+# * for the x (multiply) glyph
+# @ for coin glyph
+# + for filled star glyph
+# _ for empty star glyph
+#
+
+
+ID "TimeTrials"
+TITLE "TIME TRIALS"
+TOGGLE "Time Trials" 1
+CHOICE "Time Trial Ghost" 1 "Hide" "Show"
+CHOICE "Main Courses Ghost" 0 "Selected Act Star" "100 Coins Star"
+CHOICE "Bowser Courses Ghost" 0 "Bowser Fight" "Red Coins Star"
+CHOICE "PSS Ghost" 0 "Star 1" "Star 2"
+TOGGLE "100 Coins Star Exit" 0
+TOGGLE "Time Trials with Cheats" 0
+BUTTON "Restart Level" "time_trials_restart_level"

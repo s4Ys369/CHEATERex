@@ -1,0 +1,33 @@
+extern const GeoLayout captain_toad_geo[];
+extern Vtx captain_toad_000_offset_002_mesh_vtx_0[39];
+extern Gfx captain_toad_000_offset_002_mesh_tri_0[];
+extern Vtx captain_toad_000_offset_002_mesh_vtx_1[87];
+extern Gfx captain_toad_000_offset_002_mesh_tri_1[];
+extern Vtx captain_toad_000_offset_002_mesh_vtx_2[31];
+extern Gfx captain_toad_000_offset_002_mesh_tri_2[];
+extern Vtx captain_toad_000_offset_002_mesh_vtx_3[48];
+extern Gfx captain_toad_000_offset_002_mesh_tri_3[];
+extern Vtx captain_toad_002_offset_mesh_vtx_0[11];
+extern Gfx captain_toad_002_offset_mesh_tri_0[];
+extern Vtx captain_toad_003_offset_mesh_vtx_0[77];
+extern Gfx captain_toad_003_offset_mesh_tri_0[];
+extern Vtx captain_toad_003_offset_mesh_vtx_1[39];
+extern Gfx captain_toad_003_offset_mesh_tri_1[];
+extern Vtx captain_toad_000_offset_005_mesh_vtx_0[29];
+extern Gfx captain_toad_000_offset_005_mesh_tri_0[];
+extern Vtx captain_toad_000_offset_008_mesh_vtx_0[29];
+extern Gfx captain_toad_000_offset_008_mesh_tri_0[];
+extern Vtx captain_toad_000_offset_010_mesh_vtx_0[26];
+extern Gfx captain_toad_000_offset_010_mesh_tri_0[];
+extern Vtx captain_toad_000_offset_012_mesh_vtx_0[28];
+extern Gfx captain_toad_000_offset_012_mesh_tri_0[];
+
+extern Gfx captain_toad_000_offset_002_mesh[];
+extern Gfx captain_toad_002_offset_mesh[];
+extern Gfx captain_toad_003_offset_mesh[];
+extern Gfx captain_toad_000_offset_005_mesh[];
+extern Gfx captain_toad_000_offset_008_mesh[];
+extern Gfx captain_toad_000_offset_010_mesh[];
+extern Gfx captain_toad_000_offset_012_mesh[];
+extern Gfx captain_toad_material_revert_render_settings[];
+

@@ -13,6 +13,7 @@
 #include "gfx/gfx_window_manager_api.h"
 #include "controller/controller_api.h"
 #include "fs/fs.h"
+#include "pc/dynamic_options.h"
 
 #define ARRAY_LEN(arr) (sizeof(arr) / sizeof(arr[0]))
 
@@ -58,6 +59,8 @@ unsigned int configEnvVolume = MAX_VOLUME;
 // Keyboard mappings (VK_ values, by default keyboard/gamepad/mouse)
 unsigned int configKeyA[MAX_BINDS]          = { 0x0026,   0x1000,     0x1103     };
 unsigned int configKeyB[MAX_BINDS]          = { 0x0033,   0x1002,     0x1101     };
+unsigned int configKeyX[MAX_BINDS]          = { 0x0001,   VK_INVALID, VK_INVALID };
+unsigned int configKeyY[MAX_BINDS]          = { 0x0002,   VK_INVALID, VK_INVALID };
 unsigned int configKeyStart[MAX_BINDS]      = { 0x0039,   0x1006,     VK_INVALID };
 unsigned int configKeyL[MAX_BINDS]          = { 0x002A,   0x1009,     0x1104     };
 unsigned int configKeyR[MAX_BINDS]          = { 0x0036,   0x100A,     0x101B     };
@@ -66,6 +69,10 @@ unsigned int configKeyCUp[MAX_BINDS]        = { 0x0148,   VK_INVALID, VK_INVALID
 unsigned int configKeyCDown[MAX_BINDS]      = { 0x0150,   VK_INVALID, VK_INVALID };
 unsigned int configKeyCLeft[MAX_BINDS]      = { 0x014B,   VK_INVALID, VK_INVALID };
 unsigned int configKeyCRight[MAX_BINDS]     = { 0x014D,   VK_INVALID, VK_INVALID };
+unsigned int configKeyDUp[MAX_BINDS]        = { 0x0003,   VK_INVALID, VK_INVALID };
+unsigned int configKeyDDown[MAX_BINDS]      = { 0x0004,   VK_INVALID, VK_INVALID };
+unsigned int configKeyDLeft[MAX_BINDS]      = { 0x0005,   VK_INVALID, VK_INVALID };
+unsigned int configKeyDRight[MAX_BINDS]     = { 0x0006,   VK_INVALID, VK_INVALID };
 unsigned int configKeyStickUp[MAX_BINDS]    = { 0x0011,   VK_INVALID, VK_INVALID };
 unsigned int configKeyStickDown[MAX_BINDS]  = { 0x001F,   VK_INVALID, VK_INVALID };
 unsigned int configKeyStickLeft[MAX_BINDS]  = { 0x001E,   VK_INVALID, VK_INVALID };
@@ -108,6 +115,8 @@ static const struct ConfigOption options[] = {
     {.name = "env_volume",           .type = CONFIG_TYPE_UINT, .uintValue = &configEnvVolume},
     {.name = "key_a",                .type = CONFIG_TYPE_BIND, .uintValue = configKeyA},
     {.name = "key_b",                .type = CONFIG_TYPE_BIND, .uintValue = configKeyB},
+    {.name = "key_x",                .type = CONFIG_TYPE_BIND, .uintValue = configKeyX },
+    {.name = "key_y",                .type = CONFIG_TYPE_BIND, .uintValue = configKeyY },
     {.name = "key_start",            .type = CONFIG_TYPE_BIND, .uintValue = configKeyStart},
     {.name = "key_l",                .type = CONFIG_TYPE_BIND, .uintValue = configKeyL},
     {.name = "key_r",                .type = CONFIG_TYPE_BIND, .uintValue = configKeyR},
@@ -116,6 +125,10 @@ static const struct ConfigOption options[] = {
     {.name = "key_cdown",            .type = CONFIG_TYPE_BIND, .uintValue = configKeyCDown},
     {.name = "key_cleft",            .type = CONFIG_TYPE_BIND, .uintValue = configKeyCLeft},
     {.name = "key_cright",           .type = CONFIG_TYPE_BIND, .uintValue = configKeyCRight},
+    {.name = "key_dup",              .type = CONFIG_TYPE_BIND, .uintValue = configKeyDUp },
+    {.name = "key_ddown",            .type = CONFIG_TYPE_BIND, .uintValue = configKeyDDown },
+    {.name = "key_dleft",            .type = CONFIG_TYPE_BIND, .uintValue = configKeyDLeft },
+    {.name = "key_dright",           .type = CONFIG_TYPE_BIND, .uintValue = configKeyDRight },
     {.name = "key_stickup",          .type = CONFIG_TYPE_BIND, .uintValue = configKeyStickUp},
     {.name = "key_stickdown",        .type = CONFIG_TYPE_BIND, .uintValue = configKeyStickDown},
     {.name = "key_stickleft",        .type = CONFIG_TYPE_BIND, .uintValue = configKeyStickLeft},
@@ -262,7 +275,7 @@ void configfile_load(const char *filename) {
                     }
                 }
                 if (option == NULL)
-                    printf("unknown option '%s'\n", tokens[0]);
+                    dynos_load_bind((const char *) tokens[0], (const char **) &tokens[1]);
                 else {
                     switch (option->type) {
                         case CONFIG_TYPE_BOOL:
@@ -333,5 +346,6 @@ void configfile_save(const char *filename) {
         }
     }
 
+    dynos_save_binds(file);
     fclose(file);
 }

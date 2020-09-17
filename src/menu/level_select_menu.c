@@ -10,6 +10,7 @@
 #include "game/print.h"
 #include "game/save_file.h"
 #include "game/sound_init.h"
+#include "level_commands.h"
 #include "level_table.h"
 #include "seq_ids.h"
 #include "sm64.h"
@@ -107,16 +108,16 @@ s16 level_select_input_loop(void) {
     if (gPlayer1Controller->buttonPressed & B_BUTTON) {
         --gCurrLevelNum, stageChanged = TRUE;
     }
-    if (gPlayer1Controller->buttonPressed & U_JPAD) {
+    if (gPlayer1Controller->buttonPressed & U_DPAD) {
         --gCurrLevelNum, stageChanged = TRUE;
     }
-    if (gPlayer1Controller->buttonPressed & D_JPAD) {
+    if (gPlayer1Controller->buttonPressed & D_DPAD) {
         ++gCurrLevelNum, stageChanged = TRUE;
     }
-    if (gPlayer1Controller->buttonPressed & L_JPAD) {
+    if (gPlayer1Controller->buttonPressed & L_DPAD) {
         gCurrLevelNum -= 10, stageChanged = TRUE;
     }
-    if (gPlayer1Controller->buttonPressed & R_JPAD) {
+    if (gPlayer1Controller->buttonPressed & R_DPAD) {
         gCurrLevelNum += 10, stageChanged = TRUE;
     }
 
@@ -136,21 +137,14 @@ s16 level_select_input_loop(void) {
 
     gCurrSaveFileNum = 4; // file 4 is used for level select tests
     gCurrActNum = 6;
-    print_text_centered(160, 80, "SELECT STAGE");
-    print_text_centered(160, 30, "PRESS START BUTTON");
-    print_text_fmt_int(40, 60, "%2d", gCurrLevelNum);
-    print_text(80, 60, gLevelSelect_StageNamesText[gCurrLevelNum - 1]); // print stage name
+    print_text_centered(160, 90, "COURSE SELECT");
+    print_text_centered(160, 40, "START TO SELECT");
+    print_text_centered(160, 20, "A AND B TO SCROLL");
+    print_text_fmt_int(90, 70, "%2d", gCurrLevelNum);
+    print_text(140, 70, gLevelSelect_StageNamesText[gCurrLevelNum - 1]); // print stage name
 
-#define QUIT_LEVEL_SELECT_COMBO (Z_TRIG | START_BUTTON | L_CBUTTONS | R_CBUTTONS)
-
-    // start being pressed signals the stage to be started. that is, unless...
+    // start being pressed signals the stage to be started.
     if (gPlayer1Controller->buttonPressed & START_BUTTON) {
-        // ... the level select quit combo is being pressed, which uses START. If this
-        // is the case, quit the menu instead.
-        if (gPlayer1Controller->buttonDown == QUIT_LEVEL_SELECT_COMBO) {
-            gDebugLevelSelect = 0;
-            return -1;
-        }
         play_sound(SOUND_MENU_STAR_SOUND, gDefaultSoundArgs);
         return gCurrLevelNum;
     }
@@ -163,16 +157,24 @@ int intro_default(void) {
 
 #ifndef VERSION_JP
     if (D_U_801A7C34 == 1) {
-        play_sound(SOUND_MARIO_HELLO, gDefaultSoundArgs);
+        if (gGlobalTimer < 0x81) {
+            play_sound(SOUND_MARIO_HELLO, gDefaultSoundArgs);
+        } else {
+            play_sound(SOUND_MARIO_PRESS_START_TO_PLAY, gDefaultSoundArgs);
+        }
         D_U_801A7C34 = 0;
     }
 #endif
     print_intro_text();
 
     if (gPlayer1Controller->buttonPressed & START_BUTTON) {
+#ifdef VERSION_JP
         play_sound(SOUND_MENU_STAR_SOUND, gDefaultSoundArgs);
         sp1C = 100 + gDebugLevelSelect;
-#ifndef VERSION_JP        
+
+#else
+        play_sound(SOUND_MENU_STAR_SOUND, gDefaultSoundArgs);
+        sp1C = 100 + gDebugLevelSelect;
         D_U_801A7C34 = 1;
 #endif
     }

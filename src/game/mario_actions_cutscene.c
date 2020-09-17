@@ -644,6 +644,11 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
             set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG, dialogID);
         } else {
             set_mario_action(m, isInWater ? ACT_WATER_IDLE : ACT_IDLE, 0);
+            set_fov_function(CAM_FOV_DEFAULT);
+            // fix camera bug when getting a star underwater with StayInLevel cheat enabled
+            if (isInWater) {
+                cutscene_exit_painting_end(m->area->camera);
+            }
         }
     }
 }
@@ -2515,13 +2520,13 @@ static s32 act_end_peach_cutscene(struct MarioState *m) {
 }
 
 #ifdef VERSION_EU
-    #define TIMER_CREDITS_SHOW      51
-    #define TIMER_CREDITS_PROGRESS  80
-    #define TIMER_CREDITS_WARP     160
+    #define TIMER_CREDITS_SHOW      64
+    #define TIMER_CREDITS_PROGRESS  93
+    #define TIMER_CREDITS_WARP     173
 #else
-    #define TIMER_CREDITS_SHOW      61
-    #define TIMER_CREDITS_PROGRESS  90
-    #define TIMER_CREDITS_WARP     200
+    #define TIMER_CREDITS_SHOW      74
+    #define TIMER_CREDITS_PROGRESS 103
+    #define TIMER_CREDITS_WARP     213
 #endif
 
 static s32 act_credits_cutscene(struct MarioState *m) {
@@ -2629,7 +2634,7 @@ static s32 check_for_instant_quicksand(struct MarioState *m) {
 }
 
 s32 mario_execute_cutscene_action(struct MarioState *m) {
-    s32 cancel;
+    s32 cancel = 0;
 
     if (check_for_instant_quicksand(m)) {
         return TRUE;

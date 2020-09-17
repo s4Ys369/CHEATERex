@@ -1,0 +1,32 @@
+# Dynamic Options System aka DynOS v0.2
+# By PeachyPeach
+#
+# This is a comment
+# Here are the available commands:
+# ID [Id] - Mandatory, must be placed in first
+# TITLE [Name] - Mandatory
+# TOGGLE [Name] [InitialValue]
+# SCROLL [Name] [InitialValue] [Min] [Max] [Step]
+# CHOICE [Name] [InitialValue] [ChoiceStrings...]
+# BUTTON [Name] [FuncName]
+# BIND [Name] [Key] [Mask] [DefaultValues]
+#
+# Valid characters:
+# 0-9 A-Z a-z
+# '".:,-?!/
+# ^ | < > [A] [B] [C] [Z] [R] for buttons
+# * for the x (multiply) glyph
+# @ for coin glyph
+# + for filled star glyph
+# _ for empty star glyph
+#
+
+
+ID "SuperMarioOdyssey"
+TITLE "SUPER MARIO ODYSSEY"
+TOGGLE "Mario's Moveset" 1
+CHOICE "Cappy" 2 "Disabled" "No Capture" "Capture"
+BIND "Cappy Throw Button" "key_cappy" 0x0040 0x002D 0x1002 0xFFFF
+CHOICE "Health System" 1 "Disabled" "3-Health" "6-Health"
+TOGGLE "Unlimited Cappy Jumps" 0
+BUTTON "Back To Main Menu" "smo_return_to_main_menu"

@@ -981,6 +981,7 @@ s32 play_mode_normal(void) {
     }
 
     area_update_objects();
+    time_trials_update_timer(gMarioState); // Mario is updated, we can safely record his position for TT ghost data
     update_hud_values();
 
     if (gCurrentArea != NULL) {
@@ -1198,9 +1199,6 @@ s32 init_level(void) {
                 if (gMarioState->action != ACT_UNINITIALIZED) {
                     if (save_file_exists(gCurrSaveFileNum - 1)) {
                         set_mario_action(gMarioState, ACT_IDLE, 0);
-                    } else if (gCLIOpts.SkipIntro == 0 && configSkipIntro == 0) {
-                        set_mario_action(gMarioState, ACT_INTRO_CUTSCENE, 0);
-                        val4 = 1;
                     }
                 }
             }
@@ -1225,6 +1223,7 @@ s32 init_level(void) {
         sound_banks_disable(2, 0x0330);
     }
 
+    time_trials_start_timer(gMarioState, gCurrSaveFileNum - 1, gCurrCourseNum, gCurrActNum - 1, FALSE);
     return 1;
 }
 
@@ -1237,6 +1236,7 @@ s32 lvl_init_or_update(s16 initOrUpdate, UNUSED s32 unused) {
     switch (initOrUpdate) {
         case 0:
             result = init_level();
+            smo_load_models();
             break;
         case 1:
             result = update_level();
@@ -1266,7 +1266,7 @@ s32 lvl_init_from_save_file(UNUSED s16 arg0, s32 levelNum) {
 #endif
     sWarpDest.type = WARP_TYPE_NOT_WARPING;
     sDelayedWarpOp = WARP_OP_NONE;
-    gShouldNotPlayCastleMusic = !save_file_exists(gCurrSaveFileNum - 1) && gCLIOpts.SkipIntro == 0 && configSkipIntro == 0;
+    gShouldNotPlayCastleMusic = !save_file_exists(gCurrSaveFileNum - 1) && gCLIOpts.SkipIntro == 0 && false;
 
     gCurrLevelNum = levelNum;
     gCurrCourseNum = COURSE_NONE;

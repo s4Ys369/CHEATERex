@@ -194,6 +194,10 @@ ALIGNED8 static const u8 texture_hud_char_ampersand[] = {
 ALIGNED8 static const u8 texture_hud_char_percent[] = {
 #include "textures/segment2/segment2.05400.rgba16.inc.c"// JP %
 };
+#elif defined(VERSION_US)
+ALIGNED8 static const u8 texture_hud_char_dot[] = {
+#include "textures/segment2/segment2.custom.rgba16.inc.c"
+};
 #endif
 
 ALIGNED8 static const u8 texture_hud_char_multiply[] = {
@@ -1832,7 +1836,7 @@ const u8 *const main_hud_lut[] = {
                   0x0,               0x0,               0x0,               0x0,
                   0x0,               0x0,               0x0,               0x0,
                   0x0,               0x0, texture_hud_char_multiply, texture_hud_char_coin,
-    texture_hud_char_mario_head, texture_hud_char_star,               0x0,               0x0,
+    texture_hud_char_mario_head, texture_hud_char_star,               0x0, texture_hud_char_dot,
     texture_hud_char_apostrophe, texture_hud_char_double_quote,
 #else
     texture_hud_char_0, texture_hud_char_1, texture_hud_char_2, texture_hud_char_3,

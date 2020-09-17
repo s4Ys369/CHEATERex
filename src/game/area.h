@@ -155,4 +155,7 @@ void play_transition(s16 transType, s16 time, u8 red, u8 green, u8 blue);
 void play_transition_after_delay(s16 transType, s16 time, u8 red, u8 green, u8 blue, s16 delay);
 void render_game(void);
 
+/* Time Trials */
+#include "time_trials.h"
+
 #endif // AREA_H

@@ -9,6 +9,7 @@
 
 #include "../configfile.h"
 #include "controller_keyboard.h"
+#include "pc/dynamic_options.h"
 
 static int keyboard_buttons_down;
 
@@ -60,6 +61,9 @@ static void keyboard_add_binds(int mask, unsigned int *scancode) {
 static void keyboard_bindkeys(void) {
     bzero(keyboard_mapping, sizeof(keyboard_mapping));
     num_keybinds = 0;
+#ifndef DYNOS
+    keyboard_add_binds(SMO_CAPPY_BUTTON, gSmoConfigKeyCappy);
+#endif
 
     keyboard_add_binds(STICK_UP,     configKeyStickUp);
     keyboard_add_binds(STICK_LEFT,   configKeyStickLeft);
@@ -67,14 +71,21 @@ static void keyboard_bindkeys(void) {
     keyboard_add_binds(STICK_RIGHT,  configKeyStickRight);
     keyboard_add_binds(A_BUTTON,     configKeyA);
     keyboard_add_binds(B_BUTTON,     configKeyB);
+    keyboard_add_binds(X_BUTTON,     configKeyX);
+    keyboard_add_binds(Y_BUTTON,     configKeyY);
     keyboard_add_binds(Z_TRIG,       configKeyZ);
     keyboard_add_binds(U_CBUTTONS,   configKeyCUp);
     keyboard_add_binds(L_CBUTTONS,   configKeyCLeft);
     keyboard_add_binds(D_CBUTTONS,   configKeyCDown);
     keyboard_add_binds(R_CBUTTONS,   configKeyCRight);
+    keyboard_add_binds(U_DPAD,   configKeyDUp);
+    keyboard_add_binds(L_DPAD,   configKeyDLeft);
+    keyboard_add_binds(D_DPAD,   configKeyDDown);
+    keyboard_add_binds(R_DPAD,   configKeyDRight);
     keyboard_add_binds(L_TRIG,       configKeyL);
     keyboard_add_binds(R_TRIG,       configKeyR);
     keyboard_add_binds(START_BUTTON, configKeyStart);
+    dynos_add_binds((void(*)(u32, u32 *)) keyboard_add_binds);
 }
 
 static void keyboard_init(void) {

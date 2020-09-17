@@ -613,7 +613,12 @@ s32 perform_air_step(struct MarioState *m, u32 stepArg) {
     s32 quarterStepResult;
     s32 stepResult = AIR_STEP_NONE;
 
-    m->wall = NULL;
+    //! @bug If the game detects a wall on the first, second or third qstep, but
+    // not on the fourth, AIR_STEP_HIT_WALL is returned but m->wall is NULL,
+    // turning the hit into a ceiling/OOB hit
+    //m->wall = NULL;
+
+    struct Surface *wall = NULL;
 
     for (i = 0; i < 4; i++) {
         intendedPos[0] = m->pos[0] + m->vel[0] / 4.0f;
@@ -628,6 +633,10 @@ s32 perform_air_step(struct MarioState *m, u32 stepArg) {
 
         if (quarterStepResult != AIR_STEP_NONE) {
             stepResult = quarterStepResult;
+        }
+
+        if (quarterStepResult == AIR_STEP_HIT_WALL && m->wall != NULL) {
+            wall = m->wall;
         }
 
         if (quarterStepResult == AIR_STEP_LANDED || quarterStepResult == AIR_STEP_GRABBED_LEDGE
@@ -650,6 +659,10 @@ s32 perform_air_step(struct MarioState *m, u32 stepArg) {
 
     vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
     vec3s_set(m->marioObj->header.gfx.angle, 0, m->faceAngle[1], 0);
+
+    if (stepResult == AIR_STEP_HIT_WALL) {
+        m->wall = wall;
+    }
 
     return stepResult;
 }

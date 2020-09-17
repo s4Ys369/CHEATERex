@@ -7,6 +7,7 @@
 #endif
 
 #include "sm64.h"
+#include "dynamic_options.h"
 
 #include "game/memory.h"
 #include "audio/external.h"
@@ -83,6 +84,25 @@ void send_display_list(struct SPTask *spTask) {
 #define SAMPLES_LOW 528
 #endif
 
+static inline void patch_interpolations(void) {
+    extern void mtx_patch_interpolated(void);
+    extern void patch_screen_transition_interpolated(void);
+    extern void patch_title_screen_scales(void);
+    extern void patch_interpolated_dialog(void);
+    extern void patch_interpolated_hud(void);
+    extern void patch_interpolated_paintings(void);
+    extern void patch_interpolated_bubble_particles(void);
+    extern void patch_interpolated_snow_particles(void);
+    mtx_patch_interpolated();
+    patch_screen_transition_interpolated();
+    patch_title_screen_scales();
+    patch_interpolated_dialog();
+    patch_interpolated_hud();
+    patch_interpolated_paintings();
+    patch_interpolated_bubble_particles();
+    patch_interpolated_snow_particles();
+}
+
 void produce_one_frame(void) {
     gfx_start_frame();
 
@@ -109,6 +129,11 @@ void produce_one_frame(void) {
 
     audio_api->play((u8 *)audio_buffer, 2 * num_audio_samples * 4);
 
+    gfx_end_frame();
+
+    gfx_start_frame();
+    patch_interpolations();
+    send_display_list(gGfxSPTask);
     gfx_end_frame();
 }
 
@@ -175,6 +200,7 @@ void main_func(void) {
     const char *gamedir = gCLIOpts.GameDir[0] ? gCLIOpts.GameDir : FS_BASEDIR;
     const char *userpath = gCLIOpts.SavePath[0] ? gCLIOpts.SavePath : sys_user_path();
     fs_init(sys_ropaths, gamedir, userpath);
+    dynos_init();
 
     configfile_load(configfile_name());
 
@@ -215,7 +241,7 @@ void main_func(void) {
     #endif
 
     char window_title[96] =
-    "Super Mario 64 EX (" RAPI_NAME ")"
+    "CHEATER 64 (" RAPI_NAME ")"
     #ifdef NIGHTLY
     " nightly " GIT_HASH
     #endif

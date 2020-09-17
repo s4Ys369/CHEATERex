@@ -1,5 +1,6 @@
 #include <PR/ultratypes.h>
 
+#include "pc/cheats.h"
 #include "area.h"
 #include "actors/common1.h"
 #include "audio/external.h"
@@ -764,6 +765,10 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
     u32 starIndex;
     u32 starGrabAction = ACT_STAR_DANCE_EXIT;
     u32 noExit = (o->oInteractionSubtype & INT_SUBTYPE_NO_EXIT) != 0;
+    u8 stayInLevelCommon = !(m->controller->buttonDown & L_TRIG || gCurrLevelNum == LEVEL_BOWSER_1 || gCurrLevelNum == LEVEL_BOWSER_2 || gCurrLevelNum == LEVEL_BOWSER_3);
+    if (stayInLevelCommon == TRUE) {
+        noExit = TRUE;
+    }
     u32 grandStar = (o->oInteractionSubtype & INT_SUBTYPE_GRAND_STAR) != 0;
 
     if (m->health >= 0x100) {
@@ -817,11 +822,27 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
         // func_802521A0
 #endif
 
+        // Time Trials
+        if (TIME_TRIALS_100_COINS_STAR_EXIT == 1 && starIndex == 6) {
+            drop_queued_background_music();
+            fadeout_level_music(126);
+            noExit = FALSE;
+        }
+        time_trials_save_time(gCurrSaveFileNum - 1, gCurrCourseNum, gCurrLevelNum, starIndex, noExit);
+        if (!noExit || grandStar) {
+            time_trials_stop_timer();
+        }
+        
         if (grandStar) {
+            time_trials_speedrun_end();
             return set_mario_action(m, ACT_JUMBO_STAR_CUTSCENE, 0);
         }
 
-        return set_mario_action(m, starGrabAction, noExit + 2 * grandStar);
+        if (stayInLevelCommon == FALSE) {
+            return set_mario_action(m, starGrabAction, noExit + 2 * grandStar);
+        }
+        //If nonstop StayInLevel is enabled, autosave
+        save_file_do_save(gCurrSaveFileNum - 1);
     }
 
     return FALSE;
@@ -1777,10 +1798,13 @@ void mario_process_interactions(struct MarioState *m) {
 }
 
 void check_death_barrier(struct MarioState *m) {
-    if (m->pos[1] < m->floorHeight + 2048.0f) {
-        if (level_trigger_warp(m, WARP_OP_WARP_FLOOR) == 20 && !(m->flags & MARIO_UNKNOWN_18)) {
-            play_sound(SOUND_MARIO_WAAAOOOW, m->marioObj->header.gfx.cameraToObject);
+    while (Cheats.NDB == false) {
+        if (m->pos[1] < m->floorHeight + 2048.0f) {
+            if (level_trigger_warp(m, WARP_OP_WARP_FLOOR) == 20 && !(m->flags & MARIO_UNKNOWN_18)) {
+                play_sound(SOUND_MARIO_WAAAOOOW, m->marioObj->header.gfx.cameraToObject);
+            }
         }
+        break;
     }
 }
 
