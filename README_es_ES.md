@@ -51,14 +51,14 @@ Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para elim
  * X, Y, y el D PAD fueron agregados (revisa `sm64.h` para los defines)
  * 60 FPS por Emil incluido
  * "Enable Debug Level Select" por KiritoDev incluido
- * "Tighter Controls" por Keanine incluido como una opción configurable
  * "Leave Ending Screen" por GateGuy incluido
  * "Exit to Main Menu" por Adya incluido
  * "50 Coin 1UP" por Keanine incluido
- * "Odyssey Moveset featuring Time Trials v2" por PeachyPeach ("Time Trials" por GateGuy)
-  - debes incluir https://cdn.discordapp.com/attachments/723992726319792140/754402820588961882/smo.cappy_assets.zip
+ * "Odyssey Moveset featuring Time Trials v2 and Tighter Controls" por PeachyPeach ("Time Trials" por GateGuy)
  * "Stay In Level After Star v2" por GateGuy
  * "Menu C button support" por engima907
+ * "Bugfixes" por JAGSTAX
+ * DynOS por PeachyPeach
  * Y por supuesto, CHEATERv7 por $4Y$, yo mismo
 
 ## Como agregar los trucos/mods
