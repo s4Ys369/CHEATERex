@@ -20,118 +20,207 @@ static void smo_lava_boost_on_wall(struct MarioState *m) {
 //
 
 static s32 smo_act_jump(struct MarioState *m) {
+<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, SMO_CAPPY != 0);
+=======
+    RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, IS_SMO_CAPPY_AVAILABLE);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_double_jump(struct MarioState *m) {
+<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, SMO_CAPPY != 0);
+=======
+    RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, IS_SMO_CAPPY_AVAILABLE);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_triple_jump(struct MarioState *m) {
+<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, SMO_CAPPY != 0);
+=======
+    RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, IS_SMO_CAPPY_AVAILABLE);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_backflip(struct MarioState *m) {
+<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, SMO_CAPPY != 0);
+=======
+    RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, IS_SMO_CAPPY_AVAILABLE);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_long_jump(struct MarioState *m) {
+<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, SMO_CAPPY != 0);
+=======
+    RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, IS_SMO_CAPPY_AVAILABLE);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_freefall(struct MarioState *m) {
+<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, SMO_CAPPY != 0);
+=======
+    RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, IS_SMO_CAPPY_AVAILABLE);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_side_flip(struct MarioState *m) {
+<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, SMO_CAPPY != 0);
+=======
+    RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, IS_SMO_CAPPY_AVAILABLE);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_wall_kick_air(struct MarioState *m) {
+<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, SMO_CAPPY != 0);
+=======
+    RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, IS_SMO_CAPPY_AVAILABLE);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_water_jump(struct MarioState *m) {
+<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_GROUND_POUND, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, SMO_CAPPY != 0);
+=======
+    RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_GROUND_POUND, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, IS_SMO_CAPPY_AVAILABLE);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_steep_jump(struct MarioState *m) {
+<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, SMO_CAPPY != 0);
+=======
+    RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, IS_SMO_CAPPY_AVAILABLE);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_ground_pound(struct MarioState *m) {
+<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, SMO_MARIO == 1);
+=======
+    RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, IS_SMO_MARIO);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_burning_jump(struct MarioState *m) {
+<<<<<<< HEAD
     if (SMO_HEALTH != 0 && m->marioObj->oMarioBurnTimer == 0) {
+=======
+    if (IS_SMO_HEALTH && m->marioObj->oMarioBurnTimer == 0) {
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         m->hurtCounter += 1;
     }
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_burning_fall(struct MarioState *m) {
+<<<<<<< HEAD
     if (SMO_HEALTH != 0 && m->marioObj->oMarioBurnTimer == 0) {
+=======
+    if (IS_SMO_HEALTH && m->marioObj->oMarioBurnTimer == 0) {
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         m->hurtCounter += 1;
     }
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_backward_air_kb(struct MarioState *m) {
+<<<<<<< HEAD
     if (SMO_MARIO == 1) {
+=======
+    if (IS_SMO_MARIO) {
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         m->input &= ~INPUT_A_PRESSED;
     }
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_forward_air_kb(struct MarioState *m) {
+<<<<<<< HEAD
     if (SMO_MARIO == 1) {
+=======
+    if (IS_SMO_MARIO) {
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         m->input &= ~INPUT_A_PRESSED;
     }
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_soft_bonk(struct MarioState *m) {
+<<<<<<< HEAD
     if (SMO_MARIO == 1) {
+=======
+    if (IS_SMO_MARIO) {
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         m->input &= ~INPUT_A_PRESSED;
     }
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_air_hit_wall(struct MarioState *m) {
+<<<<<<< HEAD
     if (SMO_MARIO == 1) {
+=======
+    if (IS_SMO_MARIO) {
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         m->input &= ~INPUT_A_PRESSED;
         if (mario_check_wall_slide(m)) {
             set_mario_action(m, ACT_SMO_WALL_SLIDE, 0);
@@ -142,13 +231,22 @@ static s32 smo_act_air_hit_wall(struct MarioState *m) {
 }
 
 static s32 smo_act_jump_kick(struct MarioState *m) {
+<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_GROUND_POUND, SMO_MARIO == 1);
+=======
+    RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_GROUND_POUND, IS_SMO_MARIO);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_flying(struct MarioState *m) {
+<<<<<<< HEAD
     if (SMO_CAPPY != 0 && (m->controller->buttonPressed & SMO_CAPPY_BUTTON) && (m->input & INPUT_A_PRESSED)) {
+=======
+    if (IS_SMO_CAPPY_AVAILABLE && (m->controller->buttonPressed & X_BUTTON) && (m->input & INPUT_A_PRESSED)) {
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         if (mario_spawn_cappy(m, CAPPY_ACT_FLAG_FLYING)) {
             play_sound(SOUND_MARIO_YAHOO_WAHA_YIPPEE + ((2 + (random_u16() % 3)) << 16), m->marioObj->header.gfx.cameraToObject);
         }
@@ -157,16 +255,26 @@ static s32 smo_act_flying(struct MarioState *m) {
 }
 
 static s32 smo_act_flying_triple_jump(struct MarioState *m) {
+<<<<<<< HEAD
     if (SMO_MARIO == 1) {
+=======
+    if (IS_SMO_MARIO) {
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         m->input &= ~INPUT_B_PRESSED;
     }
     return ACTION_RESULT_CONTINUE;
 }
 
 static s32 smo_act_top_of_pole_jump(struct MarioState *m) {
+<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, SMO_CAPPY != 0);
+=======
+    RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, IS_SMO_CAPPY_AVAILABLE);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return ACTION_RESULT_CONTINUE;
 }
 
@@ -188,7 +296,11 @@ static s32 smo_act_wall_slide(struct MarioState *m) {
 
     // Stop wall sliding
     if (m->input & INPUT_Z_PRESSED) {
+<<<<<<< HEAD
         m->oWallSlide = FALSE;
+=======
+        m->marioObj->oWallSlide = FALSE;
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         play_sound(SOUND_MARIO_UH, m->marioObj->header.gfx.cameraToObject);
         m->input &= (~(INPUT_Z_PRESSED));
         set_mario_action(m, ACT_FREEFALL, 0);
@@ -228,10 +340,17 @@ static s32 smo_act_wall_slide(struct MarioState *m) {
 }
 
 static s32 smo_act_cappy_jump(struct MarioState *m) {
+<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_GROUND_POUND, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, SMO_CAPPY != 0);
+=======
+    RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_GROUND_POUND, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, IS_SMO_CAPPY_AVAILABLE);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 
     play_mario_sound(m, SOUND_ACTION_TERRAIN_JUMP, SOUND_MARIO_HOOHOO);
     common_air_action_step(m, ACT_DOUBLE_JUMP_LAND, ((m->vel[1] >= 0.0f) ? MARIO_ANIM_DOUBLE_JUMP_RISE : MARIO_ANIM_DOUBLE_JUMP_FALL), AIR_STEP_CHECK_LEDGE_GRAB | AIR_STEP_CHECK_HANG);
@@ -239,10 +358,17 @@ static s32 smo_act_cappy_jump(struct MarioState *m) {
 }
 
 static s32 smo_act_ground_pound_jump(struct MarioState *m) {
+<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_GROUND_POUND, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, SMO_CAPPY != 0);
+=======
+    RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_GROUND_POUND, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, IS_SMO_CAPPY_AVAILABLE);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 
     m->particleFlags |= PARTICLE_SPARKLES;
     play_mario_sound(m, SOUND_ACTION_TERRAIN_JUMP, SOUND_MARIO_YAHOO);
@@ -251,10 +377,17 @@ static s32 smo_act_ground_pound_jump(struct MarioState *m) {
 }
 
 static s32 smo_act_leave_object_jump(struct MarioState *m) {
+<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_GROUND_POUND, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, SMO_CAPPY != 0);
+=======
+    RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_GROUND_POUND, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, IS_SMO_CAPPY_AVAILABLE);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 
     m->particleFlags |= PARTICLE_SPARKLES;
     play_mario_sound(m, SOUND_ACTION_TERRAIN_JUMP, 0);
@@ -263,9 +396,15 @@ static s32 smo_act_leave_object_jump(struct MarioState *m) {
 }
 
 static s32 smo_act_cappy_throw_airborne(struct MarioState *m) {
+<<<<<<< HEAD
     RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_GROUND_POUND, SMO_MARIO == 1);
+=======
+    RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, IS_SMO_MARIO);
+    RETURN_CANCEL_IF_ACTION_SET(ACT_GROUND_POUND, IS_SMO_MARIO);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     update_mario_throw_anim(m, ACT_FREEFALL);
     
     // Update air movement
@@ -273,7 +412,11 @@ static s32 smo_act_cappy_throw_airborne(struct MarioState *m) {
     if (m->input & INPUT_NONZERO_ANALOG) {
         m->forwardVel += (m->intendedMag / 32.0f) * coss(m->intendedYaw - m->faceAngle[1]) * 1.5f;
         sidewaysSpeed  = (m->intendedMag / 32.0f) * sins(m->intendedYaw - m->faceAngle[1]) * 1.0f;
+<<<<<<< HEAD
         if (SMO_MARIO == 1) {
+=======
+        if (IS_SMO_MARIO) {
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
             m->faceAngle[1] += (s16) (sidewaysSpeed * 1024.f);
             sidewaysSpeed = 0;
         }
@@ -299,12 +442,21 @@ static s32 smo_act_cappy_throw_airborne(struct MarioState *m) {
 s32 mario_check_smo_airborne_action(struct MarioState *m) {
 
     // Fall height
+<<<<<<< HEAD
     if (SMO_MARIO == 1) {
         m->peakHeight = m->pos[1];
         if (m->vel[1] >= 0.f || m->action == ACT_FLYING || m->action == ACT_TWIRLING || m->action == ACT_SMO_WALL_SLIDE) {
             m->oPeakHeight = m->pos[1];
         }
         f32 fallHeight = m->oPeakHeight - m->pos[1];
+=======
+    if (IS_SMO_MARIO) {
+        m->peakHeight = m->pos[1];
+        if (m->vel[1] >= 0.f || m->action == ACT_FLYING || m->action == ACT_TWIRLING || m->action == ACT_SMO_WALL_SLIDE) {
+            m->marioObj->oPeakHeight = m->pos[1];
+        }
+        f32 fallHeight = m->marioObj->oPeakHeight - m->pos[1];
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         if ((fallHeight > SMO_FALL_DAMAGE_HEIGHT) && !(m->action & ACT_FLAG_INVULNERABLE) && !(m->flags & MARIO_UNKNOWN_18)) {
             play_sound(SOUND_MARIO_WAAAOOOW, m->marioObj->header.gfx.cameraToObject);
             m->flags |= MARIO_UNKNOWN_18;

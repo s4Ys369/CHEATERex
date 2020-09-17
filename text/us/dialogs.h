@@ -388,18 +388,18 @@ around while flying, and\n\
 press [Z] to land."))
 
 DEFINE_DIALOG(DIALOG_033, 1, 6, 30, 200, _("\
-Ciao! You've reached\n\
-Princess Toadstool's\n\
-castle via a warp pipe.\n\
-Using the controller is a\n\
-piece of cake. Press [A] to\n\
-jump and [B] to attack.\n\
-Press [B] to read signs,\n\
-too. Use the Control Stick\n\
-in the center of the\n\
-controller to move Mario\n\
-around. Now, head for\n\
-the castle."))
+Hey! You're probably\n\
+just spamming [A] to\n\
+get through this text.\n\
+Using the cheats is a\n\
+piece of cake. Press [R] on\n\
+the pause menu to open\n\
+the Options menu. Select\n\
+Cheats in the menu\n\
+and get ready for fun.\n\
+Now you can move Mario\n\
+around. So, head for\n\
+the castle!!!"))
 
 DEFINE_DIALOG(DIALOG_034, 1, 6, 30, 200, _("\
 Good afternoon. The\n\
@@ -1982,7 +1982,7 @@ Enjoy!!!"
 
 DEFINE_DIALOG(DIALOG_161, 1, 4, 30, 200, _("\
 Mario!!!\n\
-Is that really you???\n\
+It dat rly u?!?!?!\n\
 It has been so long since\n\
 our last adventure!\n\
 They told me that I might\n\

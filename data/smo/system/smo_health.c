@@ -26,7 +26,11 @@ static s32 smo_health_to_hp(s32 health) {
 }
 
 static s32 smo_get_max_health(s32 health) {
+<<<<<<< HEAD
     if (SMO_HEALTH == 2 || (health - SMO_HEALTH_DEAD > SMO_HEALTH_PER_SEGMENT * SMO_NUM_SEGMENTS_HALF)) {
+=======
+    if (gSmoHealth == 2 || (health - SMO_HEALTH_DEAD > SMO_HEALTH_PER_SEGMENT * SMO_NUM_SEGMENTS_HALF)) {
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         return (SMO_HEALTH_PER_SEGMENT * SMO_NUM_SEGMENTS) + SMO_HEALTH_DEAD;
     }
     return (SMO_HEALTH_PER_SEGMENT * SMO_NUM_SEGMENTS_HALF) + SMO_HEALTH_DEAD;
@@ -37,7 +41,11 @@ s32 smo_get_max_hp(s32 hp) {
 }
 
 s32 smo_get_num_segments_per_health_gauge() {
+<<<<<<< HEAD
     if (SMO_HEALTH == 2) {
+=======
+    if (gSmoHealth == 2) {
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         return SMO_NUM_SEGMENTS;
     }
     return SMO_NUM_SEGMENTS_HALF;
@@ -48,7 +56,11 @@ s32 smo_get_hp_per_segment() {
 }
 
 s32 smo_is_mario_losing_hp(struct MarioState *m) {
+<<<<<<< HEAD
     return m->oHpCounter > smo_health_to_hp(m->health);
+=======
+    return m->marioObj->oHpCounter > smo_health_to_hp(m->health);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 }
 
 //
@@ -56,6 +68,7 @@ s32 smo_is_mario_losing_hp(struct MarioState *m) {
 //
 
 static void increase_O2_level(struct MarioState *m, s32 amount) {
+<<<<<<< HEAD
     if (m->oO2 != 0) {
         play_sound(SOUND_MENU_POWER_METER, m->marioObj->header.gfx.cameraToObject);
     }
@@ -64,6 +77,16 @@ static void increase_O2_level(struct MarioState *m, s32 amount) {
 
 static void decrease_O2_level(struct MarioState *m, s32 amount) {
     m->oO2 += amount;
+=======
+    if (m->marioObj->oO2 != 0) {
+        play_sound(SOUND_MENU_POWER_METER, m->marioObj->header.gfx.cameraToObject);
+    }
+    m->marioObj->oO2 = MAX(0, m->marioObj->oO2 - amount);
+}
+
+static void decrease_O2_level(struct MarioState *m, s32 amount) {
+    m->marioObj->oO2 += amount;
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 }
 
 static void update_O2_level(struct MarioState *m) {
@@ -111,12 +134,20 @@ static void update_O2_level(struct MarioState *m) {
         }
 
         // Play a sound effect when low on O2
+<<<<<<< HEAD
         if (m->oO2 >= MARIO_ABOUT_TO_DROWN) {
+=======
+        if (m->marioObj->oO2 >= MARIO_ABOUT_TO_DROWN) {
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
             play_sound(SOUND_MOVING_ALMOST_DROWNING, gDefaultSoundArgs);
         }
 
         // Drown Mario when out of O2
+<<<<<<< HEAD
         if (m->oO2 >= MARIO_BREATH_MAX_DURATION) {
+=======
+        if (m->marioObj->oO2 >= MARIO_BREATH_MAX_DURATION) {
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
             m->health = 0xFF;
             m->healCounter = 0;
             m->hurtCounter = 0;
@@ -169,6 +200,7 @@ f32 smo_get_life_up_gauge_position(s32 hp) {
 
 static u32 sSmoHealthPreviousState = 0;
 s32 smo_update_mario_health(struct MarioState *m) {
+<<<<<<< HEAD
     if (SMO_HEALTH == 0) {
         sSmoHealthPreviousState = 0;
         return FALSE;
@@ -187,6 +219,27 @@ s32 smo_update_mario_health(struct MarioState *m) {
     if (m->oHpCounter == 0) {
         m->oHpCounter = smo_health_to_hp(m->health);
         m->oCoinCounter = m->numCoins;
+=======
+    if (!IS_SMO_HEALTH) {
+        sSmoHealthPreviousState = 0;
+        return FALSE;
+    }
+    struct Object *o = m->marioObj;
+
+    // Health system was changed
+    // Set m->health, init o->oHpCounter and o->oCoinCounter
+    if (gSmoHealth != sSmoHealthPreviousState) {
+        m->health = MIN(m->health, smo_get_max_health(0));
+        o->oHpCounter = smo_health_to_hp(m->health);
+        o->oCoinCounter = m->numCoins;
+        sSmoHealthPreviousState = gSmoHealth;
+    }
+
+    // Entered a new area
+    if (o->oHpCounter == 0) {
+        o->oHpCounter = smo_health_to_hp(m->health);
+        o->oCoinCounter = m->numCoins;
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     }
 
     // Update O2
@@ -200,6 +253,7 @@ s32 smo_update_mario_health(struct MarioState *m) {
     }
 
     // Update coin counter and heal Mario every N coins
+<<<<<<< HEAD
     if (m->oCoinCounter < m->numCoins) {
         m->oCoinCounter++;
         if ((m->oCoinCounter % SMO_NUM_COINS_PER_HEAL) == 0) {
@@ -207,11 +261,21 @@ s32 smo_update_mario_health(struct MarioState *m) {
         }
     } else {
         m->oCoinCounter = m->numCoins;
+=======
+    if (o->oCoinCounter < m->numCoins) {
+        o->oCoinCounter++;
+        if ((o->oCoinCounter % SMO_NUM_COINS_PER_HEAL) == 0) {
+            smo_heal_mario_for_1_health(m);
+        }
+    } else {
+        o->oCoinCounter = m->numCoins;
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     }
 
     // Update health counter
     m->health = smo_fix_health(m->health);
     s32 counter = smo_health_to_hp(m->health);
+<<<<<<< HEAD
     if (m->oHpCounter < counter) {
         m->oHpCounter++;
         if ((m->oHpCounter % SMO_NUM_TICKS_PER_SEGMENT) == (SMO_NUM_TICKS_PER_SEGMENT / 2)) {
@@ -219,6 +283,15 @@ s32 smo_update_mario_health(struct MarioState *m) {
         }
     } else if (m->oHpCounter > counter) {
         m->oHpCounter--;
+=======
+    if (o->oHpCounter < counter) {
+        o->oHpCounter++;
+        if ((o->oHpCounter % SMO_NUM_TICKS_PER_SEGMENT) == (SMO_NUM_TICKS_PER_SEGMENT / 2)) {
+            smo_play_sound_effect(SOUND_ACTION_SMO_HEAL, NULL);
+        }
+    } else if (o->oHpCounter > counter) {
+        o->oHpCounter--;
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     }
 
     // Updated
@@ -231,11 +304,16 @@ void smo_heal_mario_for_1_health(struct MarioState *m) {
 }
 
 void smo_set_mario_to_full_health(struct MarioState *m) {
+<<<<<<< HEAD
     m->oHpCounter = MAX(m->oHpCounter, 1);
+=======
+    m->marioObj->oHpCounter = MAX(m->marioObj->oHpCounter, 1);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     m->health = smo_get_max_health(m->health);
 }
 
 void smo_set_hp_counter_to_mario_health(struct MarioState *m) {
+<<<<<<< HEAD
     m->oHpCounter = smo_health_to_hp(m->health);
 }
 
@@ -243,6 +321,15 @@ void smo_life_up_mario(struct MarioState *m) {
     if (SMO_HEALTH == 1 && (m->health <= smo_get_max_health(0))) {
         m->hurtCounter = 0;
         m->oHpCounter = smo_health_to_hp(smo_get_max_health(0));
+=======
+    m->marioObj->oHpCounter = smo_health_to_hp(m->health);
+}
+
+void smo_life_up_mario(struct MarioState *m) {
+    if (gSmoHealth == 1 && (m->health <= smo_get_max_health(0))) {
+        m->hurtCounter = 0;
+        m->marioObj->oHpCounter = smo_health_to_hp(smo_get_max_health(0));
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         struct Object *o = spawn_object(m->marioObj, MODEL_NONE, bhvLifeUpCutscene);
         if (o != NULL) {
             smo_soften_music(NULL);

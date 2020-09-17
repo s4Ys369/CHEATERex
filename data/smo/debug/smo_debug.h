@@ -20,6 +20,12 @@ extern const GeoLayout dbg_cylinder_hurtbox_geo[];
 void smo_debug_add_string(s32 x, s32 y, u32 rgbaFront, u32 rgbaBack, const char *fmt, ...);
 
 /* Debug mode */
+<<<<<<< HEAD
 void smo_debug_update();
+=======
+extern u8 gSmoDebug;
+void smo_debug_update();
+void smo_debug_reset();
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 
 #endif // SMO_DEBUG_H

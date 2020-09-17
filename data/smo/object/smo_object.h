@@ -51,6 +51,16 @@ void smo_free_all_data();
 void smo_object_reset();
 
 /* SMO Object Models */
+<<<<<<< HEAD
 void smo_load_models();
+=======
+#define SMO_OBJECTS_LOAD_MODELS \
+ALLOC_LEVEL_POOL(), \
+LOAD_MODEL_FROM_GEO(MODEL_COSMIC_MARIO, cosmic_mario_geo), \
+LOAD_MODEL_FROM_GEO(MODEL_SHOCK_WAVE, invisible_bowser_accessory_geo), \
+DEBUG_ONLY(LOAD_MODEL_FROM_GEO(MODEL_DBG_CYLINDER_HITBOX, dbg_cylinder_hitbox_geo),) \
+DEBUG_ONLY(LOAD_MODEL_FROM_GEO(MODEL_DBG_CYLINDER_HURTBOX, dbg_cylinder_hurtbox_geo),) \
+FREE_LEVEL_POOL()
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 
 #endif // SMO_OBJECT_H

@@ -210,7 +210,11 @@ static void bhv_smo_debug_hitbox() {
         gCurrentObject->oPosZ = gCurrentObject->parentObj->oPosZ;
         gCurrentObject->header.gfx.pos[0] = gCurrentObject->parentObj->oPosX;
         gCurrentObject->header.gfx.pos[2] = gCurrentObject->parentObj->oPosZ;
+<<<<<<< HEAD
         if (gMarioObject && gCurrentObject->parentObj == gMarioState->oPossessedObject) {
+=======
+        if (gCurrentObject->parentObj == gMarioObject->oPossessedObject) {
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
             gCurrentObject->oPosY = gCurrentObject->parentObj->oPosY - gCurrentObject->parentObj->oStickMag;
             gCurrentObject->header.gfx.pos[1] = gCurrentObject->parentObj->oPosY - gCurrentObject->parentObj->oStickMag;
             gCurrentObject->header.gfx.scale[0] = gCurrentObject->parentObj->oStickX / 100.f;
@@ -298,7 +302,11 @@ static void smo_debug_display_objects_hitbox_from_list(s8 type) {
     while (next != NULL) {
         struct Object *obj = next;
         if (obj == gMarioObject && gMarioState->action == ACT_SMO_POSSESSION) {
+<<<<<<< HEAD
             obj = gMarioState->oPossessedObject;
+=======
+            obj = obj->oPossessedObject;
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         }
         if (obj_get_first_child_with_behavior(obj, bhvSmoDebugHitbox)  == NULL &&
             obj_get_first_child_with_behavior(obj, bhvSmoDebugHurtbox) == NULL) {

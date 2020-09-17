@@ -4,7 +4,11 @@
 #endif
 
 // Traps the object in an infinite loop, preventing it from updating normally
+<<<<<<< HEAD
 static const BehaviorScript bhvCappyLock[] = {
+=======
+static const uintptr_t bhvCappyLock[] = {
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     0x08000000, 
     0x09000000
 };
@@ -95,7 +99,11 @@ s32 mario_lock(struct MarioState *m) {
     if (m->action != ACT_SMO_POSSESSION) {
         return FALSE;
     }
+<<<<<<< HEAD
     m->oPossessionLock = TRUE;
+=======
+    m->marioObj->oPossessionLock = TRUE;
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return TRUE;
 }
 
@@ -103,16 +111,29 @@ s32 mario_unlock(struct MarioState *m) {
     if (m->action != ACT_SMO_POSSESSION) {
         return FALSE;
     }
+<<<<<<< HEAD
     m->oPossessionLock = FALSE;
+=======
+    m->marioObj->oPossessionLock = FALSE;
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     return TRUE;
 }
 
 static void mario_cappy_update_object_and_gfx(struct MarioState *m) {
+<<<<<<< HEAD
     struct Object *cap = m->oObjectCap;
     struct PObject *pobj = m->oPossessedObject;
 
     // Mario
     if (m->oPossessionTimer >= 20) {
+=======
+    struct Object *mobj = m->marioObj;
+    struct Object *cap = mobj->oObjectCap;
+    struct PObject *pobj = mobj->oPossessedObject;
+
+    // Mario
+    if (mobj->oPossessionTimer >= 20) {
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         m->pos[0] = pobj->oPosX;
         m->pos[1] = pobj->oPosY;
         m->pos[2] = pobj->oPosZ;
@@ -128,6 +149,7 @@ static void mario_cappy_update_object_and_gfx(struct MarioState *m) {
         m->marioObj->header.gfx.scale[2] = 1.f;
         m->squishTimer = 0;
         set_mario_animation(m, MARIO_ANIM_A_POSE);
+<<<<<<< HEAD
         m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
     }
     m->marioObj->oPosX = m->pos[0];
@@ -142,6 +164,22 @@ static void mario_cappy_update_object_and_gfx(struct MarioState *m) {
     m->marioObj->header.gfx.angle[0] = m->marioObj->oFaceAnglePitch & 0xFFFF;
     m->marioObj->header.gfx.angle[1] = m->marioObj->oFaceAngleYaw & 0xFFFF;
     m->marioObj->header.gfx.angle[2] = m->marioObj->oFaceAngleRoll & 0xFFFF;
+=======
+        mobj->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
+    }
+    mobj->oPosX = m->pos[0];
+    mobj->oPosY = m->pos[1];
+    mobj->oPosZ = m->pos[2];
+    mobj->oFaceAnglePitch = m->faceAngle[0];
+    mobj->oFaceAngleYaw   = m->faceAngle[1];
+    mobj->oFaceAngleRoll  = m->faceAngle[2];
+    mobj->header.gfx.pos[0] = mobj->oPosX;
+    mobj->header.gfx.pos[1] = mobj->oPosY + mobj->oGraphYOffset;
+    mobj->header.gfx.pos[2] = mobj->oPosZ;
+    mobj->header.gfx.angle[0] = mobj->oFaceAnglePitch & 0xFFFF;
+    mobj->header.gfx.angle[1] = mobj->oFaceAngleYaw   & 0xFFFF;
+    mobj->header.gfx.angle[2] = mobj->oFaceAngleRoll  & 0xFFFF;
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 
     // Cappy
     if (cap != NULL) {
@@ -163,11 +201,17 @@ static void mario_cappy_update_object_and_gfx(struct MarioState *m) {
         cap->header.gfx.scale[1] = (pobj->oCappyInitialScale / 100.f) * pobj->header.gfx.scale[1];
         cap->header.gfx.scale[2] = (pobj->oCappyInitialScale / 100.f) * pobj->header.gfx.scale[2];
 #ifdef SMO_SGI
+<<<<<<< HEAD
         if (getCharacterType() == LUIGI) {
             cap->header.gfx.scale[0] *= LUIGIS_CAPPY_SCALE_MULTIPLIER;
             cap->header.gfx.scale[1] *= LUIGIS_CAPPY_SCALE_MULTIPLIER;
             cap->header.gfx.scale[2] *= LUIGIS_CAPPY_SCALE_MULTIPLIER;
         }
+=======
+        cap->header.gfx.scale[0] *= LUIGIS_CAPPY_SCALE_MULTIPLIER;
+        cap->header.gfx.scale[1] *= LUIGIS_CAPPY_SCALE_MULTIPLIER;
+        cap->header.gfx.scale[2] *= LUIGIS_CAPPY_SCALE_MULTIPLIER;
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 #endif
         cap->header.gfx.node.flags = GRAPH_RENDER_ACTIVE;
         cap->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
@@ -210,12 +254,21 @@ static const s32 sCappyPossessAnimParams[20][6] = {
     { 1, 2, 100, 0x4000,  30, MARIO_ANIM_DIVE },
 };
 
+<<<<<<< HEAD
 #define xFrom(t)        (m->oPossessAnimPos(sCappyPossessAnimParams[t][0], 0))
 #define yFrom(t)        (m->oPossessAnimPos(sCappyPossessAnimParams[t][0], 1))
 #define zFrom(t)        (m->oPossessAnimPos(sCappyPossessAnimParams[t][0], 2))
 #define xTo(t)          (m->oPossessAnimPos(sCappyPossessAnimParams[t][1], 0))
 #define yTo(t)          (m->oPossessAnimPos(sCappyPossessAnimParams[t][1], 1))
 #define zTo(t)          (m->oPossessAnimPos(sCappyPossessAnimParams[t][1], 2))
+=======
+#define xFrom(t)        (m->marioObj->oPossessAnimPos(sCappyPossessAnimParams[t][0], 0))
+#define yFrom(t)        (m->marioObj->oPossessAnimPos(sCappyPossessAnimParams[t][0], 1))
+#define zFrom(t)        (m->marioObj->oPossessAnimPos(sCappyPossessAnimParams[t][0], 2))
+#define xTo(t)          (m->marioObj->oPossessAnimPos(sCappyPossessAnimParams[t][1], 0))
+#define yTo(t)          (m->marioObj->oPossessAnimPos(sCappyPossessAnimParams[t][1], 1))
+#define zTo(t)          (m->marioObj->oPossessAnimPos(sCappyPossessAnimParams[t][1], 2))
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 #define coeff(t)        ((f32)(sCappyPossessAnimParams[t][2]) / 100.f)
 #define angle(t)        ((s16)(sCappyPossessAnimParams[t][3]))
 #define scale(t)        ((f32)(sCappyPossessAnimParams[t][4]) / 100.f)
@@ -223,6 +276,7 @@ static const s32 sCappyPossessAnimParams[20][6] = {
 #define lerp(t, a, b)   ((a) + ((b) - (a)) * (t));
 
 s32 smo_act_possession(struct MarioState *m) {
+<<<<<<< HEAD
     if (m->oPossessionTimer < 20) {
 
         // Play the possession animation for 20 frames
@@ -230,6 +284,15 @@ s32 smo_act_possession(struct MarioState *m) {
             smo_play_sound_effect(SOUND_ACTION_CAPPY_1, m->marioObj->header.gfx.cameraToObject);
         }
         s32 t = m->oPossessionTimer;
+=======
+    if (m->marioObj->oPossessionTimer < 20) {
+
+        // Play the possession animation for 20 frames
+        if (m->marioObj->oPossessionTimer == 0) {
+            smo_play_sound_effect(SOUND_ACTION_CAPPY_1, m->marioObj->header.gfx.cameraToObject);
+        }
+        s32 t = m->marioObj->oPossessionTimer;
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         m->pos[0] = lerp(coeff(t), xFrom(t), xTo(t));
         m->pos[1] = lerp(coeff(t), yFrom(t), yTo(t));
         m->pos[2] = lerp(coeff(t), zFrom(t), zTo(t));
@@ -238,11 +301,16 @@ s32 smo_act_possession(struct MarioState *m) {
         vec3f_set(m->marioObj->header.gfx.scale, scale(t), scale(t), scale(t));
         set_mario_animation(m, anim(t));
         m->particleFlags |= PARTICLE_SPARKLES;
+<<<<<<< HEAD
         m->oPossessionTimer++;
+=======
+        m->marioObj->oPossessionTimer++;
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     
     } else {
 
         // Spawn Cappy if not spawned
+<<<<<<< HEAD
         if (!m->oObjectCap) {
 #ifdef SMO_SGI
             if (getCharacterType() == LUIGI) {
@@ -265,6 +333,30 @@ s32 smo_act_possession(struct MarioState *m) {
             m->oInputStickYaw      = 0;
             m->oInputButtonPressed = 0;
             m->oInputButtonDown    = 0;
+=======
+        if (!m->marioObj->oObjectCap) {
+#ifdef SMO_SGI
+            if (getCharacterType() == LUIGI) {
+                m->marioObj->oObjectCap = spawn_object(m->marioObj, MODEL_LUIGIS_CAP, bhvCappyLock);
+            } else {
+#endif
+                m->marioObj->oObjectCap = spawn_object(m->marioObj, MODEL_MARIOS_CAP, bhvCappyLock);
+#ifdef SMO_SGI
+            }
+#endif
+            m->marioObj->oObjectCap->oFlags = 0;
+            smo_obj_alloc_data(m->marioObj->oObjectCap, m);
+        }
+
+        // If Mario is locked, don't check [Z] press and zero-init inputs
+        if (m->marioObj->oPossessionLock) {
+            m->marioObj->oInputStickX        = 0;
+            m->marioObj->oInputStickY        = 0;
+            m->marioObj->oInputStickMag      = 0;
+            m->marioObj->oInputStickYaw      = 0;
+            m->marioObj->oInputButtonPressed = 0;
+            m->marioObj->oInputButtonDown    = 0;
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         } else {
 
             // Press [Z] to leave the object
@@ -275,6 +367,7 @@ s32 smo_act_possession(struct MarioState *m) {
             }
 
             // Update inputs
+<<<<<<< HEAD
             m->oInputStickX        = (m->controller->stickX / 64.f);
             m->oInputStickY        = (m->controller->stickY / 64.f);
             m->oInputStickMag      = (m->controller->stickMag / 64.f);
@@ -285,6 +378,18 @@ s32 smo_act_possession(struct MarioState *m) {
 
         // Update possessed object
         struct PObject *pobj = m->oPossessedObject;
+=======
+            m->marioObj->oInputStickX        = (m->controller->stickX / 64.f);
+            m->marioObj->oInputStickY        = (m->controller->stickY / 64.f);
+            m->marioObj->oInputStickMag      = (m->controller->stickMag / 64.f);
+            m->marioObj->oInputStickYaw      = m->intendedYaw;
+            m->marioObj->oInputButtonPressed = m->controller->buttonPressed;
+            m->marioObj->oInputButtonDown    = m->controller->buttonDown;
+        }
+
+        // Update possessed object
+        struct PObject *pobj = m->marioObj->oPossessedObject;
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         const PObjMainLoopFunc *f = pobj->smoData->captureData->mloop;
         pobj->oCappyForwardDist  = 0;
         pobj->oCappyLateralDist  = 0;
@@ -337,7 +442,11 @@ s32 smo_act_possession(struct MarioState *m) {
 //
 
 s32 mario_possess_object(struct MarioState *m, struct Object *obj) {
+<<<<<<< HEAD
     if (SMO_CAPPY != 2) {
+=======
+    if (!IS_SMO_CAPPY_CAPTURE) {
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
         return FALSE;
     }
 
@@ -372,15 +481,23 @@ s32 mario_possess_object(struct MarioState *m, struct Object *obj) {
     obj->curBhvCommand = bhvCappyLock;
     obj->oFlags = 0;
     obj->oIntangibleTimer = 0;
+<<<<<<< HEAD
     m->oPossessedObject = obj;
     m->oObjectCap = NULL;
     m->oPossessionTimer = 0;
     m->oPossessionLock = FALSE;
+=======
+    m->marioObj->oPossessedObject = obj;
+    m->marioObj->oObjectCap = NULL;
+    m->marioObj->oPossessionTimer = 0;
+    m->marioObj->oPossessionLock = FALSE;
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 
     // Init animation positions
     f32 x = obj->oPosX;
     f32 y = obj->oPosY + obj->smoData->captureData->gettop(obj);
     f32 z = obj->oPosZ;
+<<<<<<< HEAD
     m->oPossessAnimPos(0, 0) = m->pos[0];
     m->oPossessAnimPos(0, 1) = m->pos[1];
     m->oPossessAnimPos(0, 2) = m->pos[2];
@@ -390,6 +507,17 @@ s32 mario_possess_object(struct MarioState *m, struct Object *obj) {
     m->oPossessAnimPos(2, 0) = x;
     m->oPossessAnimPos(2, 1) = y - 30.f;
     m->oPossessAnimPos(2, 2) = z;
+=======
+    m->marioObj->oPossessAnimPos(0, 0) = m->pos[0];
+    m->marioObj->oPossessAnimPos(0, 1) = m->pos[1];
+    m->marioObj->oPossessAnimPos(0, 2) = m->pos[2];
+    m->marioObj->oPossessAnimPos(1, 0) = x;
+    m->marioObj->oPossessAnimPos(1, 1) = y + 180.f;
+    m->marioObj->oPossessAnimPos(1, 2) = z;
+    m->marioObj->oPossessAnimPos(2, 0) = x;
+    m->marioObj->oPossessAnimPos(2, 1) = y - 30.f;
+    m->marioObj->oPossessAnimPos(2, 2) = z;
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 
     // Init face angles
     m->faceAngle[0] = 0;
@@ -474,7 +602,11 @@ static const s32 sMarioUnpossessActions[MARIO_UNPOSSESS_ACT_COUNT * 6][6] = {
 };
 
 s32 mario_unpossess_object(struct MarioState *m, u8 unpossessAct, s32 isBackwards, u32 objIntangibleFrames) {
+<<<<<<< HEAD
     struct PObject *pobj = m->oPossessedObject;
+=======
+    struct PObject *pobj = m->marioObj->oPossessedObject;
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     if (pobj == NULL) {
         return FALSE;
     }
@@ -501,8 +633,13 @@ s32 mario_unpossess_object(struct MarioState *m, u8 unpossessAct, s32 isBackward
     // Unload cap, restore camera
     smo_play_sound_effect(SOUND_ACTION_CAPPY_2, m->marioObj->header.gfx.cameraToObject);
     obj_spawn_white_puff(m->marioObj, -1);
+<<<<<<< HEAD
     smo_obj_free_data(m->oObjectCap);
     obj_mark_for_deletion(m->oObjectCap);
+=======
+    smo_obj_free_data(m->marioObj->oObjectCap);
+    obj_mark_for_deletion(m->marioObj->oObjectCap);
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
     smo_capture_reset_camera(pobj);
 
     // End object possession
@@ -512,10 +649,17 @@ s32 mario_unpossess_object(struct MarioState *m, u8 unpossessAct, s32 isBackward
     pobj->oIntangibleTimer = objIntangibleFrames;
 
     // Clear fields
+<<<<<<< HEAD
     m->oPossessedObject = NULL;
     m->oObjectCap = NULL;
     m->oPossessionTimer = 0;
     m->oPossessionLock = FALSE;
+=======
+    m->marioObj->oPossessedObject = NULL;
+    m->marioObj->oObjectCap = NULL;
+    m->marioObj->oPossessionTimer = 0;
+    m->marioObj->oPossessionLock = FALSE;
+>>>>>>> ed6bf96ae1f732967e9f72ea66c102467e719cb8
 
     return TRUE;
 }
