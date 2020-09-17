@@ -31,16 +31,20 @@ extern const GeoLayout blue_coin_geo[];
 extern const GeoLayout blue_coin_no_shadow_geo[];
 extern const GeoLayout red_coin_geo[];
 extern const GeoLayout red_coin_no_shadow_geo[];
+extern const Gfx coin_seg3_dl_03007780[];
+extern const Gfx coin_seg3_dl_030077D0[];
+extern const Gfx coin_seg3_dl_03007800[];
+extern const Gfx coin_seg3_dl_03007828[];
+extern const Gfx coin_seg3_dl_03007850[];
+extern const Gfx coin_seg3_dl_03007878[];
+extern const Gfx coin_seg3_dl_030078A0[];
+extern const Gfx coin_seg3_dl_030078C8[];
+extern const Gfx coin_seg3_dl_030078F0[];
+extern const Gfx coin_seg3_dl_03007918[];
 extern const Gfx coin_seg3_dl_03007940[];
 extern const Gfx coin_seg3_dl_03007968[];
 extern const Gfx coin_seg3_dl_03007990[];
 extern const Gfx coin_seg3_dl_030079B8[];
-extern Vtx coin_000_displaylist_mesh_vtx_0[433];
-extern Gfx coin_000_displaylist_mesh_tri_0[];
-extern Gfx coin_000_displaylist_mesh[];
-extern Gfx coin_001_displaylist_mesh[];
-extern Gfx coin_002_displaylist_mesh[];
-extern Gfx coin_material_revert_render_settings[];
 
 // dirt
 extern const GeoLayout dirt_animation_geo[];
