@@ -65,78 +65,6 @@ static char act[188];
 static char smallImageKey[5];
 static char largeImageKey[5];
 
-static const char charset[0xFF+1] = {
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 7
-    ' ', ' ', 'a', 'b', 'c', 'd', 'e', 'f', // 15
-    'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', // 23
-    'o', 'p', 'q', 'r', 's', 't', 'u', 'v', // 31
-    'w', 'x', 'y', 'z', ' ', ' ', ' ', ' ', // 39
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 49
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 55
-    ' ', ' ', ' ', ' ', ' ', ' ', '\'', ' ', // 63
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 71
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 79
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 87
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 95
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 103
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ',', // 111
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 119
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 127
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 135
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 143
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 151
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', '-', // 159
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 167
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 175
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 183
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 192
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 199
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 207
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 215
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 223
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 231
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', // 239
-    ' ', ' ', '!', ' ', ' ', ' ', ' ', ' ', // 247
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '  // 255
-};
-
-static void convertstring(const u8 *str, char* output) {
-    s32 strPos = 0;
-    bool capitalizeChar = true;
-
-    while (str[strPos] != 0xFF)  {
-        if (str[strPos] < 0xFF) {
-            output[strPos] = charset[str[strPos]];
-
-            // if the char is a letter we can capatalize it
-            if (capitalizeChar && 0x0A <= str[strPos] && str[strPos] <= 0x23) {
-                output[strPos] -= ('a' - 'A');
-                capitalizeChar = false;
-            }
-
-        } else {
-            output[strPos] = ' ';
-        }
-
-        // decide if the next character should be capitalized
-        switch (output[strPos]) {
-            case ' ':
-                if (str[strPos] != 158)
-                    fprintf(stdout, "Unknown Character (%i)\n", str[strPos]); // inform that an unknown char was found
-            case '-':
-                capitalizeChar = true;
-                break;
-            default:
-                capitalizeChar = false;
-                break;
-        }
-
-        strPos++;
-    }
-
-    output[strPos] = '\0';
-}
-
 static void on_ready(UNUSED const DiscordUser* user) {
     discord_reset();
 }
@@ -174,9 +102,9 @@ static void set_details(void) {
 #endif
             u8 *courseName = segmented_to_virtual(courseNameTbl[gCurrCourseNum - 1]);
 
-            convertstring(&courseName[3], stage);
+
         } else {
-            strcpy(stage, "Peach's Castle");
+            strcpy(stage, "CHEATERex");
         }
 
         lastCourseNum = gCurrCourseNum;
@@ -207,7 +135,6 @@ static void set_state(void) {
 #endif
                 u8 *actName = actName = segmented_to_virtual(actNameTbl[(gCurrCourseNum - 1) * 6 + gCurrActNum - 1]);
 
-                convertstring(actName, act);
             } else {
                 act[0] = '\0';
                 gCurrActNum = 0;
