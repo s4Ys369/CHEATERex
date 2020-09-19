@@ -31,4 +31,5 @@ BIND    "Cappy Throw Button"    "key_cappy"    0x0040 0x002D 0x1002 0xFFFF
 CHOICE  "Health System"         "smo_health"   1 "Disabled" "3-Health" "6-Health"
 TOGGLE  "Unlimited Cappy Jumps" "smo_ucj"      0
 MBUTTON "BACK TO MAIN MENU"     "back_to_menu" "smo_return_to_main_menu"
+MBUTTON "GO TO LEVEL SELECT"    "level_select" "go_to_level_select"
 
