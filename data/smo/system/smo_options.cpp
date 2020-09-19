@@ -15,7 +15,7 @@ static void smo_return_to_main_menu(UNUSED struct Option *opt, s32 arg) {
         smo_hud_reset();
         smo_health_reset();
         smo_object_reset();
-        fade_into_special_warp(-2, 0);
+        fade_into_special_warp(-9, 1);
     }
 }
 

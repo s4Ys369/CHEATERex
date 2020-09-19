@@ -29,4 +29,4 @@ CHOICE "Cappy" 2 "Disabled" "No Capture" "Capture"
 BIND "Cappy Throw Button" "key_cappy" 0x0040 0x002D 0x1002 0xFFFF
 CHOICE "Health System" 1 "Disabled" "3-Health" "6-Health"
 TOGGLE "Unlimited Cappy Jumps" 0
-BUTTON "Back To Main Menu" "smo_return_to_main_menu"
+BUTTON "Go To Level Select" "smo_return_to_main_menu"
