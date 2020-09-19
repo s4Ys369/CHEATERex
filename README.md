@@ -52,12 +52,11 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
 
 ## New features
  * X, Y, and D PAD added (check `sm64.h` for defines)
- * 60 FPS by Emil included
- * Enable Debug Level Select by KiritoDev included
- * Leave Ending Screen by GateGuy included
- * Exit to Main Menu by Adya included
- * 50 Coin 1UP by Keanine included
- * Odyssey Moveset featuring Time Trials v2 by PeachyPeach (Time Trials by GateGuy)
+ * 60 FPS by Emil
+ * Leave Ending Screen by GateGuy
+ * 50 Coin 1UP by Keanine
+ * Odyssey Moveset by PeachyPeach
+    -Tighter Controls by Keanine
  * Stay In Level After Star v2 by GateGuy
  * Menu C button support by engima907
  * Bugfixes by JAGSTAX

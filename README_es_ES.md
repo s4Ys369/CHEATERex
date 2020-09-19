@@ -50,16 +50,16 @@ Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para elim
 ## Nuevas funciones
  * X, Y, y el D PAD fueron agregados (revisa `sm64.h` para los defines)
  * 60 FPS por Emil incluido
- * "Enable Debug Level Select" por KiritoDev incluido
  * "Leave Ending Screen" por GateGuy incluido
  * "Exit to Main Menu" por Adya incluido
  * "50 Coin 1UP" por Keanine incluido
- * "Odyssey Moveset featuring Time Trials v2 and Tighter Controls" por PeachyPeach ("Time Trials" por GateGuy)
+ * "Odyssey Moveset" por PeachyPeach
+    -"Tighter Controls" por Keanine incluido
  * "Stay In Level After Star v2" por GateGuy
  * "Menu C button support" por engima907
  * "Bugfixes" por JAGSTAX
- * DynOS por PeachyPeach
- * Y por supuesto, CHEATERv7 por $4Y$, yo mismo
+ * "DynOS" por PeachyPeach
+ * Y por supuesto, "CHEATERv7" por $4Y$, yo mismo
 
 ## Como agregar los trucos/mods
  * Usa `src/game/mario_cheats.c` para el código
