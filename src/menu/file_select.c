@@ -739,11 +739,9 @@ void render_copy_menu_buttons(struct Object *copyButton) {
         copyButton, MODEL_MAIN_MENU_YELLOW_FILE_BUTTON, bhvMenuButton, 711, -388, -100, 0, -0x8000, 0);
     sMainMenuButtons[MENU_BUTTON_COPY_RETURN]->oMenuButtonScale = 0.11111111f;
     // Switch to scire menu button
-    /*
     sMainMenuButtons[MENU_BUTTON_COPY_CHECK_SCORE] = spawn_object_rel_with_rot(
         copyButton, MODEL_MAIN_MENU_GREEN_SCORE_BUTTON, bhvMenuButton, 0, -388, -100, 0, -0x8000, 0);
     sMainMenuButtons[MENU_BUTTON_COPY_CHECK_SCORE]->oMenuButtonScale = 0.11111111f;
-    */
     // Switch to erase menu button
     sMainMenuButtons[MENU_BUTTON_COPY_ERASE_FILE] = spawn_object_rel_with_rot(
         copyButton, MODEL_MAIN_MENU_RED_ERASE_BUTTON, bhvMenuButton, -711, -388, -100, 0, -0x8000, 0);
@@ -917,11 +915,9 @@ void render_erase_menu_buttons(struct Object *eraseButton) {
         eraseButton, MODEL_MAIN_MENU_YELLOW_FILE_BUTTON, bhvMenuButton, 711, -388, -100, 0, -0x8000, 0);
     sMainMenuButtons[MENU_BUTTON_ERASE_RETURN]->oMenuButtonScale = 0.11111111f;
     // Switch to score menu button
-    /*
     sMainMenuButtons[MENU_BUTTON_ERASE_CHECK_SCORE] = spawn_object_rel_with_rot(
         eraseButton, MODEL_MAIN_MENU_GREEN_SCORE_BUTTON, bhvMenuButton, 0, -388, -100, 0, -0x8000, 0);
     sMainMenuButtons[MENU_BUTTON_ERASE_CHECK_SCORE]->oMenuButtonScale = 0.11111111f;
-    */
     // Switch to copy menu button
     sMainMenuButtons[MENU_BUTTON_ERASE_COPY_FILE] = spawn_object_rel_with_rot(
         eraseButton, MODEL_MAIN_MENU_BLUE_COPY_BUTTON, bhvMenuButton, -711, -388, -100, 0, -0x8000, 0);
@@ -1418,8 +1414,6 @@ void check_main_menu_clicked_buttons(void) {
                 break;
             // Play sound of the button clicked and render buttons of that menu.
             case MENU_BUTTON_SCORE:
-                play_sound(SAVE_FILE_SOUND, gDefaultSoundArgs);
-                break;
                 play_sound(SOUND_MENU_CAMERA_ZOOM_IN, gDefaultSoundArgs);
                 render_score_menu_buttons(sMainMenuButtons[MENU_BUTTON_SCORE]);
                 break;
@@ -1466,9 +1460,6 @@ void bhv_menu_button_manager_loop(void) {
             load_main_menu_save_file(sMainMenuButtons[MENU_BUTTON_PLAY_FILE_D], 4);
             break;
         case MENU_BUTTON_SCORE:
-            load_main_menu_save_file(sMainMenuButtons[MENU_BUTTON_SCORE], 4);
-            time_trials_speedrun_init();
-            break;
             check_score_menu_clicked_buttons(sMainMenuButtons[MENU_BUTTON_SCORE]);
             break;
         case MENU_BUTTON_COPY:
@@ -1791,7 +1782,7 @@ void print_main_menu_strings(void) {
    // Print menu names
     gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
-    print_generic_string(43, 39, gTimeTrialsTextSpeedrun);
+    print_generic_string(SCORE_X, 39, textScore);
     print_generic_string(COPY_X, 39, textCopy);
     print_generic_string(ERASE_X, 39, textErase);
 #if !defined(VERSION_JP) && !defined(VERSION_SH)
@@ -2734,7 +2725,6 @@ static void print_file_select_strings(void) {
 #endif
             break;
         case MENU_BUTTON_SCORE:
-            break;
             print_score_menu_strings();
             sScoreFileCoinScoreMode = 0;
             break;

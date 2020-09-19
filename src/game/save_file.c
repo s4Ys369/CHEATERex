@@ -404,7 +404,6 @@ void save_file_load_all(void) {
 
     bzero(&gSaveBuffer, sizeof(gSaveBuffer));
 
-    time_trials_init_times();
 #ifdef TEXTSAVES
     for (file = 0; file < NUM_SAVE_FILES; file++) {
         read_text_save(file);
@@ -468,7 +467,6 @@ void save_file_reload(void) {
 
     gMainMenuDataModified = FALSE;
     gSaveFileModified = FALSE;
-    time_trials_speedrun_deinit();
 }
 
 /**

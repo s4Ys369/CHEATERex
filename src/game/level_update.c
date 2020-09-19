@@ -981,7 +981,6 @@ s32 play_mode_normal(void) {
     }
 
     area_update_objects();
-    time_trials_update_timer(gMarioState); // Mario is updated, we can safely record his position for TT ghost data
     update_hud_values();
 
     if (gCurrentArea != NULL) {
@@ -1223,7 +1222,6 @@ s32 init_level(void) {
         sound_banks_disable(2, 0x0330);
     }
 
-    time_trials_start_timer(gMarioState, gCurrSaveFileNum - 1, gCurrCourseNum, gCurrActNum - 1, FALSE);
     return 1;
 }
 
