@@ -1893,11 +1893,8 @@ void init_mario(void) {
         capObject->oMoveAngleYaw = 0;
     }
 
-    // Unload Cappy to prevent a crash when
-    // Mario is teleporting through invisible warps
-    mario_unload_cappy(gMarioState);
-
     // Init Mario SMO fields
+    mario_unload_cappy(gMarioState);
     smo_free_all_data();
     smo_obj_alloc_data(gMarioState->marioObj, gMarioState);
 }

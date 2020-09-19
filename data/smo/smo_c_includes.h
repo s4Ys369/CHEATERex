@@ -9,6 +9,7 @@
 #include "gfx_dimensions.h"
 #include "dialog_ids.h"
 #include "libc/string.h"
+#include "data/utils.h"
 #include <stdio.h>
 
 /* src/game */

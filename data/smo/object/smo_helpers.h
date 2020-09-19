@@ -46,10 +46,6 @@ void obj_spawn_triangle_break_particles(struct Object* obj, s32 numTris, s16 tri
 void obj_instant_death(struct Object *obj);
 void obj_explode(struct Object *obj, s32 soundBits);
 void obj_update_gfx(struct Object *obj);
-
-/* Other */
-const char *int_to_string(s32 value, const char *format);
-const u8 *int_to_sm64_string(s32 value, const char *format);
 void vec3f_rotate_zxy(Vec3f v, s16 pitch, s16 yaw, s16 roll);
 
 #endif // SMO_HELPERS_H

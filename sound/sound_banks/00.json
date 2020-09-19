@@ -43,27 +43,27 @@
         "inst6": {
             "release_rate": 208,
             "envelope": "envelope0",
-            "sound": "06_smo_custom"
+            "sound": "06_smo_capture"
         },
         "inst7": {
             "release_rate": 208,
             "envelope": "envelope0",
-            "sound": "07_smo_custom"
+            "sound": "07_smo_uncapture"
         },
         "inst8": {
             "release_rate": 208,
             "envelope": "envelope0",
-            "sound": "08_smo_custom"
+            "sound": "08_smo_lifeup"
         },
         "inst9": {
             "release_rate": 208,
             "envelope": "envelope0",
-            "sound": "09_smo_custom"
+            "sound": "09_smo_damage"
         },
         "inst10": {
             "release_rate": 208,
             "envelope": "envelope0",
-            "sound": "0A_smo_custom"
+            "sound": "0A_smo_heal"
         }
     },
     "instrument_list": [

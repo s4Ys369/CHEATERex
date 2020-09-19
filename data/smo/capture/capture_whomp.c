@@ -1,4 +1,6 @@
 #include "../smo_c_includes.h"
+#include "actors/group12.h"
+#include "data/utils.h"
 
 //
 // Attack
@@ -238,7 +240,16 @@ static void cappy_whomp_update_action_state(struct PObject *pobj) {
                 cur_obj_shake_screen(SHAKE_POS_LARGE);
                 pobj->oCappyWhompActionState = CAPPY_WHOMP_ACTION_LAND;
                 pobj->oCappyWhompActionTimer = 0;
-                spawn_object_abs_with_rot(pobj, 0, MODEL_SHOCK_WAVE, bhvCappyWhompShockWave, x, y + 5, z, 0, 0, 0);
+                struct Object *shockwave = obj_spawn_with_geo(pobj, invisible_bowser_accessory_geo, bhvCappyWhompShockWave);
+                shockwave->oPosX = x;
+                shockwave->oPosY = x + 5;
+                shockwave->oPosZ = z;
+                shockwave->oFaceAnglePitch = 0;
+                shockwave->oFaceAngleYaw = 0;
+                shockwave->oFaceAngleRoll = 0;
+                shockwave->oMoveAnglePitch = 0;
+                shockwave->oMoveAngleYaw = 0;
+                shockwave->oMoveAngleRoll = 0;
             }
             break;
 

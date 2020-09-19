@@ -301,6 +301,7 @@ GODDARD_SRC_DIRS := src/goddard src/goddard/dynlists
 
 # SMO Stuff
 SRC_DIRS += data/smo data/smo/system data/smo/object data/smo/mario data/smo/cappy data/smo/capture data/smo/debug
+include Makefile_smo
 
 MIPSISET := -mips2
 MIPSBIT := -32
@@ -429,13 +430,7 @@ DEP_FILES := $(O_FILES:.o=.d) $(ULTRA_O_FILES:.o=.d) $(GODDARD_O_FILES:.o=.d) $(
 SEG_FILES := $(SEGMENT_ELF_FILES) $(ACTOR_ELF_FILES) $(LEVEL_ELF_FILES)
 
 # DynOS options txt files
-DYNOS_INPUT_DIR := ./dynos
-DYNOS_OUTPUT_DIR := $(BUILD_DIR)/$(BASEDIR)
-DYNOS := \
-    mkdir -p $(DYNOS_OUTPUT_DIR); \
-    for f in $(DYNOS_INPUT_DIR)/*.txt; do \
-        cp -f $$f $(DYNOS_OUTPUT_DIR)/$$(basename -- $$f); \
-    done;
+include Makefile_dynos
 
 ##################### Compiler Options #######################
 INCLUDE_CFLAGS := -I include -I $(BUILD_DIR) -I $(BUILD_DIR)/include -I src -I .
@@ -566,12 +561,6 @@ endif
 
 # Check for enhancement options
 
-# Debug
-ifeq ($(DEBUG),1)
-  CC_CHECK += -DDEBUG
-  CFLAGS += -DDEBUG
-endif
-
 # Check for Puppycam option
 ifeq ($(BETTERCAMERA),1)
   CC_CHECK += -DBETTERCAMERA
@@ -627,6 +616,8 @@ ifeq ($(LEGACY_GL),1)
 endif
 
 # Load external textures
+include Makefile_tt
+
 ifeq ($(EXTERNAL_DATA),1)
   CC_CHECK += -DEXTERNAL_DATA -DFS_BASEDIR="\"$(BASEDIR)\""
   CFLAGS += -DEXTERNAL_DATA -DFS_BASEDIR="\"$(BASEDIR)\""
@@ -1006,7 +997,6 @@ $(BUILD_DIR)/%.o: %.s
 
 $(EXE): $(O_FILES) $(MIO0_FILES:.mio0=.o) $(SOUND_OBJ_FILES) $(ULTRA_O_FILES) $(GODDARD_O_FILES) $(BUILD_DIR)/$(RPC_LIBS)
 	$(LD) -L $(BUILD_DIR) -o $@ $(O_FILES) $(SOUND_OBJ_FILES) $(ULTRA_O_FILES) $(GODDARD_O_FILES) $(LDFLAGS)
-	$(DYNOS)
 
 .PHONY: all clean distclean default diff test load libultra res
 .PRECIOUS: $(BUILD_DIR)/bin/%.elf $(SOUND_BIN_DIR)/%.ctl $(SOUND_BIN_DIR)/%.tbl $(SOUND_SAMPLE_TABLES) $(SOUND_BIN_DIR)/%.s $(BUILD_DIR)/%

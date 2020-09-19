@@ -137,7 +137,7 @@ static void update_life_up_cutscene() {
         o->oMario->action &= ~ACT_FLAG_INTANGIBLE;
         o->activeFlags &= ~ACTIVE_FLAG_INITIATED_TIME_STOP;
         clear_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_MARIO_AND_DOORS);
-        smo_unsoften_music(NULL);
+        smo_unsoften_music();
         smo_play_sound_effect(SOUND_ACTION_SMO_LIFE_UP_END, NULL);
         smo_obj_free_data(o);
         obj_mark_for_deletion(o);
@@ -245,7 +245,7 @@ void smo_life_up_mario(struct MarioState *m) {
         m->oHpCounter = smo_health_to_hp(smo_get_max_health(0));
         struct Object *o = spawn_object(m->marioObj, MODEL_NONE, bhvLifeUpCutscene);
         if (o != NULL) {
-            smo_soften_music(NULL);
+            smo_soften_music();
             smo_play_sound_effect(SOUND_ACTION_SMO_LIFE_UP, NULL);
             set_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_MARIO_AND_DOORS);
             smo_obj_alloc_data(o, m);

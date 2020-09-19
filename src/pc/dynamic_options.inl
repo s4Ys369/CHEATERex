@@ -7,8 +7,9 @@
 #include <direct.h>
 #endif
 
-#define STR_TOKENS_MAX_LENGTH   32
-#define STR_TOKENS_MAX_COUNT    32
+#define DYNOS_STR_TOKENS_MAX_LENGTH     32
+#define DYNOS_STR_TOKENS_MAX_COUNT      128
+#define DYNOS_LINE_MAX_LENGTH           (DYNOS_STR_TOKENS_MAX_LENGTH * DYNOS_STR_TOKENS_MAX_COUNT)
 
 //
 // Dynamic Size Array
@@ -51,21 +52,17 @@ void *array_get(struct Array *array, u32 index) {
 // Structs
 //
 
-struct DynosValue {
+struct DynosOption {
     u8 type;
+    const char *id;
+    const char *name;
     union {
         u32 uval;
         struct Bind {
-            const char *key;
             u32 mask;
             u32 binds[MAX_BINDS];
         } bind;
     };
-};
-
-struct DynosValues {
-    const char *id;
-    struct Array values;
 };
 
 struct DynosAction {
@@ -135,25 +132,31 @@ static s32 dynos_is_txt_file(const char *filename, u32 length) {
         filename[length - 1] == 't';
 }
 
-struct StrTokens { char tokens[STR_TOKENS_MAX_COUNT][STR_TOKENS_MAX_LENGTH]; u32 count; };
+struct StrTokens {
+    char tokens[DYNOS_STR_TOKENS_MAX_COUNT][DYNOS_STR_TOKENS_MAX_LENGTH];
+    u32 count;
+};
 static struct StrTokens dynos_split_string(const char *str) {
     struct StrTokens strtk = { .count = 0 };
     s32 l = 0;
     s32 treatSpacesAsChar = FALSE;
-    for (; *str != 0; str++) {
+    for (;; str++) {
         char c = *str;
-        if ((c == ' ' && !treatSpacesAsChar) || c == '\t' || c == '\r' || c == '\n') {
+        if (c == 0 || (c == ' ' && !treatSpacesAsChar) || c == '\t' || c == '\r' || c == '\n') {
             if (l > 0) {
                 strtk.tokens[strtk.count][l] = 0;
                 strtk.count++;
-                if (strtk.count == STR_TOKENS_MAX_COUNT) {
-                    return strtk;
+                if (strtk.count == DYNOS_STR_TOKENS_MAX_COUNT) {
+                    break;
                 }
                 l = 0;
             }
+            if (c == 0) {
+                break;
+            }
         } else if (c == '\"') {
             treatSpacesAsChar = !treatSpacesAsChar;
-        } else if (l < (STR_TOKENS_MAX_LENGTH - 1)) {
+        } else if (l < (DYNOS_STR_TOKENS_MAX_LENGTH - 1)) {
             strtk.tokens[strtk.count][l] = c;
             l++;
         }
@@ -253,17 +256,24 @@ static void (*dynos_get_action(const char *funcName))(struct Option *, s32) {
 // Data
 //
 
-static struct Array sDynosValues;
+static struct Array sDynosOptions;
+static struct Array sOptionList;
 static struct SubMenu *sDynosMenu = NULL;
 
 //
 // Init
 //
 
-static struct DynosValue *dynos_create_slot(struct DynosValues *dynosValues) {
-    struct DynosValue dvalue;
-    ARRAY_ADD(dynosValues->values, dvalue);
-    return array_get(&dynosValues->values, dynosValues->values.count - 1);
+static struct DynosOption *dynos_create_option(u8 type, const char *id, const char *name) {
+    if (id == NULL) {
+        return NULL;
+    }
+    struct DynosOption dopt;
+    dopt.type = type;
+    dopt.id = id;
+    dopt.name = dynos_alloc_string(name);
+    ARRAY_ADD(sDynosOptions, dopt);
+    return (struct DynosOption *) array_get(&sDynosOptions, sDynosOptions.count - 1);
 }
 
 static struct SubMenu *dynos_read_file(const char *folder, const char *filename) {
@@ -277,16 +287,17 @@ static struct SubMenu *dynos_read_file(const char *folder, const char *filename)
     }
 
     // Init structures
-    struct DynosValues *dynosValues = NULL;
+    const char *id = NULL;
     struct Array optionList = sEmptyArray;
     struct SubMenu *subMenu = calloc(1, sizeof(struct SubMenu));
     subMenu->label = NULL;
     
     // Read file and create options
-    char buffer[1024];
-    while (fgets(buffer, 1024, f) != NULL) {
+    char buffer[DYNOS_LINE_MAX_LENGTH];
+    while (fgets(buffer, DYNOS_LINE_MAX_LENGTH, f) != NULL) {
         struct StrTokens strtk = dynos_split_string(buffer);
         struct Option option;
+        struct DynosOption *dopt = NULL;
 
         // Empty line or comment
         if (strtk.count == 0 || strtk.tokens[0][0] == '#') {
@@ -295,104 +306,102 @@ static struct SubMenu *dynos_read_file(const char *folder, const char *filename)
 
         // ID [Id] - Mandatory, must be placed in first
         if (strcmp(strtk.tokens[0], "ID") == 0 && strtk.count >= 2) {
-            const char *id = dynos_alloc_string(strtk.tokens[1]);
+            id = dynos_alloc_string(strtk.tokens[1]);
 
             // Check if Id is not already registered
-            for (u32 i = 0; i != sDynosValues.count; ++i) {
-                if (strcmp(ARRAY_GET(sDynosValues, i, struct DynosValues).id, id) == 0) {
+            for (u32 i = 0; i != sDynosOptions.count; ++i) {
+                if (strcmp(ARRAY_GET(sDynosOptions, i, struct DynosOption).id, id) == 0) {
                     return NULL;
                 }
             }
-            struct DynosValues dv = { id, sEmptyArray };
-            ARRAY_ADD(sDynosValues, dv);
-            dynosValues = array_get(&sDynosValues, sDynosValues.count - 1);
             continue;
         }
 
-        // TITLE [Name] - Mandatory
+        // TITLE [Label] - Mandatory
         else if (strcmp(strtk.tokens[0], "TITLE") == 0 && strtk.count >= 2) {
             subMenu->label = dynos_alloc_sm64_string(strtk.tokens[1]);
             continue;
         }
 
-        // TOGGLE [Name] [InitialValue]
-        else if (strcmp(strtk.tokens[0], "TOGGLE") == 0 && strtk.count >= 3) {
-            if (dynosValues == NULL) {
+        // TOGGLE [Label] [Name] [InitialValue]
+        else if (strcmp(strtk.tokens[0], "TOGGLE") == 0 && strtk.count >= 4) {
+            if ((dopt = dynos_create_option(OPT_CHOICE, id, strtk.tokens[2])) == NULL) {
                 return NULL;
             }
-            struct DynosValue *dvalue = dynos_create_slot(dynosValues);
-            dvalue->type        = OPT_CHOICE;
-            dvalue->uval        = dynos_string_to_int(strtk.tokens[2]);
+            dopt->uval          = dynos_string_to_int(strtk.tokens[3]);
             option.type         = OPT_CHOICE;
             option.label        = dynos_alloc_sm64_string(strtk.tokens[1]);
-            option.uval         = &dvalue->uval;
+            option.uval         = &dopt->uval;
             option.numChoices   = 2;
             option.choices      = dynos_alloc_choice_list(option.numChoices);
             option.choices[0]   = dynos_alloc_sm64_string("Disabled");
             option.choices[1]   = dynos_alloc_sm64_string("Enabled");
         }
 
-        // SCROLL [Name] [InitialValue] [Min] [Max] [Step]
-        else if (strcmp(strtk.tokens[0], "SCROLL") == 0 && strtk.count >= 6) {
-            if (dynosValues == NULL) {
+        // SCROLL [Label] [Name] [InitialValue] [Min] [Max] [Step]
+        else if (strcmp(strtk.tokens[0], "SCROLL") == 0 && strtk.count >= 7) {
+            if ((dopt = dynos_create_option(OPT_SCROLL, id, strtk.tokens[2])) == NULL) {
                 return NULL;
             }
-            struct DynosValue *dvalue = dynos_create_slot(dynosValues);
-            dvalue->type        = OPT_SCROLL;
-            dvalue->uval        = dynos_string_to_int(strtk.tokens[2]);
+            dopt->uval          = dynos_string_to_int(strtk.tokens[3]);
             option.type         = OPT_SCROLL;
             option.label        = dynos_alloc_sm64_string(strtk.tokens[1]);
-            option.uval         = &dvalue->uval;
-            option.scrMin       = dynos_string_to_int(strtk.tokens[3]);
-            option.scrMax       = dynos_string_to_int(strtk.tokens[4]);
-            option.scrStep      = dynos_string_to_int(strtk.tokens[5]);
+            option.uval         = &dopt->uval;
+            option.scrMin       = dynos_string_to_int(strtk.tokens[4]);
+            option.scrMax       = dynos_string_to_int(strtk.tokens[5]);
+            option.scrStep      = dynos_string_to_int(strtk.tokens[6]);
         }
 
-        // CHOICE [Name] [InitialValue] [ChoiceStrings...]
-        else if (strcmp(strtk.tokens[0], "CHOICE") == 0 && strtk.count >= 4) {
-            if (dynosValues == NULL) {
+        // CHOICE [Label] [Name] [InitialValue] [ChoiceStrings...]
+        else if (strcmp(strtk.tokens[0], "CHOICE") == 0 && strtk.count >= 5) {
+            if ((dopt = dynos_create_option(OPT_CHOICE, id, strtk.tokens[2])) == NULL) {
                 return NULL;
             }
-            struct DynosValue *dvalue = dynos_create_slot(dynosValues);
-            dvalue->type        = OPT_CHOICE;
-            dvalue->uval        = dynos_string_to_int(strtk.tokens[2]);
+            dopt->uval          = dynos_string_to_int(strtk.tokens[3]);
             option.type         = OPT_CHOICE;
             option.label        = dynos_alloc_sm64_string(strtk.tokens[1]);
-            option.uval         = &dvalue->uval;
-            option.numChoices   = strtk.count - 3;
+            option.uval         = &dopt->uval;
+            option.numChoices   = strtk.count - 4;
             option.choices      = dynos_alloc_choice_list(option.numChoices);
             for  (u32 i = 0; i != option.numChoices; ++i) {
-            option.choices[i]   = dynos_alloc_sm64_string(strtk.tokens[3 + i]);
+            option.choices[i]   = dynos_alloc_sm64_string(strtk.tokens[4 + i]);
             }
         }
 
-        // BUTTON [Name] [FuncName]
-        else if (strcmp(strtk.tokens[0], "BUTTON") == 0 && strtk.count >= 3) {
-            if (dynosValues == NULL) {
+        // BUTTON [Label] [Name] [FuncName]
+        else if (strcmp(strtk.tokens[0], "BUTTON") == 0 && strtk.count >= 4) {
+            if ((dopt = dynos_create_option(OPT_BUTTON, id, strtk.tokens[2])) == NULL) {
                 return NULL;
             }
-            struct DynosValue *dvalue = dynos_create_slot(dynosValues);
-            dvalue->type        = OPT_BUTTON;
             option.type         = OPT_BUTTON;
             option.label        = dynos_alloc_sm64_string(strtk.tokens[1]);
-            option.actionFn     = dynos_get_action(strtk.tokens[2]);
+            option.actionFn     = dynos_get_action(strtk.tokens[3]);
         }
 
-        // BIND [Name] [Key] [Mask] [DefaultValues]
-        else if (strcmp(strtk.tokens[0], "BIND") == 0 && strtk.count >= 4 + MAX_BINDS) {
-            if (dynosValues == NULL) {
+        // MBUTTON [Label] [Name] [FuncName]
+        else if (strcmp(strtk.tokens[0], "MBUTTON") == 0 && strtk.count >= 4) {
+            if ((dopt = dynos_create_option(OPT_BUTTON, id, strtk.tokens[2])) == NULL) {
                 return NULL;
             }
-            struct DynosValue *dvalue = dynos_create_slot(dynosValues);
-            dvalue->type        = OPT_BIND;
-            dvalue->bind.key    = dynos_alloc_string(strtk.tokens[2]);
-            dvalue->bind.mask   = dynos_string_to_int(strtk.tokens[3]);
+            option.type         = OPT_BUTTON;
+            option.label        = dynos_alloc_sm64_string(strtk.tokens[1]);
+            option.actionFn     = dynos_get_action(strtk.tokens[3]);
+            ARRAY_ADD(sOptionList, option);
+            continue;
+        }
+
+        // BIND [Label] [Name] [Mask] [DefaultValues]
+        else if (strcmp(strtk.tokens[0], "BIND") == 0 && strtk.count >= 4 + MAX_BINDS) {
+            if ((dopt = dynos_create_option(OPT_BIND, id, strtk.tokens[2])) == NULL) {
+                return NULL;
+            }
+            dopt->bind.mask     = dynos_string_to_int(strtk.tokens[3]);
             for  (u32 i = 0; i != MAX_BINDS; ++i) {
-            dvalue->bind.binds[i] = dynos_string_to_int(strtk.tokens[4 + i]);
+            dopt->bind.binds[i] = dynos_string_to_int(strtk.tokens[4 + i]);
             }
             option.type         = OPT_BIND;
             option.label        = dynos_alloc_sm64_string(strtk.tokens[1]);
-            option.uval         = dvalue->bind.binds;
+            option.uval         = dopt->bind.binds;
         }
 
         // Unknown command
@@ -421,11 +430,11 @@ static struct SubMenu *dynos_read_file(const char *folder, const char *filename)
 }
 
 void dynos_init() {
-    sDynosValues = sEmptyArray;
+    sDynosOptions = sEmptyArray;
+    sOptionList = sEmptyArray;
     char optionsFolder[SYS_MAX_PATH];
     snprintf(optionsFolder, SYS_MAX_PATH, "%s/%s", sys_exe_path(), FS_BASEDIR);
     DIR *dir = opendir(optionsFolder);
-    struct Array optionList = sEmptyArray;
 
     // Look for every .txt files inside the "res" folder
     if (dir) {
@@ -438,7 +447,7 @@ void dynos_init() {
                     option.type = OPT_SUBMENU;
                     option.label = subMenu->label;
                     option.nextMenu = subMenu;
-                    ARRAY_ADD(optionList, option);
+                    ARRAY_ADD(sOptionList, option);
                 }
             }
         }
@@ -446,13 +455,23 @@ void dynos_init() {
     }
 
     // Create DynOS Menu
-    if (optionList.count != 0) {
+    u32 j = 0;
+    if (sOptionList.count != 0) {
         sDynosMenu = calloc(1, sizeof(struct SubMenu));
         sDynosMenu->label = dynos_alloc_sm64_string("DYNOS MENU");
-        sDynosMenu->numOpts = optionList.count;
-        sDynosMenu->opts = calloc(optionList.count, sizeof(struct Option));
-        for (u32 i = 0; i != optionList.count; ++i) {
-            sDynosMenu->opts[i] = ARRAY_GET(optionList, i, struct Option);
+        sDynosMenu->numOpts = sOptionList.count;
+        sDynosMenu->opts = calloc(sOptionList.count, sizeof(struct Option));
+        for (u32 i = 0; i != sOptionList.count; ++i) {
+            struct Option opt = ARRAY_GET(sOptionList, i, struct Option);
+            if (opt.type == OPT_SUBMENU) {
+                sDynosMenu->opts[j++] = opt;
+            }
+        }
+        for (u32 i = 0; i != sOptionList.count; ++i) {
+            struct Option opt = ARRAY_GET(sOptionList, i, struct Option);
+            if (opt.type != OPT_SUBMENU) {
+                sDynosMenu->opts[j++] = opt;
+            }
         }
     }
 }
@@ -469,43 +488,34 @@ void dynos_add_button_action(const char *funcName, void (*funcPtr)(struct Option
 }
 
 void dynos_add_binds(void (*func)(u32, u32 *)) {
-    for (u32 i = 0; i != sDynosValues.count; ++i) {
-        struct DynosValues *dynosValues = array_get(&sDynosValues, i);
-        for (u32 j = 0; j != dynosValues->values.count; ++j) {
-            struct DynosValue *dynosValue = array_get(&dynosValues->values, j);
-            if (dynosValue->type == OPT_BIND) {
-                (*func)(dynosValue->bind.mask, dynosValue->bind.binds);
-            }
+    for (u32 i = 0; i != sDynosOptions.count; ++i) {
+        struct DynosOption *dopt = (struct DynosOption *) array_get(&sDynosOptions, i);
+        if (dopt->type == OPT_BIND) {
+            (*func)(dopt->bind.mask, dopt->bind.binds);
         }
     }
 }
 
-void dynos_load_bind(const char *key, const char **values) {
-    for (u32 i = 0; i != sDynosValues.count; ++i) {
-        struct DynosValues *dynosValues = array_get(&sDynosValues, i);
-        for (u32 j = 0; j != dynosValues->values.count; ++j) {
-            struct DynosValue *dynosValue = array_get(&dynosValues->values, j);
-            if (dynosValue->type == OPT_BIND && strcmp(dynosValue->bind.key, key) == 0) {
-                for (u32 k = 0; k != MAX_BINDS; ++k) {
-                    sscanf(values[k], "%x", &dynosValue->bind.binds[k]);
-                }
+void dynos_load_bind(const char *name, const char **values) {
+    for (u32 i = 0; i != sDynosOptions.count; ++i) {
+        struct DynosOption *dopt = (struct DynosOption *) array_get(&sDynosOptions, i);
+        if (dopt->type == OPT_BIND && strcmp(dopt->name, name) == 0) {
+            for (u32 k = 0; k != MAX_BINDS; ++k) {
+                sscanf(values[k], "%x", &dopt->bind.binds[k]);
             }
         }
     }
 }
 
 void dynos_save_binds(FILE *f) {
-    for (u32 i = 0; i != sDynosValues.count; ++i) {
-        struct DynosValues *dynosValues = array_get(&sDynosValues, i);
-        for (u32 j = 0; j != dynosValues->values.count; ++j) {
-            struct DynosValue *dynosValue = array_get(&dynosValues->values, j);
-            if (dynosValue->type == OPT_BIND) {
-                fprintf(f, "%s ", dynosValue->bind.key);
-                for (u32 k = 0; k != MAX_BINDS; ++k) {
-                    fprintf(f, "%04x ", dynosValue->bind.binds[k]);
-                }
-                fprintf(f, "\n");
+    for (u32 i = 0; i != sDynosOptions.count; ++i) {
+        struct DynosOption *dopt = (struct DynosOption *) array_get(&sDynosOptions, i);
+        if (dopt->type == OPT_BIND) {
+            fprintf(f, "%s ", dopt->name);
+            for (u32 k = 0; k != MAX_BINDS; ++k) {
+                fprintf(f, "%04x ", dopt->bind.binds[k]);
             }
+            fprintf(f, "\n");
         }
     }
 }
@@ -514,29 +524,23 @@ void dynos_save_binds(FILE *f) {
 // Get/Set values
 //
 
-u32 dynos_get_value(const char *id, u8 slot) {
-    for (u32 i = 0; i != sDynosValues.count; ++i) {
-        struct DynosValues *dynosValues = array_get(&sDynosValues, i);
-        if (strcmp(dynosValues->id, id) == 0 && slot < dynosValues->values.count) {
-            struct DynosValue *dynosValue = array_get(&dynosValues->values, slot);
-            if (dynosValue->type == OPT_TOGGLE || dynosValue->type == OPT_SCROLL || dynosValue->type == OPT_CHOICE) {
-                return dynosValue->uval;
-            }
-            return 0;
+u32 dynos_get_value(const char *id, const char *name) {
+    for (u32 i = 0; i != sDynosOptions.count; ++i) {
+        struct DynosOption *dopt = (struct DynosOption *) array_get(&sDynosOptions, i);
+        if ((dopt->type == OPT_TOGGLE || dopt->type == OPT_SCROLL || dopt->type == OPT_CHOICE) &&
+            (strcmp(dopt->id, id) == 0 && strcmp(dopt->name, name) == 0)) {
+            return dopt->uval;
         }
     }
     return 0;
 }
 
-void dynos_set_value(const char *id, u8 slot, u32 value) {
-    for (u32 i = 0; i != sDynosValues.count; ++i) {
-        struct DynosValues *dynosValues = array_get(&sDynosValues, i);
-        if (strcmp(dynosValues->id, id) == 0 && slot < dynosValues->values.count) {
-            struct DynosValue *dynosValue = array_get(&dynosValues->values, slot);
-            if (dynosValue->type == OPT_TOGGLE || dynosValue->type == OPT_SCROLL || dynosValue->type == OPT_CHOICE) {
-                dynosValue->uval = value;
-            }
-            return;
+void dynos_set_value(const char *id, const char *name, u32 value) {
+    for (u32 i = 0; i != sDynosOptions.count; ++i) {
+        struct DynosOption *dopt = (struct DynosOption *) array_get(&sDynosOptions, i);
+        if ((dopt->type == OPT_TOGGLE || dopt->type == OPT_SCROLL || dopt->type == OPT_CHOICE) &&
+            (strcmp(dopt->id, id) == 0 && strcmp(dopt->name, name) == 0)) {
+            dopt->uval = value;
         }
     }
 }

@@ -1,5 +1,4 @@
 #include "../smo_c_includes.h"
-#include "actors/group12.h"
 
 //
 // SMO Fields
@@ -43,16 +42,4 @@ void smo_free_all_data() {
 
 void smo_object_reset() {
     smo_free_all_data();
-}
-
-//
-// SMO Object Models
-//
-
-void smo_load_models() {
-    struct AllocOnlyPool *pool = alloc_only_pool_init(main_pool_available() - sizeof(struct AllocOnlyPool), MEMORY_POOL_LEFT);
-    gLoadedGraphNodes[MODEL_SHOCK_WAVE] = process_geo_layout(pool, (void *) invisible_bowser_accessory_geo);
-    DEBUG_ONLY(gLoadedGraphNodes[MODEL_DBG_CYLINDER_HITBOX] = process_geo_layout(pool, (void *) dbg_cylinder_hitbox_geo);)
-    DEBUG_ONLY(gLoadedGraphNodes[MODEL_DBG_CYLINDER_HURTBOX] = process_geo_layout(pool, (void *) dbg_cylinder_hurtbox_geo);)
-    alloc_only_pool_resize(pool, pool->usedSpace);
 }

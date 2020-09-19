@@ -7,11 +7,11 @@ struct Option;
 
 void dynos_init();
 void dynos_add_binds(void (*func)(u32, u32 *));
-void dynos_load_bind(const char *key, const char **values);
+void dynos_load_bind(const char *name, const char **values);
 void dynos_save_binds(FILE *f);
 
-u32 dynos_get_value(const char *id, u8 slot);
-void dynos_set_value(const char *id, u8 slot, u32 value);
+u32 dynos_get_value(const char *id, const char *name);
+void dynos_set_value(const char *id, const char *name, u32 value);
 
 // Warning: This is C++ code, use this macro inside a .cpp file
 #define DYNOS_DEFINE_ACTION(func) \

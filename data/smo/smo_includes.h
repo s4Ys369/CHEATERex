@@ -3,7 +3,6 @@
 
 #include "smo_defines.h"
 #include "smo_sgi.h"
-#include "debug/smo_debug.h"
 #include "system/smo_health.h"
 #include "system/smo_sound.h"
 #include "system/smo_options.h"

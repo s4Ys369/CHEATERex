@@ -21,7 +21,7 @@ struct SmoData {
         void *asVoidPtr[0x10];
     } refs;
 
-    /* Possessed object only */
+/* -------- Possessed object only -------- */
 
     const struct SmoCaptureData *captureData; // Read-only!
 
@@ -49,8 +49,5 @@ void smo_obj_alloc_data(struct Object *obj, struct MarioState *m);
 void smo_obj_free_data(struct Object *obj);
 void smo_free_all_data();
 void smo_object_reset();
-
-/* SMO Object Models */
-void smo_load_models();
 
 #endif // SMO_OBJECT_H

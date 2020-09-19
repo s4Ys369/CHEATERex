@@ -30,6 +30,9 @@ static int keyboard_map_scancode(int scancode) {
 }
 
 bool keyboard_on_key_down(int scancode) {
+#ifdef SM64_DEBUG_H
+    debug_set_key_down(scancode);
+#endif
     int mapped = keyboard_map_scancode(scancode);
     keyboard_buttons_down |= mapped;
     keyboard_lastkey = scancode;
@@ -37,6 +40,9 @@ bool keyboard_on_key_down(int scancode) {
 }
 
 bool keyboard_on_key_up(int scancode) {
+#ifdef SM64_DEBUG_H
+    debug_set_key_up(scancode);
+#endif
     int mapped = keyboard_map_scancode(scancode);
     keyboard_buttons_down &= ~mapped;
     if (keyboard_lastkey == (u32) scancode)

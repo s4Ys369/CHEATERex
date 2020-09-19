@@ -384,7 +384,6 @@ void adjust_analog_stick(struct Controller *controller) {
 // if a demo sequence exists, this will run the demo
 // input list until it is complete. called every frame.
 void run_demo_inputs(void) {
-
     /*
         Check if a demo inputs list
         exists and if so, run the

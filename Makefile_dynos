@@ -1,0 +1,15 @@
+# ----------------------
+# Dynamic Options System
+# ----------------------
+
+DYNOS_INPUT_DIR := ./dynos
+DYNOS_OUTPUT_DIR := $(BUILD_DIR)/$(BASEDIR)
+DYNOS_COPY_TO_RES := \
+    mkdir -p $(DYNOS_INPUT_DIR); \
+    mkdir -p $(DYNOS_OUTPUT_DIR); \
+    for f in $(DYNOS_INPUT_DIR)/*.txt; do \
+        [ -f "$$f" ] || continue; \
+        cp -f $$f $(DYNOS_OUTPUT_DIR)/$$(basename -- $$f); \
+    done;
+
+DYNOS := $(shell $(call DYNOS_COPY_TO_RES))

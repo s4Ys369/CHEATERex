@@ -23,12 +23,13 @@
 #
 
 
-ID      "SuperMarioOdyssey"
-TITLE   "SUPER MARIO ODYSSEY"
-TOGGLE  "Mario's Moveset"       "smo_mario"    1
-CHOICE  "Cappy"                 "smo_cappy"    2 "Disabled" "No Capture" "Capture"
-BIND    "Cappy Throw Button"    "key_cappy"    0x0040 0x002D 0x1002 0xFFFF
-CHOICE  "Health System"         "smo_health"   1 "Disabled" "3-Health" "6-Health"
-TOGGLE  "Unlimited Cappy Jumps" "smo_ucj"      0
-MBUTTON "BACK TO MAIN MENU"     "back_to_menu" "smo_return_to_main_menu"
-
+ID      "TimeTrials"
+TITLE   "TIME TRIALS"
+TOGGLE  "Time Trials"             "time_trials"         1
+CHOICE  "Time Trial Ghost"        "time_trials_ghost"   1 "Hide" "Show"
+CHOICE  "Main Courses Ghost"      "time_trials_main"    0 "Selected Act Star" "100 Coins Star"
+CHOICE  "Bowser Courses Ghost"    "time_trials_bowser"  0 "Bowser Fight" "Red Coins Star"
+CHOICE  "PSS Ghost"               "time_trials_pss"     0 "Star 1" "Star 2"
+TOGGLE  "100 Coins Star Exit"     "time_trials_100"     0
+TOGGLE  "Time Trials with Cheats" "time_trials_cheats"  0
+MBUTTON "RESTART LEVEL"           "time_trials_restart" "time_trials_restart_level"

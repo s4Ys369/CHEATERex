@@ -1,15 +1,17 @@
 #ifndef SMO_OPTIONS_H
 #define SMO_OPTIONS_H
 
+#include "types.h"
+
 #define SMO_CAPPY_BUTTON 0x0040
 
 #ifdef DYNOS
 #include "pc/dynamic_options.h"
 #define SMO_ID		"SuperMarioOdyssey"
-#define SMO_MARIO	dynos_get_value(SMO_ID, 0)
-#define SMO_CAPPY	dynos_get_value(SMO_ID, 1)
-#define SMO_HEALTH	dynos_get_value(SMO_ID, 3)
-#define SMO_UCJ		dynos_get_value(SMO_ID, 4)
+#define SMO_MARIO	dynos_get_value(SMO_ID, "smo_mario")
+#define SMO_CAPPY	dynos_get_value(SMO_ID, "smo_cappy")
+#define SMO_HEALTH	dynos_get_value(SMO_ID, "smo_health")
+#define SMO_UCJ		dynos_get_value(SMO_ID, "smo_ucj")
 #else
 #define SMO_MARIO	1
 #define SMO_CAPPY	2

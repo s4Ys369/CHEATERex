@@ -1,0 +1,11 @@
+# ---------------------------------
+# Time Trials Mod - Additional data
+# ---------------------------------
+
+TT_REVERSE_HEXDUMP = \
+    mkdir -p $(1); \
+    xxd -r $(1)/$(2).txt $(1)/$(2)$(3);
+
+TT_ADDITIONAL_DATA := \
+	$(shell $(call TT_REVERSE_HEXDUMP,actors/cosmic_mario,cosmic_mario_texture.rgba16,.png))
+	

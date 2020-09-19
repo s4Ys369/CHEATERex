@@ -301,10 +301,12 @@ s32 smo_act_possession(struct MarioState *m) {
             f++;
         }
 
-        // Debug only: use these fields to store the hitbox values (used later in smo_debug)
-        DEBUG_ONLY(pobj->oStickX = pobj->hitboxRadius);
-        DEBUG_ONLY(pobj->oStickY = pobj->hitboxHeight);
-        DEBUG_ONLY(pobj->oStickMag = pobj->hitboxDownOffset);
+#ifdef SM64_DEBUG_H
+        // Debug only: use these fields to store the hitbox values (used later for debug)
+        pobj->oStickX = pobj->hitboxRadius;
+        pobj->oStickY = pobj->hitboxHeight;
+        pobj->oStickMag = pobj->hitboxDownOffset;
+#endif
 
         // Unset possessed object's hitbox to avoid undesirable interactions
         pobj->hitboxRadius = 0;

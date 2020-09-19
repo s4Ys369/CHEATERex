@@ -192,6 +192,16 @@ static Vtx *smo_power_meter_render_heart(Vtx *vtx, f32 x, f32 y, s32 hp) {
 // Health gauge
 //
 
+static const char *int_to_string(s32 value, const char *format) {
+    static char buffer[64];
+    bzero(buffer, 64);
+    if (!format || strlen(format) > 8) {
+        return buffer;
+    }
+    sprintf(buffer, format, value);
+    return buffer;
+}
+
 static Vtx *smo_power_meter_render_health_gauge(Vtx *vtx, f32 x, f32 y, s32 hp, f32 luPos) {
     hp = MIN(hp, HP_MAX_NO_LIFEUP);
     vtx = smo_power_meter_render_segments(vtx, x, y, hp, FALSE);
@@ -305,9 +315,9 @@ static void smo_render_timer() {
         gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
         gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
         print_hud_lut_string(HUD_LUT_GLOBAL, GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(294), 12, sTextTime);
-        print_hud_lut_string(HUD_LUT_GLOBAL, GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(294 - 60), 12, int_to_sm64_string((gHudDisplay.timer / 1800) % 60, "%0d"));
-        print_hud_lut_string(HUD_LUT_GLOBAL, GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(294 - 80), 12, int_to_sm64_string((gHudDisplay.timer / 30) % 60, "%02d"));
-        print_hud_lut_string(HUD_LUT_GLOBAL, GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(294 - 114), 12, int_to_sm64_string(((gHudDisplay.timer * 10) / 3) % 100, "%02d"));
+        print_hud_lut_string(HUD_LUT_GLOBAL, GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(294 - 60), 12,  sm64_string("%0d",   (gHudDisplay.timer / 1800)    % 60));
+        print_hud_lut_string(HUD_LUT_GLOBAL, GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(294 - 80), 12,  sm64_string("%02d",  (gHudDisplay.timer / 30)      % 60));
+        print_hud_lut_string(HUD_LUT_GLOBAL, GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(294 - 114), 12, sm64_string("%02d", ((gHudDisplay.timer * 10) / 3) % 100));
         print_hud_lut_string(HUD_LUT_GLOBAL, GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(294 - 70), 4, sTextApostrophe);
         print_hud_lut_string(HUD_LUT_GLOBAL, GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(294 - 105), 4, sTextDoubleQuote);
         gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);

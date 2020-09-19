@@ -504,40 +504,6 @@ void obj_update_gfx(struct Object *obj) {
     obj->header.gfx.angle[2] = obj->oFaceAngleRoll  & 0xFFFF;
 }
 
-//
-// Other
-//
-
-const char *int_to_string(s32 value, const char *format) {
-    static char buffer[64];
-    bzero(buffer, 64);
-    if (!format || strlen(format) > 8) {
-        return buffer;
-    }
-    sprintf(buffer, format, value);
-    return buffer;
-}
-
-const u8 *int_to_sm64_string(s32 value, const char *format) {
-    static u8 buffer[64];
-    bzero(buffer, 64);
-    if (!format || strlen(format) > 8) {
-        return buffer;
-    }
-    s32 len = sprintf((char *) buffer, format, value);
-    for (s32 i = 0; i < len; ++i) {
-        if (buffer[i] >= 'A' && buffer[i] <= 'F') {
-            buffer[i] = buffer[i] - 'A';
-        } else if (buffer[i] >= 'a' && buffer[i] <= 'f') {
-            buffer[i] = buffer[i] - 'a';
-        } else {
-            buffer[i] = buffer[i] - '0';
-        }
-    }
-    buffer[len] = DIALOG_CHAR_TERMINATOR;
-    return buffer;
-}
-
 void vec3f_rotate_zxy(Vec3f v, s16 pitch, s16 yaw, s16 roll) {
     Vec3f t = { 0, 0, 0 };
     Vec3s r = { pitch, yaw, roll };

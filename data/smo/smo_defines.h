@@ -6,11 +6,6 @@
 #define MARIO_BREATH_MAX_DURATION               1800        // 60 seconds, 20 seconds in cold water, 15 seconds in poison gas
 #define MARIO_ABOUT_TO_DROWN                    1350        // 45 seconds, 15 seconds in cold water, ~11 seconds in poison gas
 
-/* Models */
-#define MODEL_SHOCK_WAVE                        0xFC        // invisible_bowser_accessory_geo
-#define MODEL_DBG_CYLINDER_HITBOX               0xFD        // dbg_cylinder_hitbox_geo
-#define MODEL_DBG_CYLINDER_HURTBOX              0xFE        // dbg_cylinder_hurtbox_geo
-
 /* Dialogs */
 enum DialogSmoId {
     DIALOG_SMO_START_INDEX =                    200,
