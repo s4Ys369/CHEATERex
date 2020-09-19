@@ -2023,8 +2023,6 @@ s32 act_long_jump_land(struct MarioState *m) {
                                                              : MARIO_ANIM_CROUCH_FROM_SLOW_LONGJUMP,
                           ACT_FREEFALL);
 
-    m->actionTimer++;
-
     return FALSE;
 }
 
