@@ -95,6 +95,10 @@ void cheats_mario_inputs(struct MarioState *m) {
                     m->vel[1] += 1;
                     break;
                 }
+                if (m->action &= ACT_FREEFALL) {
+                    m->vel[1] -= 1;
+                    break;
+                }
                 break;
             }
             break;
@@ -129,8 +133,8 @@ void cheats_mario_inputs(struct MarioState *m) {
         switch(Cheats.PAC) {
             /*Model Choices*/
             case 0:
-                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO];
-                m->animation = &D_80339D10;
+                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO]; //Use MODEL_PLAYER
+                m->animation = &D_80339D10; //Only Mario's animations
                 break;
             case 1:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BLACK_BOBOMB];
@@ -156,6 +160,7 @@ void cheats_mario_inputs(struct MarioState *m) {
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_CHUCKYA];
                 m->marioObj->header.gfx.unk38.curAnim = chuckya_seg8_anims_0800C070[0];
                 is_anim_at_end(m);
+                break; //Forgot this in v7
             case 6:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_FLYGUY];
                 m->marioObj->header.gfx.unk38.curAnim = flyguy_seg8_anims_08011A64[0];

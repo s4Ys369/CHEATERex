@@ -55,6 +55,8 @@ Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para elim
  * "50 Coin 1UP" por Keanine incluido
  * "Odyssey Moveset" por PeachyPeach
     -"Tighter Controls" por Keanine incluido
+    -"Go to Level Select" por $4Y$ incluido
+ * "Time Trials" por GateGuy y PechyPeach incluido
  * "Stay In Level After Star v2" por GateGuy
  * "Menu C button support" por engima907
  * "Bugfixes" por JAGSTAX

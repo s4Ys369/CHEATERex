@@ -57,6 +57,8 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
  * 50 Coin 1UP by Keanine
  * Odyssey Moveset by PeachyPeach
     -Tighter Controls by Keanine
+    -Go to Level Select by $4Y$
+ * Time Trials by GateGuy and PeachyPeach
  * Stay In Level After Star v2 by GateGuy
  * Menu C button support by engima907
  * Bugfixes by JAGSTAX
