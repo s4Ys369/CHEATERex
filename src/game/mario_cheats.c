@@ -88,6 +88,26 @@ void cheats_mario_inputs(struct MarioState *m) {
     m->flags &= 0xFFFFFF;
 
     while (Cheats.EnableCheats == true) {
+        /*Hover Cheat*/
+        while (Cheats.Hover && m->controller->buttonDown & A_BUTTON) {
+            if (m->action != ACT_GROUND_POUND) {
+                vec3f_set(m->vel, 0.0f, 2.0f, 300.0f);
+                break;
+            }
+            break;
+        }
+
+        /*Moon Gravity*/
+        while (Cheats.Moon) {
+            while ((m->action & ACT_GROUP_MASK) == ACT_GROUP_AIRBORNE) {
+                if (m->action != ACT_FREEFALL) {
+                    m->vel[1] += 2;
+                    break;
+                }
+                break;
+            }
+            break;
+        }
         /*Jump Modifier*/
         while (Cheats.Jump) {
             while ((m->action & ACT_GROUP_MASK) == ACT_GROUP_AIRBORNE) {
@@ -96,7 +116,7 @@ void cheats_mario_inputs(struct MarioState *m) {
                     break;
                 }
                 if (m->action &= ACT_FREEFALL) {
-                    m->vel[1] -= 1;
+                    m->vel[1] -= 5;
                     break;
                 }
                 break;
@@ -104,8 +124,8 @@ void cheats_mario_inputs(struct MarioState *m) {
             break;
         }
 
-        /*Speed Modifier Cheat*/
-        switch (Cheats.SuperSpeed) {
+        /*Run Modifier Cheat*/
+        switch (Cheats.Run) {
             case 0:
                 break;
             case 1:

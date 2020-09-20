@@ -196,7 +196,7 @@ void update_air_with_turn(struct MarioState *m) {
 
             m->forwardVel += 1.5f * coss(intendedDYaw) * intendedMag;
             if (SMO_MARIO == 1) {
-                if (Cheats.Responsive == true && Cheats.EnableCheats == true) {
+                if (Cheats.Responsive > 0 && Cheats.EnableCheats == true) {
                     m->faceAngle[1] = m->intendedYaw;
                 } else {
                     m->faceAngle[1] += 1024.f * sins(intendedDYaw) * intendedMag;
