@@ -230,10 +230,12 @@ void cheats_mario_inputs(struct MarioState *m) {
         }
 
         /*AutoWallKick cheat*/
-        if (Cheats.AutoWK == true && m->prevAction == ACT_AIR_HIT_WALL) {
+        if (Cheats.AutoWK == true && m->action == ACT_AIR_HIT_WALL) {
+            m->vel[1] = 52.0f;
             m->faceAngle[1] += 0x8000;
             set_mario_action(m, ACT_WALL_KICK_AIR, 0);
             m->wallKickTimer = 0;
+            set_mario_animation(m, MARIO_ANIM_START_WALLKICK);
         }
 
         /*HurtMario cheat*/
