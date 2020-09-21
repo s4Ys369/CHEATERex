@@ -501,7 +501,7 @@ void cheats_mario_inputs(struct MarioState *m) {
             }
         } else {
             fadeout_background_music(0, 28);
-            play_secondary_music(0, 120, 0, 0);
+            //play_secondary_music(0, 120, 0, 0);
         }
         break;
     }
