@@ -83,7 +83,7 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
  * Use `src/game/options_menu.c` to add to `static struct Option optCheats`
  * If adding new files, the `Makefile` will most likely need to be edited
    - External Data aka `build/res/base.zip` is handled partly in both the `Makefile` and `Makefile.split`
- * tutorial soon
+ * [tutorial](https://youtu.be/VIB2qKiR8fI)
 
 # feel free to ask questions, request pulls, open issues
 

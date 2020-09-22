@@ -81,6 +81,6 @@ Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para elim
  * Usa `src/game/options_menu.c` para agregarlo a `static struct Option optCheats`
  * Al agregar nuevos archivos, el `Makefile` probablemente necesita ser modificado
    - La información Externa localizada en `build/res/base.zip` es manejada por los archivos `Makefile` y `Makefile.split`
- * un tutorial vendrá pronto
+ * [tutorial](https://youtu.be/VIB2qKiR8fI)
 
 # siéntete libre de preguntar o mandar una solicitud 
