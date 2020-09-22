@@ -88,6 +88,19 @@ void cheats_mario_inputs(struct MarioState *m) {
     m->flags &= 0xFFFFFF;
 
     while (Cheats.EnableCheats == true) {
+        /*All Jumps Triple Cheat*/
+        while (Cheats.Triple && (m->action & ACT_GROUP_MASK) != ACT_GROUP_SUBMERGED) {
+            // While Triple Jump Cheat is true and Mario's is not underwater
+            if (m->controller->buttonPressed & A_BUTTON && m->action != ACT_TRIPLE_JUMP) {
+                // If A is pressed and not already triple jumping
+                set_mario_action(m, ACT_TRIPLE_JUMP, 0);
+                // Break out of the while
+                break;
+            }
+            // Break out of the while
+            break;
+        }
+
         /*Hover Cheat*/
         while (Cheats.Hover && m->controller->buttonDown & A_BUTTON) {
             if (m->action != ACT_GROUND_POUND) {

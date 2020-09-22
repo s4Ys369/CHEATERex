@@ -38,6 +38,7 @@ struct CheatList {
     bool         NormalCap;
     unsigned int BLJAnywhere;
     unsigned int PAC;
+    bool         Triple;
 };
 
 extern struct CheatList Cheats;

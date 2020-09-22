@@ -211,6 +211,8 @@ static const u8 optsCheatsStr[][64] = {
     { TEXT_OPT_NORMAL_CAP },
     { TEXT_OPT_BLJ },
     { TEXT_OPT_PAC },
+    { TEXT_OPT_TRIPLE }
+
 };
 
 #endif // CHEATS_MENU_H

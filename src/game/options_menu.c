@@ -324,6 +324,7 @@ static struct Option optsCheats[] = {
     DEF_OPT_BUTTON(optsCheatsStr[31], setCap_Normal),
     DEF_OPT_CHOICE(optsCheatsStr[32], &Cheats.BLJAnywhere, bljCheatChoices),
     DEF_OPT_CHOICE(optsCheatsStr[33], &Cheats.PAC, PlayAsCheatChoices),
+    DEF_OPT_TOGGLE(optsCheatsStr[34], &Cheats.Triple),
 
 };
 
