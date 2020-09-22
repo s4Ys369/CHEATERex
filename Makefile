@@ -754,6 +754,9 @@ $(BUILD_DIR)/src/game/camera.o: $(BUILD_DIR)/include/text_strings.h
 $(BUILD_DIR)/include/text_strings.h: include/text_strings.h.in
 	$(TEXTCONV) charmap.txt $< $@
 
+$(BUILD_DIR)/include/text_cheats_strings.h: include/text_cheats_strings.h.in
+	$(TEXTCONV) charmap.txt $< $@
+
 $(BUILD_DIR)/include/text_menu_strings.h: include/text_menu_strings.h.in
 	$(TEXTCONV) charmap_menu.txt $< $@
 
@@ -797,6 +800,7 @@ ALL_DIRS := $(BUILD_DIR) $(addprefix $(BUILD_DIR)/,$(SRC_DIRS) $(ASM_DIRS) $(GOD
 # Make sure build directory exists before compiling anything
 DUMMY != mkdir -p $(ALL_DIRS)
 
+$(BUILD_DIR)/include/text_strings.h: $(BUILD_DIR)/include/text_cheats_strings.h
 $(BUILD_DIR)/include/text_strings.h: $(BUILD_DIR)/include/text_menu_strings.h
 $(BUILD_DIR)/include/text_strings.h: $(BUILD_DIR)/include/text_options_strings.h
 

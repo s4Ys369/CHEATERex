@@ -457,7 +457,7 @@ void cheats_mario_inputs(struct MarioState *m) {
         }
 
         /*Jukebox*/
-        if (Cheats.JBC == true) {
+        if (Cheats.JBC) {
             /*JBC is the bool, acting like the on/off*/
             switch(Cheats.JB) {
                 case 0:
@@ -499,9 +499,6 @@ void cheats_mario_inputs(struct MarioState *m) {
                 case 18:
                     play_secondary_music(SEQ_EVENT_CUTSCENE_CREDITS, 0, 100, 0);
             }
-        } else {
-            fadeout_background_music(0, 28);
-            play_secondary_music(0, 120, 0, 0);
         }
         break;
     }

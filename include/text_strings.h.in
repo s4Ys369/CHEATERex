@@ -2,6 +2,7 @@
 #define TEXT_STRINGS_H
 
 #include "text_menu_strings.h"
+#include "text_cheats_strings.h"
 
 #ifdef EXT_OPTIONS_MENU
 #include "text_options_strings.h"

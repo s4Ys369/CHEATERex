@@ -7,7 +7,9 @@ Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para elim
 
 ## Trucos adicionales
   * Muerte Instantanea/Salir del Nivel Gatillo L + Gatillo R + Boton A + Boton B
-  * Modificador de velocidad
+  * Mantenga presionado Boton A para flotar
+  * Gravedad de la Luna
+  * Modificador de velocidad corriendo
     -Lento x.75
     -Más lento x.5
     -Rápido x2
@@ -67,11 +69,11 @@ Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para elim
  * Usa `src/game/mario_cheats.c` para el código
    - todos y cada uno de los archivos `actions` tienen una función de solo una linea
    - Úsalo con `mario_cheats.h` para agregar nuevas funcionalidades
- * Usa `src/game/options_menu.c` para las opciones del menú
+ * Usa `src/game/cheats_menu.h` para las opciones del menú
    - Agregua `TEXT_OPT_<NOMBRE>` a `optsCheatsStr`
    - Si estás haciendo una lista, necesitas crear un array en  `TEXT_OPT`
      al igual que uno para los strings (ve el archivo si necesitas un ejemplo)
- * Usa `include/text_options_strings.h.in` para decirle al juego que imprimir
+ * Usa `include/text_cheats_strings.h.in` para decirle al juego que imprimir
    - Ejemplo: `#define TEXT_OPT_HOLA _("Hola")`
    - debes hacerlo para las versiones US y JP
    - JP solo usa mayúsculas

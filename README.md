@@ -10,7 +10,9 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
 
 ## Additional Cheats
   * Instant Death/Level Exit L Trigger + R Trigger + A Button + B Button
-  * Speed Modifier
+  * Hold A to Hover
+  * Moon Gravity
+  * Run Speed Modifier
     -Slow x.75
     -Slower x.5
     -Fast x2
@@ -19,7 +21,7 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
   * All Jumps Higher
   * Speed Display, ported by ferris the crab(io12)
   * T Pose Float?
-  * Jukebox song selector
+  * Jukebox song selector (WIP)
   * Quick Ending
     - while Enabled, if player has 120 stars, warp directly to End Cutscene
   * Hurt Mario = L Trigger + A Button
@@ -69,11 +71,11 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
  * Use `src/game/mario_cheats.c` for code
    - each of the `actions` files has a single line function
    - Use with `mario_cheats.h` to add new functionality
- * Use `src/game/options_menu.c` for in game options
+ * Use `src/game/cheats_menu.h` for in game options
    - add `TEXT_OPT_<NAME>` to `optsCheatsStr`
    - if using a list, you need to make an array for `TEXT_OPT`
      as well as one for the strings (see file for example)
- * Use `include/text_options_strings.h.in` to tell the game what to print
+ * Use `include/text_cheats_strings.h.in` to tell the game what to print
    - ie `#define TEXT_OPT_HEY _("Hey")`
    - should be done for both JP and US
    - JP only uses capital letters
@@ -81,7 +83,7 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
  * Use `src/game/options_menu.c` to add to `static struct Option optCheats`
  * If adding new files, the `Makefile` will most likely need to be edited
    - External Data aka `build/res/base.zip` is handled partly in both the `Makefile` and `Makefile.split`
- * tutorial soon-ish
+ * tutorial soon
 
 # feel free to ask questions, request pulls, open issues
 
