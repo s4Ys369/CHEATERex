@@ -29,6 +29,7 @@
 #define TEXT_OPT_BLJ   _("BLJ ANYWHERE")
 #define TEXT_OPT_PAC   _("PLAY AS")
 #define TEXT_OPT_TRIPLE _("ALL JUMPS TRIPLE")
+#define TEXT_OPT_FLY _("FLYER")
 
 #define TEXT_OPT_SS1   _("NORMAL")
 #define TEXT_OPT_SS2   _("SLOW")
@@ -130,6 +131,7 @@
 #define TEXT_OPT_BLJ       _("BLJ Anywhere")
 #define TEXT_OPT_PAC   _("Play as")
 #define TEXT_OPT_TRIPLE _("All Jumps Triple")
+#define TEXT_OPT_FLY _("FLYER")
 
 #define TEXT_OPT_SS1   _("Normal")
 #define TEXT_OPT_SS2   _("Slow")

@@ -39,6 +39,7 @@ struct CheatList {
     unsigned int BLJAnywhere;
     unsigned int PAC;
     bool         Triple;
+    bool         Fly;
 };
 
 extern struct CheatList Cheats;
