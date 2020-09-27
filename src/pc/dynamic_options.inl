@@ -334,8 +334,8 @@ static struct SubMenu *dynos_read_file(const char *folder, const char *filename)
             option.uval         = &dopt->uval;
             option.numChoices   = 2;
             option.choices      = dynos_alloc_choice_list(option.numChoices);
-            option.choices[0]   = dynos_alloc_sm64_string("Disabled");
-            option.choices[1]   = dynos_alloc_sm64_string("Enabled");
+            option.choices[0]   = dynos_alloc_sm64_string("DISABLED");
+            option.choices[1]   = dynos_alloc_sm64_string("ENABLED");
         }
 
         // SCROLL [Label] [Name] [InitialValue] [Min] [Max] [Step]
@@ -558,14 +558,14 @@ void optmenu_draw_prompt_dynos() {
     if (sDynosMenu != NULL) {
         if (!optmenu_open) {
             if (sDynosOpenText == NULL) {
-                sDynosOpenText = dynos_alloc_sm64_string("[Z] DynOS");
+                sDynosOpenText = dynos_alloc_sm64_string("[Z] DYNOS");
             }
             gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
             optmenu_draw_text(56, 212, sDynosOpenText, 0);
             gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
         } else {
             if (sDynosCloseText == NULL) {
-                sDynosCloseText = dynos_alloc_sm64_string("[Z] Return");
+                sDynosCloseText = dynos_alloc_sm64_string("[Z] RETURN");
             }
             gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
             optmenu_draw_text(56, 212, sDynosCloseText, 0);
