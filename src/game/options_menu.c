@@ -207,28 +207,6 @@ static void optvideo_apply(UNUSED struct Option *self, s32 arg) {
     if (!arg) configWindow.settings_changed = true;
 }
 
-
-static void setCap_Wing(UNUSED struct Option *self, s32 arg) {
-    if (!arg) Cheats.WingCap = true;
-}
-static void setCap_Metal(UNUSED struct Option *self, s32 arg) {
-    if (!arg) Cheats.MetalCap = true;
-}
-static void setCap_Vanish(UNUSED struct Option *self, s32 arg) {
-    if (!arg) Cheats.VanishCap = true;
-}
-static void setCap_Remove(UNUSED struct Option *self, s32 arg) {
-    if (!arg) Cheats.RemoveCap = true;
-}
-static void setCap_Normal(UNUSED struct Option *self, s32 arg) {
-    Cheats.WingCap = false;
-    Cheats.MetalCap = false;
-    Cheats.VanishCap = false;
-    Cheats.RemoveCap = false;
-    if (!arg) Cheats.NormalCap = true;
-}
-
-
 /* submenu option lists */
 
 #ifdef BETTERCAMERA
@@ -316,16 +294,11 @@ static struct Option optsCheats[] = {
     DEF_OPT_TOGGLE(optsCheatsStr[23], &Cheats.GetBob),
     DEF_OPT_CHOICE(optsCheatsStr[24], &Cheats.Spamba, SpamCheatChoices),
     DEF_OPT_TOGGLE(optsCheatsStr[25], &Cheats.Swim),
-    DEF_OPT_BUTTON(optsCheatsStr[26], setCap_Wing),
-    DEF_OPT_BUTTON(optsCheatsStr[27], setCap_Metal),
-    DEF_OPT_BUTTON(optsCheatsStr[28], setCap_Vanish),
-    DEF_OPT_BUTTON(optsCheatsStr[29], setCap_Remove),
-    DEF_OPT_TOGGLE(optsCheatsStr[30], &Cheats.DCM),
-    DEF_OPT_BUTTON(optsCheatsStr[31], setCap_Normal),
-    DEF_OPT_CHOICE(optsCheatsStr[32], &Cheats.BLJAnywhere, bljCheatChoices),
-    DEF_OPT_CHOICE(optsCheatsStr[33], &Cheats.PAC, PlayAsCheatChoices),
-    DEF_OPT_TOGGLE(optsCheatsStr[34], &Cheats.Triple),
-    DEF_OPT_TOGGLE(optsCheatsStr[35], &Cheats.Fly),
+    DEF_OPT_TOGGLE(optsCheatsStr[26], &Cheats.DCM),
+    DEF_OPT_CHOICE(optsCheatsStr[27], &Cheats.BLJAnywhere, bljCheatChoices),
+    DEF_OPT_CHOICE(optsCheatsStr[28], &Cheats.PAC, PlayAsCheatChoices),
+    DEF_OPT_TOGGLE(optsCheatsStr[29], &Cheats.Triple),
+    DEF_OPT_TOGGLE(optsCheatsStr[30], &Cheats.Fly),
 
 };
 

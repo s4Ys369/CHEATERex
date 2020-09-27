@@ -283,49 +283,45 @@ void cheats_mario_inputs(struct MarioState *m) {
         };
 
         /*CAP Cheats, this whole thing needs to be refactored, but
-        I've only been adding to JAGSTAX's original patch*/
+        I've only been started modifying JAGSTAX's original patch*/
         if (Cheats.EnableCheats) {
-            if (Cheats.WingCap) {
+            if (m->controller->buttonPressed & U_DPAD) {
                 m->flags |= MARIO_WING_CAP;
                 if ((m->action & ACT_GROUP_MASK) == (!(ACT_GROUP_AIRBORNE) && !(ACT_GROUP_SUBMERGED))) {
                     set_mario_action(m, ACT_PUTTING_ON_CAP, 0);
                 }
                 play_cap_music(SEQ_EVENT_POWERUP);
-                Cheats.WingCap = false;
             }
 
-            if (Cheats.MetalCap) {
+            if (m->controller->buttonPressed & L_DPAD) {
                 m->flags |= MARIO_METAL_CAP;
                 if ((m->action & ACT_GROUP_MASK) == (!(ACT_GROUP_AIRBORNE) && !(ACT_GROUP_SUBMERGED))) {
                     set_mario_action(m, ACT_PUTTING_ON_CAP, 0);
                 }
                 play_cap_music(SEQ_EVENT_METAL_CAP);
-                Cheats.MetalCap = false;
             }
 
-            if (Cheats.VanishCap) {
+            if (m->controller->buttonPressed & R_DPAD) {
                 m->flags |= MARIO_VANISH_CAP;
                 if ((m->action & ACT_GROUP_MASK) == (!(ACT_GROUP_AIRBORNE) && !(ACT_GROUP_SUBMERGED))) {
                     set_mario_action(m, ACT_PUTTING_ON_CAP, 0);
                 }
                 play_cap_music(SEQ_EVENT_POWERUP);
-                Cheats.VanishCap = false;
             }
 
-            if (Cheats.RemoveCap) {
+            if (m->controller->buttonPressed & D_DPAD) {
                 m->flags &= ~MARIO_CAP_ON_HEAD;
                 m->flags |= MARIO_CAP_IN_HAND;
                 if ((m->action & ACT_GROUP_MASK) == (!(ACT_GROUP_AIRBORNE) && !(ACT_GROUP_SUBMERGED))) {
                     set_mario_action(m, ACT_SHIVERING, 0);
                 }
-                Cheats.RemoveCap = false;
             }
 
             if (Cheats.DCM == true) {
                 stop_cap_music();
             }
 
-            if (Cheats.NormalCap) {
+            if (m->controller->buttonDown & U_DPAD && m->controller->buttonPressed & L_TRIG) {
                 m->flags &= ~MARIO_CAP_ON_HEAD;
                 m->flags &= ~(MARIO_WING_CAP | MARIO_METAL_CAP | MARIO_VANISH_CAP);
                 if ((m->action & ACT_GROUP_MASK) == (!(ACT_GROUP_AIRBORNE) && !(ACT_GROUP_SUBMERGED))) {
@@ -336,7 +332,6 @@ void cheats_mario_inputs(struct MarioState *m) {
                     m->flags |= MARIO_CAP_ON_HEAD;
                 }
                 stop_cap_music();
-                Cheats.NormalCap = false;
             }
         }
 
