@@ -164,6 +164,7 @@ static const struct ConfigOption options[] = {
     {.name = "exit_anywhere", .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.ExitAnywhere },
     {.name = "huge_mario", .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.HugeMario },
     {.name = "tiny_mario", .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.TinyMario },
+    {.name = "non_stop_mode", .type = CONFIG_TYPE_UINT, .uintValue = &Cheats.NON },
     {.name = "hover_mode", .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.Hover },
     {.name = "moon_gravity", .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.Moon },
     {.name = "run_speed", .type = CONFIG_TYPE_UINT, .uintValue = &Cheats.Run },

@@ -765,8 +765,11 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
     u32 starIndex;
     u32 starGrabAction = ACT_STAR_DANCE_EXIT;
     u32 noExit = (o->oInteractionSubtype & INT_SUBTYPE_NO_EXIT) != 0;
-    u8 stayInLevelCommon = !(m->controller->buttonDown & L_TRIG || gCurrLevelNum == LEVEL_BOWSER_1 || gCurrLevelNum == LEVEL_BOWSER_2 || gCurrLevelNum == LEVEL_BOWSER_3);
-    if (stayInLevelCommon == TRUE) {
+    u8 stayInLevelCommon =
+        (Cheats.NON > 0 && Cheats.EnableCheats == TRUE && !(m->controller->buttonDown & L_TRIG)
+         && !(gCurrLevelNum == LEVEL_BOWSER_1 || gCurrLevelNum == LEVEL_BOWSER_2
+              || gCurrLevelNum == LEVEL_BOWSER_3));
+    if (Cheats.NON > 0 && stayInLevelCommon == TRUE) {
         noExit = TRUE;
     }
     u32 grandStar = (o->oInteractionSubtype & INT_SUBTYPE_GRAND_STAR) != 0;
@@ -837,10 +840,10 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
             return set_mario_action(m, ACT_JUMBO_STAR_CUTSCENE, 0);
         }
 
-        if (stayInLevelCommon == FALSE) {
+        if (Cheats.NON != 2 || stayInLevelCommon == FALSE) {
             return set_mario_action(m, starGrabAction, noExit + 2 * grandStar);
         }
-        //If nonstop StayInLevel is enabled, autosave
+        // If nonstop StayInLevel is enabled, autosave
         save_file_do_save(gCurrSaveFileNum - 1);
     }
 

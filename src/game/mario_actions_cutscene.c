@@ -29,6 +29,7 @@
 #include "sound_init.h"
 #include "thread6.h"
 #include "../../include/libc/stdlib.h"
+#include "pc/cheats.h"
 #include "pc/pc_main.h"
 
 // TODO: put this elsewhere
@@ -658,10 +659,12 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
             set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG, dialogID);
         } else {
             set_mario_action(m, isInWater ? ACT_WATER_IDLE : ACT_IDLE, 0);
-            set_fov_function(CAM_FOV_DEFAULT);
-            // fix camera bug when getting a star underwater with StayInLevel cheat enabled
-            if (isInWater) {
-                cutscene_exit_painting_end(m->area->camera);
+            if (Cheats.NON > 0 && Cheats.EnableCheats == TRUE) {
+                set_fov_function(CAM_FOV_DEFAULT);
+                // fix camera bug when getting a star underwater with StayInLevel cheat enabled
+                if (isInWater) {
+                    cutscene_exit_painting_end(m->area->camera);
+                }
             }
         }
     }

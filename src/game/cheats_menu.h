@@ -1,6 +1,18 @@
 #ifndef CHEATS_MENU_H
 #define CHEATS_MENU_H
 
+static const u8 optsStayInLevelStr[][32] = {
+    { TEXT_CHEAT_STAY1 },
+    { TEXT_CHEAT_STAY2 },
+    { TEXT_CHEAT_STAY3 },
+};
+
+static const u8 *stayInLevelChoices[] = {
+    optsStayInLevelStr[0],
+    optsStayInLevelStr[1],
+    optsStayInLevelStr[2],
+};
+
 static const u8 optsSeqStr[][64] = {
     { TEXT_OPT_SEQ1 },
     { TEXT_OPT_SEQ2 },
@@ -186,6 +198,7 @@ static const u8 optsCheatsStr[][64] = {
     { TEXT_OPT_CHEAT7 },
     { TEXT_OPT_CHEAT8 },
     { TEXT_OPT_CHEAT9 },
+    { TEXT_OPT_NON },
     { TEXT_OPT_HOVER },
     { TEXT_OPT_MOON },
     { TEXT_OPT_RUN },
@@ -203,12 +216,7 @@ static const u8 optsCheatsStr[][64] = {
     { TEXT_OPT_BOB },
     { TEXT_OPT_SPAMBA },
     { TEXT_OPT_SWIM },
-    { TEXT_OPT_WING_CAP },
-    { TEXT_OPT_METAL_CAP },
-    { TEXT_OPT_VANISH_CAP },
-    { TEXT_OPT_REMOVE_CAP },
     { TEXT_OPT_DCM },
-    { TEXT_OPT_NORMAL_CAP },
     { TEXT_OPT_BLJ },
     { TEXT_OPT_PAC },
     { TEXT_OPT_TRIPLE },
