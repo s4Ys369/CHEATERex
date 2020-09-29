@@ -1,0 +1,771 @@
+diff --git a/actors/door/geo.inc.c b/actors/door/geo.inc.c
+index 81c017d..d5e9a87 100644
+--- a/actors/door/geo.inc.c
++++ b/actors/door/geo.inc.c
+@@ -199,9 +199,6 @@ const GeoLayout castle_door_0_star_geo[] = {
+                GEO_RENDER_RANGE(-2048, 1000),
+                GEO_OPEN_NODE(),
+                   GEO_ANIMATED_PART(LAYER_OPAQUE, 0, 0, 0, door_seg3_dl_03013E28),
+-                  GEO_OPEN_NODE(),
+-                     GEO_DISPLAY_LIST(LAYER_TRANSPARENT, door_seg3_dl_03014250),
+-                  GEO_CLOSE_NODE(),
+                GEO_CLOSE_NODE(),
+                GEO_RENDER_RANGE(1000, 32767),
+                GEO_OPEN_NODE(),
+@@ -232,9 +229,6 @@ const GeoLayout castle_door_1_star_geo[] = {
+                GEO_RENDER_RANGE(-2048, 1000),
+                GEO_OPEN_NODE(),
+                   GEO_ANIMATED_PART(LAYER_OPAQUE, 0, 0, 0, door_seg3_dl_03013E28),
+-                  GEO_OPEN_NODE(),
+-                     GEO_DISPLAY_LIST(LAYER_TRANSPARENT, door_seg3_dl_030142B0),
+-                  GEO_CLOSE_NODE(),
+                GEO_CLOSE_NODE(),
+                GEO_RENDER_RANGE(1000, 32767),
+                GEO_OPEN_NODE(),
+@@ -265,9 +259,6 @@ const GeoLayout castle_door_3_stars_geo[] = {
+                GEO_RENDER_RANGE(-2048, 1000),
+                GEO_OPEN_NODE(),
+                   GEO_ANIMATED_PART(LAYER_OPAQUE, 0, 0, 0, door_seg3_dl_03013E28),
+-                  GEO_OPEN_NODE(),
+-                     GEO_DISPLAY_LIST(LAYER_TRANSPARENT, door_seg3_dl_03014310),
+-                  GEO_CLOSE_NODE(),
+                GEO_CLOSE_NODE(),
+                GEO_RENDER_RANGE(1000, 32767),
+                GEO_OPEN_NODE(),
+@@ -298,9 +289,6 @@ const GeoLayout key_door_geo[] = {
+                GEO_RENDER_RANGE(-2048, 1000),
+                GEO_OPEN_NODE(),
+                   GEO_ANIMATED_PART(LAYER_OPAQUE, 0, 0, 0, door_seg3_dl_03013E28),
+-                  GEO_OPEN_NODE(),
+-                     GEO_DISPLAY_LIST(LAYER_OPAQUE, door_seg3_dl_03014540),
+-                  GEO_CLOSE_NODE(),
+                GEO_CLOSE_NODE(),
+                GEO_RENDER_RANGE(1000, 32767),
+                GEO_OPEN_NODE(),
+diff --git a/levels/castle_inside/script.c b/levels/castle_inside/script.c
+index 5d9ae4f..f676175 100644
+--- a/levels/castle_inside/script.c
++++ b/levels/castle_inside/script.c
+@@ -95,8 +95,8 @@ static const LevelScript script_func_local_2[] = {
+     OBJECT(/*model*/ MODEL_CASTLE_KEY_DOOR, /*pos*/  -946, 512, 3021, /*angle*/ 0, 180, 0, /*behParam*/ 0x00010000, /*beh*/ bhvDoorWarp),
+     WARP_NODE(/*id*/ 0x00, /*destLevel*/ LEVEL_CASTLE, /*destArea*/ 0x01, /*destNode*/ 0x03, /*flags*/ WARP_NO_CHECKPOINT),
+     WARP_NODE(/*id*/ 0x01, /*destLevel*/ LEVEL_CASTLE, /*destArea*/ 0x01, /*destNode*/ 0x04, /*flags*/ WARP_NO_CHECKPOINT),
+-    OBJECT(/*model*/ MODEL_CASTLE_STAR_DOOR_50_STARS, /*pos*/ -281, 2253, 4762, /*angle*/ 0,   0, 0, /*behParam*/ 0x32000000, /*beh*/ bhvStarDoor),
+-    OBJECT(/*model*/ MODEL_CASTLE_STAR_DOOR_50_STARS, /*pos*/ -127, 2253, 4762, /*angle*/ 0, 180, 0, /*behParam*/ 0x32000000, /*beh*/ bhvStarDoor),
++    OBJECT(/*model*/ MODEL_CASTLE_KEY_DOOR, /*pos*/ -281, 2253, 4762, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvDoor),
++    OBJECT(/*model*/ MODEL_CASTLE_KEY_DOOR, /*pos*/ -127, 2253, 4762, /*angle*/ 0, 180, 0, /*behParam*/ 0x00000000, /*beh*/ bhvDoor),
+     OBJECT(/*model*/ MODEL_CASTLE_STAR_DOOR_70_STARS, /*pos*/ -281, 3174, 3772, /*angle*/ 0,   0, 0, /*behParam*/ 0x46000000, /*beh*/ bhvStarDoor),
+     OBJECT(/*model*/ MODEL_CASTLE_STAR_DOOR_70_STARS, /*pos*/ -127, 3174, 3772, /*angle*/ 0, 180, 0, /*behParam*/ 0x46000000, /*beh*/ bhvStarDoor),
+     PAINTING_WARP_NODE(/*id*/ 0x18, /*destLevel*/ LEVEL_WDW, /*destArea*/ 0x01, /*destNode*/ 0x0A, /*flags*/ WARP_NO_CHECKPOINT),
+diff --git a/src/game/behaviors/boo.inc.c b/src/game/behaviors/boo.inc.c
+index abfaba8..fa6f18f 100644
+--- a/src/game/behaviors/boo.inc.c
++++ b/src/game/behaviors/boo.inc.c
+@@ -86,9 +86,6 @@ void bhv_courtyard_boo_triplet_init(void) {
+     s32 i;
+     struct Object *boo;
+ 
+-    if (gHudDisplay.stars < 12) {
+-        obj_mark_for_deletion(o);
+-    } else {
+         for (i = 0; i < 3; i++) {
+             boo = spawn_object_relative(
+                 0x01,
+@@ -102,7 +99,6 @@ void bhv_courtyard_boo_triplet_init(void) {
+ 
+             boo->oMoveAngleYaw = random_u16();
+         }
+-    }
+ }
+ 
+ static void boo_approach_target_opacity_and_update_scale(void) {
+@@ -726,12 +722,8 @@ static void boo_with_cage_act_3(void) {
+ void bhv_boo_with_cage_init(void) {
+     struct Object* cage;
+ 
+-    if (gHudDisplay.stars < 12) {
+-        obj_mark_for_deletion(o);
+-    } else {
+-        cage = spawn_object(o, MODEL_HAUNTED_CAGE, bhvBooCage);
+-        cage->oBehParams = o->oBehParams;
+-    }
++    cage = spawn_object(o, MODEL_HAUNTED_CAGE, bhvBooCage);
++    cage->oBehParams = o->oBehParams;
+ }
+ 
+ static void (*sBooWithCageActions[])(void) = {
+@@ -810,9 +802,6 @@ void bhv_boo_in_castle_loop(void) {
+     if (o->oAction == 0) {
+         cur_obj_hide();
+ 
+-        if (gHudDisplay.stars < 12) {
+-            obj_mark_for_deletion(o);
+-        }
+ 
+         if (gMarioCurrentRoom == 1) {
+             o->oAction++;
+diff --git a/src/game/behaviors/ddd_sub.inc.c b/src/game/behaviors/ddd_sub.inc.c
+index d8479c6..2642ea4 100644
+--- a/src/game/behaviors/ddd_sub.inc.c
++++ b/src/game/behaviors/ddd_sub.inc.c
+@@ -1,6 +1,6 @@
+ // ddd_sub.c.inc
+ 
+ void bhv_bowsers_sub_loop(void) {
+-    if (save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_2 | SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR))
++    if (gCurrActNum > 1)
+         obj_mark_for_deletion(o);
+ }
+diff --git a/src/game/interaction.c b/src/game/interaction.c
+index 7a9c520..72ce032 100644
+--- a/src/game/interaction.c
++++ b/src/game/interaction.c
+@@ -893,34 +893,7 @@ u32 interact_warp_door(struct MarioState *m, UNUSED u32 interactType, struct Obj
+     u32 actionArg;
+ 
+     if (m->action == ACT_WALKING || m->action == ACT_DECELERATING) {
+-        if (warpDoorId == 1 && !(saveFlags & SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR)) {
+-            if (!(saveFlags & SAVE_FLAG_HAVE_KEY_2)) {
+-                if (!sDisplayingDoorText) {
+-                    set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG,
+-                                     (saveFlags & SAVE_FLAG_HAVE_KEY_1) ? DIALOG_023 : DIALOG_022);
+-                }
+-                sDisplayingDoorText = TRUE;
+-
+-                return FALSE;
+-            }
+ 
+-            doorAction = ACT_UNLOCKING_KEY_DOOR;
+-        }
+-
+-        if (warpDoorId == 2 && !(saveFlags & SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)) {
+-            if (!(saveFlags & SAVE_FLAG_HAVE_KEY_1)) {
+-                if (!sDisplayingDoorText) {
+-                    // Moat door skip was intended confirmed
+-                    set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG,
+-                                     (saveFlags & SAVE_FLAG_HAVE_KEY_2) ? DIALOG_023 : DIALOG_022);
+-                }
+-                sDisplayingDoorText = TRUE;
+-
+-                return FALSE;
+-            }
+-
+-            doorAction = ACT_UNLOCKING_KEY_DOOR;
+-        }
+ 
+         if (m->action == ACT_WALKING || m->action == ACT_DECELERATING) {
+             actionArg = should_push_or_pull_door(m, o) + 0x00000004;
+@@ -985,9 +958,15 @@ u32 get_door_save_file_flag(struct Object *door) {
+ u32 interact_door(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
+     s16 requiredNumStars = o->oBehParams >> 24;
+     s16 numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
++    u32 saveFlags = save_file_get_flags();
+ 
+     if (m->action == ACT_WALKING || m->action == ACT_DECELERATING) {
+-        if (numStars >= requiredNumStars) {
++        u8 bowser1 = requiredNumStars == 8 && numStars >= requiredNumStars;
++        u8 bowser2 = requiredNumStars == 30 && numStars >= requiredNumStars;
++        u8 bowser3 = requiredNumStars == 70 && numStars >= requiredNumStars
++			&& ((saveFlags & SAVE_FLAG_HAVE_KEY_1) || (saveFlags & SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)) 
++			&& ((saveFlags & SAVE_FLAG_HAVE_KEY_2) || (saveFlags & SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR));
++        if ((requiredNumStars != 8 && requiredNumStars != 30 && requiredNumStars != 70) || bowser1 || bowser2 || bowser3) {
+             u32 actionArg = should_push_or_pull_door(m, o);
+             u32 enterDoorAction;
+             u32 doorSaveFileFlag;
+@@ -1006,12 +985,8 @@ u32 interact_door(struct MarioState *m, UNUSED u32 interactType, struct Object *
+                 enterDoorAction = ACT_ENTERING_STAR_DOOR;
+             }
+ 
+-            if (doorSaveFileFlag != 0 && !(save_file_get_flags() & doorSaveFileFlag)) {
+-                enterDoorAction = ACT_UNLOCKING_STAR_DOOR;
+-            }
+-
+             return set_mario_action(m, enterDoorAction, actionArg);
+-        } else if (!sDisplayingDoorText) {
++        } else if (!sDisplayingDoorText && (requiredNumStars == 8 || requiredNumStars == 30 || requiredNumStars == 70)) {
+             u32 text = DIALOG_022 << 16;
+ 
+             switch (requiredNumStars) {
+@@ -1040,7 +1015,7 @@ u32 interact_door(struct MarioState *m, UNUSED u32 interactType, struct Object *
+             sDisplayingDoorText = TRUE;
+             return set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG, text);
+         }
+-    } else if (m->action == ACT_IDLE && sDisplayingDoorText == TRUE && requiredNumStars == 70) {
++    } else if (m->action == ACT_IDLE && sDisplayingDoorText == TRUE && (requiredNumStars == 30 || requiredNumStars == 70)) {
+         m->interactObj = o;
+         m->usedObj = o;
+         return set_mario_action(m, ACT_ENTERING_STAR_DOOR, should_push_or_pull_door(m, o));
+diff --git a/src/game/level_update.c b/src/game/level_update.c
+index 72a6a60..f4b4222 100644
+--- a/src/game/level_update.c
++++ b/src/game/level_update.c
+@@ -531,9 +531,12 @@ void warp_credits(void) {
+ void check_instant_warp(void) {
+     s16 cameraAngle;
+     struct Surface *floor;
++    u32 saveFlags = save_file_get_flags();
+ 
+     if (gCurrLevelNum == LEVEL_CASTLE
+-        && save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 70) {
++        && save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 70
++		&& ((saveFlags & SAVE_FLAG_HAVE_KEY_1) || (saveFlags & SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)) 
++		&& ((saveFlags & SAVE_FLAG_HAVE_KEY_2) || (saveFlags & SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR))) {
+         return;
+     }
+ 
+diff --git a/src/game/mario_actions_cutscene.c b/src/game/mario_actions_cutscene.c
+index 72e7692..16831fb 100644
+--- a/src/game/mario_actions_cutscene.c
++++ b/src/game/mario_actions_cutscene.c
+@@ -32,7 +32,12 @@
+ #include "pc/pc_main.h"
+ 
+ // TODO: put this elsewhere
+-enum SaveOption { SAVE_OPT_SAVE_AND_CONTINUE = 1, SAVE_OPT_SAVE_AND_QUIT, SAVE_OPT_SAVE_EXIT_GAME, SAVE_OPT_CONTINUE_DONT_SAVE };
++enum SaveOption {
++    SAVE_OPT_SAVE_AND_CONTINUE = 1,
++    SAVE_OPT_SAVE_AND_QUIT,
++    SAVE_OPT_SAVE_EXIT_GAME,
++    SAVE_OPT_CONTINUE_DONT_SAVE
++};
+ 
+ static struct Object *sIntroWarpPipeObj;
+ static struct Object *sEndPeachObj;
+@@ -159,7 +164,8 @@ void print_displaying_credits_entry(void) {
+ #endif
+ 
+         while (numLines-- > 0) {
+-            print_credits_str_ascii(CREDIT_TEXT_X_RIGHT - get_credits_str_width(*currStrPtr), strY, *currStrPtr);
++            print_credits_str_ascii(CREDIT_TEXT_X_RIGHT - get_credits_str_width(*currStrPtr), strY,
++                                    *currStrPtr);
+ 
+ #ifdef VERSION_JP
+             strY += 16;
+@@ -237,13 +243,15 @@ s32 get_star_collection_dialog(struct MarioState *m) {
+     s32 dialogID = 0;
+     s32 numStarsRequired;
+ 
+-    for (i = 0; i < 6; i++) {
+-        numStarsRequired = sStarsNeededForDialog[i];
+-        if (m->prevNumStarsForDialog < numStarsRequired && m->numStars >= numStarsRequired) {
+-            dialogID = i + DIALOG_141;
+-            break;
++    for (i = 2; i < 6; i++) {
++        if (i != 4) {
++            numStarsRequired = sStarsNeededForDialog[i];
++            if (m->prevNumStarsForDialog < numStarsRequired && m->numStars >= numStarsRequired) {
++                dialogID = i + DIALOG_141;
++                break;
++            }
+         }
+-    }
++	}
+ 
+     m->prevNumStarsForDialog = m->numStars;
+     return dialogID;
+@@ -255,13 +263,15 @@ void handle_save_menu(struct MarioState *m) {
+     // wait for the menu to show up
+     if (is_anim_past_end(m) && gSaveOptSelectIndex != 0) {
+         // save and continue / save and quit
+-        if (gSaveOptSelectIndex == SAVE_OPT_SAVE_AND_CONTINUE || gSaveOptSelectIndex == SAVE_OPT_SAVE_EXIT_GAME || gSaveOptSelectIndex == SAVE_OPT_SAVE_AND_QUIT) {
++        if (gSaveOptSelectIndex == SAVE_OPT_SAVE_AND_CONTINUE
++            || gSaveOptSelectIndex == SAVE_OPT_SAVE_EXIT_GAME
++            || gSaveOptSelectIndex == SAVE_OPT_SAVE_AND_QUIT) {
+             save_file_do_save(gCurrSaveFileNum - 1);
+ 
+             if (gSaveOptSelectIndex == SAVE_OPT_SAVE_AND_QUIT) {
+                 fade_into_special_warp(-2, 0); // reset game
+             } else if (gSaveOptSelectIndex == SAVE_OPT_SAVE_EXIT_GAME) {
+-                //initiate_warp(LEVEL_CASTLE, 1, 0x1F, 0);
++                // initiate_warp(LEVEL_CASTLE, 1, 0x1F, 0);
+                 fade_into_special_warp(0, 0);
+                 game_exit();
+             }
+@@ -289,7 +299,8 @@ void handle_save_menu(struct MarioState *m) {
+  * Spawns object with given behavior and model and copies over Mario's position
+  * and yaw plus relative yaw.
+  */
+-struct Object *spawn_obj_at_mario_rel_yaw(struct MarioState *m, s32 model, const BehaviorScript *behavior, s16 relYaw) {
++struct Object *spawn_obj_at_mario_rel_yaw(struct MarioState *m, s32 model,
++                                          const BehaviorScript *behavior, s16 relYaw) {
+     struct Object *o = spawn_object(m->marioObj, model, behavior);
+ 
+     o->oFaceAngleYaw = m->faceAngle[1] + relYaw;
+@@ -609,9 +620,11 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
+                     play_course_clear();
+                 } else {
+                     if (gCurrLevelNum == LEVEL_BOWSER_1 || gCurrLevelNum == LEVEL_BOWSER_2) {
+-                        play_music(SEQ_PLAYER_ENV, SEQUENCE_ARGS(15, SEQ_EVENT_CUTSCENE_COLLECT_KEY), 0);
++                        play_music(SEQ_PLAYER_ENV, SEQUENCE_ARGS(15, SEQ_EVENT_CUTSCENE_COLLECT_KEY),
++                                   0);
+                     } else {
+-                        play_music(SEQ_PLAYER_ENV, SEQUENCE_ARGS(15, SEQ_EVENT_CUTSCENE_COLLECT_STAR), 0);
++                        play_music(SEQ_PLAYER_ENV, SEQUENCE_ARGS(15, SEQ_EVENT_CUTSCENE_COLLECT_STAR),
++                                   0);
+                     }
+                 }
+                 break;
+@@ -625,7 +638,8 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
+                     level_trigger_warp(m, WARP_OP_STAR_EXIT);
+                 } else {
+                     enable_time_stop();
+-                    create_dialog_box_with_response(gLastCompletedStarNum == 7 ? DIALOG_013 : DIALOG_014);
++                    create_dialog_box_with_response(gLastCompletedStarNum == 7 ? DIALOG_013
++                                                                               : DIALOG_014);
+                     m->actionState = 1;
+                 }
+                 break;
+@@ -1118,7 +1132,8 @@ s32 act_exit_land_save_dialog(struct MarioState *m) {
+             animFrame = set_mario_animation(m, MARIO_ANIM_THROW_CATCH_KEY);
+             switch (animFrame) {
+                 case -1:
+-                    spawn_obj_at_mario_rel_yaw(m, MODEL_BOWSER_KEY_CUTSCENE, bhvBowserKeyCourseExit, -32768);
++                    spawn_obj_at_mario_rel_yaw(m, MODEL_BOWSER_KEY_CUTSCENE, bhvBowserKeyCourseExit,
++                                               -32768);
+                     //! fall through
+                 case 67:
+                     play_sound(SOUND_ACTION_KEY_SWISH, m->marioObj->header.gfx.cameraToObject);
+@@ -1666,9 +1681,9 @@ static void intro_cutscene_hide_hud_and_mario(struct MarioState *m) {
+ }
+ 
+ #ifdef VERSION_EU
+-    #define TIMER_SPAWN_PIPE 47
++#define TIMER_SPAWN_PIPE 47
+ #else
+-    #define TIMER_SPAWN_PIPE 37
++#define TIMER_SPAWN_PIPE 37
+ #endif
+ 
+ static void intro_cutscene_peach_lakitu_scene(struct MarioState *m) {
+@@ -1684,9 +1699,9 @@ static void intro_cutscene_peach_lakitu_scene(struct MarioState *m) {
+ #undef TIMER_SPAWN_PIPE
+ 
+ #ifdef VERSION_EU
+-    #define TIMER_RAISE_PIPE 28
++#define TIMER_RAISE_PIPE 28
+ #else
+-    #define TIMER_RAISE_PIPE 38
++#define TIMER_RAISE_PIPE 38
+ #endif
+ 
+ static void intro_cutscene_raise_pipe(struct MarioState *m) {
+@@ -1717,9 +1732,9 @@ static void intro_cutscene_jump_out_of_pipe(struct MarioState *m) {
+         play_sound_if_no_flag(m, SOUND_MARIO_YAHOO, MARIO_MARIO_SOUND_PLAYED);
+ #else
+         play_sound_if_no_flag(m, SOUND_MARIO_YAHOO, MARIO_MARIO_SOUND_PLAYED);
+-    #ifndef VERSION_JP
++#ifndef VERSION_JP
+         play_sound_if_no_flag(m, SOUND_ACTION_HIT_3, MARIO_ACTION_SOUND_PLAYED);
+-    #endif
++#endif
+ #endif
+ 
+         set_mario_animation(m, MARIO_ANIM_SINGLE_JUMP);
+@@ -2050,11 +2065,11 @@ static void end_peach_cutscene_summon_jumbo_star(struct MarioState *m) {
+ }
+ 
+ #ifdef VERSION_EU
+-    #define TIMER_FADE_IN_PEACH 201
+-    #define TIMER_DESCEND_PEACH 280
++#define TIMER_FADE_IN_PEACH 201
++#define TIMER_DESCEND_PEACH 280
+ #else
+-    #define TIMER_FADE_IN_PEACH 276
+-    #define TIMER_DESCEND_PEACH 355
++#define TIMER_FADE_IN_PEACH 276
++#define TIMER_DESCEND_PEACH 355
+ #endif
+ 
+ // free peach from the stained glass window
+@@ -2109,9 +2124,9 @@ static void end_peach_cutscene_spawn_peach(struct MarioState *m) {
+ }
+ 
+ #ifdef VERSION_EU
+-    #define TIMER_RUN_TO_PEACH 531
++#define TIMER_RUN_TO_PEACH 531
+ #else
+-    #define TIMER_RUN_TO_PEACH 584
++#define TIMER_RUN_TO_PEACH 584
+ #endif
+ 
+ // descend peach
+@@ -2226,11 +2241,11 @@ static void end_peach_cutscene_dialog_1(struct MarioState *m) {
+ }
+ 
+ #ifdef VERSION_EU
+-    #define TIMER_SOMETHING_SPECIAL 150
+-    #define TIMER_PEACH_KISS        260
++#define TIMER_SOMETHING_SPECIAL 150
++#define TIMER_PEACH_KISS 260
+ #else
+-    #define TIMER_SOMETHING_SPECIAL 130
+-    #define TIMER_PEACH_KISS        200
++#define TIMER_SOMETHING_SPECIAL 130
++#define TIMER_PEACH_KISS 200
+ #endif
+ 
+ // dialog 2
+@@ -2515,13 +2530,13 @@ static s32 act_end_peach_cutscene(struct MarioState *m) {
+ }
+ 
+ #ifdef VERSION_EU
+-    #define TIMER_CREDITS_SHOW      51
+-    #define TIMER_CREDITS_PROGRESS  80
+-    #define TIMER_CREDITS_WARP     160
++#define TIMER_CREDITS_SHOW 51
++#define TIMER_CREDITS_PROGRESS 80
++#define TIMER_CREDITS_WARP 160
+ #else
+-    #define TIMER_CREDITS_SHOW      61
+-    #define TIMER_CREDITS_PROGRESS  90
+-    #define TIMER_CREDITS_WARP     200
++#define TIMER_CREDITS_SHOW 61
++#define TIMER_CREDITS_PROGRESS 90
++#define TIMER_CREDITS_WARP 200
+ #endif
+ 
+ static s32 act_credits_cutscene(struct MarioState *m) {
+diff --git a/src/game/paintings.c b/src/game/paintings.c
+index 6cae19c..f9bccc7 100644
+--- a/src/game/paintings.c
++++ b/src/game/paintings.c
+@@ -1104,7 +1104,8 @@ void move_ddd_painting(struct Painting *painting, f32 frontPos, f32 backPos, f32
+     // Find out whether Board Bowser's Sub was collected
+     u32 bowsersSubBeaten = dddFlags & BOARD_BOWSERS_SUB;
+     // Check whether DDD has already moved back
+-    u32 dddBack = saveFileFlags & SAVE_FLAG_DDD_MOVED_BACK;
++    s16 numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
++    u32 dddBack = numStars >= 30;
+ 
+     if (!bowsersSubBeaten && !dddBack) {
+         // If we haven't collected the star or moved the painting, put the painting at the front
+@@ -1120,7 +1121,7 @@ void move_ddd_painting(struct Painting *painting, f32 frontPos, f32 backPos, f32
+             // Tell the save file that we've moved DDD back.
+             save_file_set_flags(SAVE_FLAG_DDD_MOVED_BACK);
+         }
+-    } else if (bowsersSubBeaten && dddBack) {
++    } else if (dddBack) {
+         // If the painting has already moved back, place it in the back position.
+         painting->posX = backPos;
+         gDddPaintingStatus = BOWSERS_SUB_BEATEN | DDD_BACK;
+diff --git a/src/game/sound_init.c b/src/game/sound_init.c
+index e862756..5ac9944 100644
+--- a/src/game/sound_init.c
++++ b/src/game/sound_init.c
+@@ -177,9 +177,24 @@ void play_painting_eject_sound(void) {
+ 
+ void play_infinite_stairs_music(void) {
+     u8 shouldPlay = FALSE;
++    u32 saveFlags = save_file_get_flags();
++
++	u8 infiniteStairsActive = FALSE;
++
++	if (gMarioState->numStars < 70) {
++        infiniteStairsActive = TRUE;
++	}
++
++	if (!(saveFlags & SAVE_FLAG_HAVE_KEY_1) && !(saveFlags & SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)) {
++        infiniteStairsActive = TRUE;
++	}
++
++	if (!(saveFlags & SAVE_FLAG_HAVE_KEY_2) && !(saveFlags & SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR)) {
++        infiniteStairsActive = TRUE;
++	}
+ 
+     /* Infinite stairs? */
+-    if (gCurrLevelNum == LEVEL_CASTLE && gCurrAreaIndex == 2 && gMarioState->numStars < 70) {
++    if (gCurrLevelNum == LEVEL_CASTLE && gCurrAreaIndex == 2 && infiniteStairsActive) {
+         if (gMarioState->floor != NULL && gMarioState->floor->room == 6) {
+             if (gMarioState->pos[2] < 2540.0f) {
+                 shouldPlay = TRUE;
+diff --git a/src/menu/star_select.c b/src/menu/star_select.c
+index 08b988e..b9a26ba 100644
+--- a/src/menu/star_select.c
++++ b/src/menu/star_select.c
+@@ -91,8 +91,8 @@ void bhv_act_selector_star_type_loop(void) {
+ void render_100_coin_star(u8 stars) {
+     if (stars & (1 << 6)) {
+         // If the 100 coin star has been collected, create a new star selector next to the coin score.
+-        sStarSelectorModels[6] = spawn_object_abs_with_rot(gCurrentObject, 0, MODEL_STAR,
+-                                                        bhvActSelectorStarType, 370, 24, -300, 0, 0, 0);
++        sStarSelectorModels[6] = spawn_object_abs_with_rot(
++            gCurrentObject, 0, MODEL_STAR, bhvActSelectorStarType, 370, 24, -300, 0, 0, 0);
+         sStarSelectorModels[6]->oStarSelectorSize = 0.8;
+         sStarSelectorModels[6]->oStarSelectorType = STAR_SELECTOR_100_COINS;
+     }
+@@ -109,6 +109,10 @@ void bhv_act_selector_init(void) {
+     s32 selectorModelIDs[10];
+     u8 stars = save_file_get_star_flags(gCurrSaveFileNum - 1, gCurrCourseNum - 1);
+ 
++    for (int i = 0; i < 10; i++) {
++        selectorModelIDs[i] = MODEL_TRANSPARENT_STAR;
++	}
++
+     sVisibleStars = 0;
+     while (i != sObtainedStars) {
+         if (stars & (1 << sVisibleStars)) { // Star has been collected
+@@ -125,13 +129,13 @@ void bhv_act_selector_init(void) {
+         }
+         sVisibleStars++;
+     }
++    sVisibleStars = 6;
+ 
+     // If the stars have been collected in order so far, show the next star.
+     if (sVisibleStars == sObtainedStars && sVisibleStars != 6) {
+         selectorModelIDs[sVisibleStars] = MODEL_TRANSPARENT_STAR;
+         sInitSelectedActNum = sVisibleStars + 1;
+         sSelectableStarIndex = sVisibleStars;
+-        sVisibleStars++;
+     }
+ 
+     // If all stars have been collected, set the default selection to the last star.
+@@ -168,27 +172,9 @@ void bhv_act_selector_loop(void) {
+     u8 starIndexCounter;
+     u8 stars = save_file_get_star_flags(gCurrSaveFileNum - 1, gCurrCourseNum - 1);
+ 
+-    if (sObtainedStars != 6) {
+-        // Sometimes, stars are not selectable even if they appear on the screen.
+-        // This code filters selectable and non-selectable stars.
+-        sSelectedActIndex = 0;
+-        handle_menu_scrolling(MENU_SCROLL_HORIZONTAL, &sSelectableStarIndex, 0, sObtainedStars);
+-        starIndexCounter = sSelectableStarIndex;
+-        for (i = 0; i < sVisibleStars; i++) {
+-            // Can the star be selected (is it either already completed or the first non-completed mission)
+-            if ((stars & (1 << i)) || i + 1 == sInitSelectedActNum) {
+-                if (starIndexCounter == 0) { // We have reached the sSelectableStarIndex-th selectable star.
+-                    sSelectedActIndex = i;
+-                    break;
+-                }
+-                starIndexCounter--;
+-            }
+-        }
+-    } else {
+-        // If all stars are collected then they are all selectable.
+-        handle_menu_scrolling(MENU_SCROLL_HORIZONTAL, &sSelectableStarIndex, 0, sVisibleStars - 1);
+-        sSelectedActIndex = sSelectableStarIndex;
+-    }
++    // If all stars are collected then they are all selectable.
++    handle_menu_scrolling(MENU_SCROLL_HORIZONTAL, &sSelectableStarIndex, 0, sVisibleStars - 1);
++    sSelectedActIndex = sSelectableStarIndex;
+ 
+     // Star selector type handler
+     for (i = 0; i < sVisibleStars; i++) {
+@@ -258,7 +244,7 @@ void print_course_number(void) {
+  */
+ void print_act_selector_strings(void) {
+ #ifdef VERSION_EU
+-    unsigned char myScore[][10] = { {TEXT_MYSCORE}, {TEXT_MY_SCORE_FR}, {TEXT_MY_SCORE_DE} };
++    unsigned char myScore[][10] = { { TEXT_MYSCORE }, { TEXT_MY_SCORE_FR }, { TEXT_MY_SCORE_DE } };
+ #else
+     unsigned char myScore[] = { TEXT_MYSCORE };
+ #endif
+@@ -321,7 +307,8 @@ void print_act_selector_strings(void) {
+     }
+ 
+ #ifdef VERSION_EU
+-    print_generic_string(get_str_x_pos_from_center(160, currLevelName + 3, 10.0f), 33, currLevelName + 3);
++    print_generic_string(get_str_x_pos_from_center(160, currLevelName + 3, 10.0f), 33,
++                         currLevelName + 3);
+ #elif defined(VERSION_SH)
+     lvlNameX = get_str_x_pos_from_center_scale(160, currLevelName + 3, 10.0f);
+     print_generic_string(lvlNameX, 33, currLevelName + 3);
+@@ -333,7 +320,7 @@ void print_act_selector_strings(void) {
+     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
+ 
+ #ifdef VERSION_EU
+-    print_course_number((u32)language);
++    print_course_number((u32) language);
+ #else
+     print_course_number();
+ #endif
+@@ -342,10 +329,12 @@ void print_act_selector_strings(void) {
+     gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 255);
+     // Print the name of the selected act.
+     if (sVisibleStars != 0) {
+-        selectedActName = segmented_to_virtual(actNameTbl[(gCurrCourseNum - 1) * 6 + sSelectedActIndex]);
++        selectedActName =
++            segmented_to_virtual(actNameTbl[(gCurrCourseNum - 1) * 6 + sSelectedActIndex]);
+ 
+ #ifdef VERSION_EU
+-        print_menu_generic_string(get_str_x_pos_from_center(ACT_NAME_X, selectedActName, 8.0f), 81, selectedActName);
++        print_menu_generic_string(get_str_x_pos_from_center(ACT_NAME_X, selectedActName, 8.0f), 81,
++                                  selectedActName);
+ #elif defined(VERSION_SH)
+         actNameX = get_str_x_pos_from_center_scale(ACT_NAME_X, selectedActName, 8.0f);
+         print_menu_generic_string(actNameX, 81, selectedActName);
+@@ -359,14 +348,14 @@ void print_act_selector_strings(void) {
+     for (i = 1; i <= sVisibleStars; i++) {
+         starNumbers[0] = i;
+ #ifdef VERSION_EU
+-        print_menu_generic_string(143 - sVisibleStars * 15 + i * 30 , 38, starNumbers);
++        print_menu_generic_string(143 - sVisibleStars * 15 + i * 30, 38, starNumbers);
+ #else
+         print_menu_generic_string(i * 34 - sVisibleStars * 17 + 139, 38, starNumbers);
+ #endif
+     }
+ 
+     gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_end);
+- }
++}
+ 
+ /**
+  * Geo function that Print act selector strings.
+@@ -418,8 +407,8 @@ s32 lvl_update_obj_and_load_act_button_actions(UNUSED s32 arg, UNUSED s32 unused
+         // If any of these buttons are pressed, play sound and go to course act
+ #ifndef VERSION_EU
+         if ((gPlayer3Controller->buttonPressed & A_BUTTON)
+-         || (gPlayer3Controller->buttonPressed & START_BUTTON)
+-         || (gPlayer3Controller->buttonPressed & B_BUTTON)) {
++            || (gPlayer3Controller->buttonPressed & START_BUTTON)
++            || (gPlayer3Controller->buttonPressed & B_BUTTON)) {
+ #else
+         if ((gPlayer3Controller->buttonPressed & (A_BUTTON | START_BUTTON | B_BUTTON | Z_TRIG))) {
+ #endif
+@@ -428,11 +417,7 @@ s32 lvl_update_obj_and_load_act_button_actions(UNUSED s32 arg, UNUSED s32 unused
+ #else
+             play_sound(SOUND_MENU_STAR_SOUND_LETS_A_GO, gDefaultSoundArgs);
+ #endif
+-            if (sInitSelectedActNum >= sSelectedActIndex + 1) {
+-                sLoadedActNum = sSelectedActIndex + 1;
+-            } else {
+-                sLoadedActNum = sInitSelectedActNum;
+-            }
++            sLoadedActNum = sSelectedActIndex + 1;
+             gDialogCourseActNum = sSelectedActIndex + 1;
+         }
+     }
+diff --git a/text/us/dialogs.h b/text/us/dialogs.h
+index fc847e1..b579908 100644
+--- a/text/us/dialogs.h
++++ b/text/us/dialogs.h
+@@ -84,8 +84,8 @@ just begun.\n\
+ Other enemies are holding\n\
+ the other Power Stars. If\n\
+ you recover more Stars,\n\
+-you can open new doors\n\
+-that lead to new worlds!\n\
++you can open Bowser's\n\
++Star Door!\n\
+ My Bob-omb Buddies are\n\
+ waiting for you. Be sure\n\
+ to talk to them--they'll\n\
+@@ -317,10 +317,11 @@ It takes the power of\n\
+ door. You need [%] more\n\
+ Stars."))
+ 
+-DEFINE_DIALOG(DIALOG_027, 1, 4, 95, 200, _("\
++DEFINE_DIALOG(DIALOG_027, 1, 5, 95, 200, _("\
+ It takes the power of\n\
+-30 Stars to open this\n\
+-door. You need [%] more\n\
++30 Stars to solve the\n\
++mystery of the water\n\
++wall. You need [%] more\n\
+ Stars."))
+ 
+ DEFINE_DIALOG(DIALOG_028, 1, 4, 95, 200, _("\
+@@ -330,10 +331,10 @@ door. You need [%] more\n\
+ Stars."))
+ 
+ DEFINE_DIALOG(DIALOG_029, 1, 5, 95, 200, _("\
+-To open the door that\n\
+-leads to the 『endless』\n\
+-stairs, you need 70\n\
+-Stars.\n\
++To solve the puzzle of\n\
++the 『endless』 stairs,\n\
++you need 70 Stars and\n\
++2 Golden Keys.\n\
+ Bwa ha ha!"))
+ 
+ DEFINE_DIALOG(DIALOG_030, 1, 6, 30, 200, _("\
+@@ -914,14 +915,9 @@ more experienced, to pick\n\
+ up difficult ones.\n\
+ \n\
+ \n\
+-Whenever you find a Star,\n\
+-a hint for finding the\n\
+-next one will appear on\n\
+-the course's start screen.\n\
+-\n\
+-You can, however, collect\n\
+-any of the remaining\n\
+-Stars next. You don't\n\
++You can collect any of\n\
++the remaining Stars in\n\
++a course. You don't\n\
+ have to recover the one\n\
+ described by the hint."))
+ 
+@@ -982,12 +978,12 @@ great peril. I know that\n\
+ Bowser is the cause...and\n\
+ I know that only you can\n\
+ stop him!\n\
+-The doors in the castle\n\
+-that have been sealed by\n\
++The door in the castle\n\
++that has been sealed by\n\
+ Bowser can be opened only\n\
+ with Star Power.\n\
+ \n\
+-But there are secret\n\
++There are secret\n\
+ paths in the castle,\n\
+ paths that Bowser hasn't\n\
+ found.\n\
+@@ -1587,19 +1583,13 @@ using their power to\n\
+ create his own world in\n\
+ the paintings and walls.\n\
+ \n\
+-Please recover the Power\n\
+-Stars! As you find them,\n\
+-you can use their power\n\
+-to open the doors that\n\
+-Bowser has sealed.\n\
+-\n\
+ There are four rooms on\n\
+ the first floor. Start in\n\
+ the one with the painting\n\
+-of Bob-omb inside. It's\n\
+-the only room that Bowser\n\
+-hasn't sealed.\n\
+-When you collect eight\n\
++of Bob-omb inside.\n\
++\n\
++\n\
++When you collect 70\n\
+ Power Stars, you'll be\n\
+ able to open the door\n\
+ with the big star. The\n\
+@@ -1748,10 +1738,10 @@ hear the Princess calling?"))
+ 
+ DEFINE_DIALOG(DIALOG_144, 1, 6, 150, 200, _("\
+ You've recovered 30\n\
+-Power Stars! Now you can\n\
+-open the door with the\n\
+-big Star! But before you\n\
+-move on, how's it going\n\
++Power Stars! You've\n\
++solved the mystery of the\n\
++water wall behind the big\n\
++Star door! How's it going\n\
+ otherwise?\n\
+ Did you pound the two\n\
+ columns down? You didn't\n\
+@@ -1783,11 +1773,11 @@ third floor is just ahead."))
+ 
+ DEFINE_DIALOG(DIALOG_146, 1, 6, 150, 200, _("\
+ You've found 70 Power\n\
+-Stars! The mystery of the\n\
+-endless stairs is solved,\n\
+-thanks to you--and is\n\
+-Bowser ever upset! Now,\n\
+-on to the final bout!"))
++Stars! Make sure you've\n\
++collected the 2 Golden\n\
++Keys from Bowser to solve\n\
++the mystery of the\n\
++endless stairs!"))
+ 
+ DEFINE_DIALOG(DIALOG_147, 1, 5, 30, 200, _("\
+ Are you using the Cap\n\

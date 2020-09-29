@@ -2,11 +2,16 @@
 Fork de [sm64pc/sm64ex](https://github.com/sm64pc/sm64ex) con parches adicionales incluidos
 Para poder ser usado como plantilla por modders, hackers y por gente tramposa.
 
+** Solo es compatible con US, JP y EU en desarrollo **
+ -JP se puede probar con `DEBUG = 1`
+
 **no se subirá ningún archivo que tenga derechos de autor**. 
 Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para eliminar contenido originado del ROM.
 
 ## Trucos adicionales
   * Muerte Instantanea/Salir del Nivel Gatillo L + Gatillo R + Boton A + Boton B
+  * FLYER
+  * Todos los saltos triples
   * Mantenga presionado Boton A para flotar
   * Gravedad de la Luna
   * Modificador de velocidad corriendo
@@ -38,7 +43,7 @@ Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para elim
   * Spamba v2 (Spawnea actores common0)= Gatillo L + Gatillo Z
   * Nado Rápido v3
       - La velocidad máxima bajo el agua ha sido duplicada, ahora con burbujas
-  * Trucos de las gorras por JAGSTAX
+  * Trucos de las gorras por JAGSTAX (D PAD)
     - QUITARTE la gorra y QUITAR la música de las gorras incluidos
   * Port de GateGuy del patch de Kaze Emanuar para hacer BLJ en donde sea
   * Truco para jugar como algún personaje (WIP), muchas gracias a ferris the crab(io12)
@@ -52,18 +57,20 @@ Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para elim
 ## Nuevas funciones
  * X, Y, y el D PAD fueron agregados (revisa `sm64.h` para los defines)
  * 60 FPS por Emil incluido
- * "Leave Ending Screen" por GateGuy incluido
- * "Exit to Main Menu" por Adya incluido
- * "50 Coin 1UP" por Keanine incluido
+ * "Captian Toad Castle Stars" por Keanine
+ * "Leave Ending Screen" por GateGuy
+ * "50 Coin 1UP" por Keanine
  * "Odyssey Moveset" por PeachyPeach
+    -"Exit to Main Menu" por Adya incluido
     -"Tighter Controls" por Keanine incluido
     -"Go to Level Select" por $4Y$ incluido
- * "Time Trials" por GateGuy y PechyPeach incluido
- * "Stay In Level After Star v2" por GateGuy
+ * "Open Castle v1.1" por Keanine
+ * "Time Trials" por GateGuy y PechyPeach
+ * "Stay In Level After Star (Cheat Version)" por GateGuy
  * "Menu C button support" por engima907
  * "Bugfixes" por JAGSTAX
  * "DynOS" por PeachyPeach
- * Y por supuesto, "CHEATERv7" por $4Y$, yo mismo
+ * Y por supuesto, "CHEATERv8" por $4Y$, yo mismo
 
 ## Como agregar los trucos/mods
  * Usa `src/game/mario_cheats.c` para el código

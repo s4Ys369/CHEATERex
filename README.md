@@ -2,6 +2,9 @@
 Fork of [sm64pc/sm64ex](https://github.com/sm64pc/sm64ex) with additional patches built-in.
 To be used as a template for modders, hackers and cheaters.
 
+**Only supports US - JP and EU compatible in development**
+ -JP is testable with `DEBUG=1`
+
 **no upload of any copyrighted asset**. 
 Run `./extract_assets.py --clean && make clean` or `make distclean` to remove ROM-originated content.
 
@@ -10,6 +13,8 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
 
 ## Additional Cheats
   * Instant Death/Level Exit L Trigger + R Trigger + A Button + B Button
+  * FLYER
+  * All Jumps Triple
   * Hold A to Hover
   * Moon Gravity
   * Run Speed Modifier
@@ -41,7 +46,7 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
   * Spamba v2 (Spawns common0 actors)= L Trigger + Z Trigger
   * Swift Swim v3
       - max speed submerged doubled when holding A Button, now with bubbles
-  * JAGSTAX's Cap cheats
+  * JAGSTAX's Cap cheats (now controlled by the D Pad)
     - REMOVE cap and DISABLE Cap Music added
   * GateGuy's port of Kaze Emanuar's BLJ Anywhere
   * Play as cheats (WIP), much thanks to ferris the crab(io12)
@@ -55,17 +60,20 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
 ## New features
  * X, Y, and D PAD added (check `sm64.h` for defines)
  * 60 FPS by Emil
+ * Captian Toad Castle Stars by Keanine
  * Leave Ending Screen by GateGuy
  * 50 Coin 1UP by Keanine
  * Odyssey Moveset by PeachyPeach
+    -Exit to Main Menu by Adya
     -Tighter Controls by Keanine
     -Go to Level Select by $4Y$
+ * Open Castle v1.1 by Keanine
  * Time Trials by GateGuy and PeachyPeach
- * Stay In Level After Star v2 by GateGuy
+ * Stay In Level After Star (Cheat Version) by GateGuy
  * Menu C button support by engima907
  * Bugfixes by JAGSTAX
  * DynOS by PeachyPeach
- * And of course, CHEATERv7 by $4Y$, me
+ * And of course, CHEATERv8 by $4Y$, me
 
 ## How to add cheats/mods
  * Use `src/game/mario_cheats.c` for code

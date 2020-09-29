@@ -1,0 +1,60 @@
+From f15b4d350d62d329b9bef04153b7e92f49e99d7a Mon Sep 17 00:00:00 2001
+From: enigma9o7 <30579733+enigma9o7@users.noreply.github.com>
+Date: Wed, 19 Aug 2020 19:43:06 -0700
+Subject: [PATCH] Make arrows (camera controls) work in options menu
+
+---
+ src/game/options_menu.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+
+diff --git a/src/game/options_menu.c b/src/game/options_menu.c
+index 56dba619..c5da6ead 100644
+--- a/src/game/options_menu.c
++++ b/src/game/options_menu.c
+@@ -604,6 +604,46 @@ void optmenu_check_buttons(void) {
+             #endif
+             optmenu_opt_change(&currentMenu->opts[currentMenu->select], 0);
+         }
++     } else if (gPlayer1Controller->buttonPressed & D_CBUTTONS) {
++        if (allowInput) {
++            #ifndef nosound
++            play_sound(SOUND_MENU_CHANGE_SELECT, gDefaultSoundArgs);
++            #endif
++	    currentMenu->select++;
++            if (currentMenu->select >= currentMenu->numOpts)
++                currentMenu->select = 0;
++            if (currentMenu->select < currentMenu->scroll)
++                currentMenu->scroll = currentMenu->select;
++            else if (currentMenu->select > currentMenu->scroll + 3)
++                currentMenu->scroll = currentMenu->select - 3;
++        }
++   } else if (gPlayer1Controller->buttonPressed & U_CBUTTONS) {
++        if (allowInput) {
++            #ifndef nosound
++            play_sound(SOUND_MENU_CHANGE_SELECT, gDefaultSoundArgs);
++            #endif
++	    currentMenu->select--;
++            if (currentMenu->select < 0)
++                currentMenu->select = currentMenu->numOpts-1;
++            if (currentMenu->select < currentMenu->scroll)
++                currentMenu->scroll = currentMenu->select;
++            else if (currentMenu->select > currentMenu->scroll + 3)
++                currentMenu->scroll = currentMenu->select - 3;
++        }
++    } else if (gPlayer1Controller->buttonPressed & R_CBUTTONS) {
++        if (allowInput) {
++            #ifndef nosound
++            play_sound(SOUND_MENU_CHANGE_SELECT, gDefaultSoundArgs);
++            #endif
++	    optmenu_opt_change(&currentMenu->opts[currentMenu->select], 1);
++        }
++    } else if (gPlayer1Controller->buttonPressed & L_CBUTTONS) {
++        if (allowInput) {
++            #ifndef nosound
++            play_sound(SOUND_MENU_CHANGE_SELECT, gDefaultSoundArgs);
++            #endif
++	    optmenu_opt_change(&currentMenu->opts[currentMenu->select], -1);
++	}
+     } else if (gPlayer1Controller->buttonPressed & B_BUTTON) {
+         if (allowInput) {
+             if (currentMenu->prev) {

@@ -221,7 +221,7 @@ from the power of the\n\
 castle.\n\
 Do you want to Save?\n\
 \n\
-//You Bet//Not Now"))
+//Aight Bet//Not Now"))
 
 DEFINE_DIALOG(DIALOG_015, 1, 4, 30, 200, _("\
 You can punch enemies to\n\

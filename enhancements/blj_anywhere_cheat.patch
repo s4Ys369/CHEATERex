@@ -1,0 +1,198 @@
+From 0c2c6d0a1029712bc604f19a17f271b6be3812b9 Mon Sep 17 00:00:00 2001
+From: GateGuy <57763469+GateGuy@users.noreply.github.com>
+Date: Wed, 17 Jun 2020 18:52:43 -0400
+Subject: [PATCH] BLJ Anywhere cheat
+
+The same changes as the pull request, but hopefully this fixes the patching issue
+---
+ include/text_options_strings.h.in | 30 +++++++++++++++++++++++++++
+ src/game/mario_actions_airborne.c | 14 +++++++++++++
+ src/game/mario_actions_moving.c   |  8 ++++++++
+ src/game/options_menu.c           | 34 +++++++++++++++++++++++++++++++
+ src/pc/cheats.h                   |  1 +
+ 5 files changed, 87 insertions(+)
+
+diff --git a/include/text_options_strings.h.in b/include/text_options_strings.h.in
+index 141d3548..06e8e01c 100644
+--- a/include/text_options_strings.h.in
++++ b/include/text_options_strings.h.in
+@@ -83,6 +83,21 @@
+ #define TEXT_OPT_CHEAT7    _("EXIT COURSE AT ANY TIME")
+ #define TEXT_OPT_CHEAT8    _("HUGE MARIO")
+ #define TEXT_OPT_CHEAT9    _("TINY MARIO")
++#define TEXT_OPT_CHEAT10   _("BLJ ANYWHERE")
++
++#define TEXT_OPT_BLJCHT1  _("DISABLED")
++#define TEXT_OPT_BLJCHT2  _("ENABLED")
++#define TEXT_OPT_BLJCHT3  _("ENABLED - BOOST: 1")
++#define TEXT_OPT_BLJCHT4  _("ENABLED - BOOST: 2")
++#define TEXT_OPT_BLJCHT5  _("ENABLED - BOOST: 3")
++#define TEXT_OPT_BLJCHT6  _("ENABLED - BOOST: 4")
++#define TEXT_OPT_BLJCHT7  _("ENABLED - BOOST: 5")
++#define TEXT_OPT_BLJCHT8  _("RAPID FIRE")
++#define TEXT_OPT_BLJCHT9  _("RAPID FIRE - BOOST: 1")
++#define TEXT_OPT_BLJCHT10 _("RAPID FIRE - BOOST: 2")
++#define TEXT_OPT_BLJCHT11 _("RAPID FIRE - BOOST: 3")
++#define TEXT_OPT_BLJCHT12 _("RAPID FIRE - BOOST: 4")
++#define TEXT_OPT_BLJCHT13 _("RAPID FIRE - BOOST: 5")
+ 
+ #else // VERSION
+ 
+@@ -146,6 +161,21 @@
+ #define TEXT_OPT_CHEAT7    _("Exit course at any time")
+ #define TEXT_OPT_CHEAT8    _("Huge Mario")
+ #define TEXT_OPT_CHEAT9    _("Tiny Mario")
++#define TEXT_OPT_CHEAT10   _("BLJ Anywhere")
++
++#define TEXT_OPT_BLJCHT1  _("Disabled")
++#define TEXT_OPT_BLJCHT2  _("Enabled")
++#define TEXT_OPT_BLJCHT3  _("Enabled - Boost: 1")
++#define TEXT_OPT_BLJCHT4  _("Enabled - Boost: 2")
++#define TEXT_OPT_BLJCHT5  _("Enabled - Boost: 3")
++#define TEXT_OPT_BLJCHT6  _("Enabled - Boost: 4")
++#define TEXT_OPT_BLJCHT7  _("Enabled - Boost: 5")
++#define TEXT_OPT_BLJCHT8  _("Rapid Fire")
++#define TEXT_OPT_BLJCHT9  _("Rapid Fire - Boost: 1")
++#define TEXT_OPT_BLJCHT10 _("Rapid Fire - Boost: 2")
++#define TEXT_OPT_BLJCHT11 _("Rapid Fire - Boost: 3")
++#define TEXT_OPT_BLJCHT12 _("Rapid Fire - Boost: 4")
++#define TEXT_OPT_BLJCHT13 _("Rapid Fire - Boost: 5")
+ 
+ #endif // VERSION
+ 
+diff --git a/src/game/mario_actions_airborne.c b/src/game/mario_actions_airborne.c
+index 9289fd6c..3a576cce 100644
+--- a/src/game/mario_actions_airborne.c
++++ b/src/game/mario_actions_airborne.c
+@@ -16,6 +16,7 @@
+ #ifdef BETTERCAMERA
+ #include "bettercamera.h"
+ #endif
++#include "pc/cheats.h"
+ 
+ void play_flip_sounds(struct MarioState *m, s16 frame1, s16 frame2, s16 frame3) {
+     s32 animFrame = m->marioObj->header.gfx.unk38.animFrame;
+@@ -371,6 +372,19 @@ u32 common_air_action_step(struct MarioState *m, u32 landAction, s32 animation,
+     stepResult = perform_air_step(m, stepArg);
+     switch (stepResult) {
+         case AIR_STEP_NONE:
++            // BLJ anywhere cheat
++            if (Cheats.BLJAnywhere > 0 && Cheats.EnableCheats == TRUE && m->action == ACT_LONG_JUMP
++                && m->forwardVel < 1.0f && m->pos[1] - 50.0f < m->floorHeight) {
++                if (Cheats.BLJAnywhere < 7) {
++                    if (m->controller->buttonPressed & A_BUTTON) {
++                        m->forwardVel -= (Cheats.BLJAnywhere - 1) * 2.5f;
++                        m->vel[1] = -50.0f;
++                    }
++                } else if (m->controller->buttonDown & A_BUTTON) {
++                    m->forwardVel -= (Cheats.BLJAnywhere - 7) * 2.5f;
++                    m->vel[1] = -50.0f;
++                }
++            }
+             set_mario_animation(m, animation);
+             break;
+ 
+diff --git a/src/game/mario_actions_moving.c b/src/game/mario_actions_moving.c
+index 52d44c34..36fd4030 100644
+--- a/src/game/mario_actions_moving.c
++++ b/src/game/mario_actions_moving.c
+@@ -6,6 +6,7 @@
+ #include "engine/math_util.h"
+ #include "engine/surface_collision.h"
+ #include "mario_step.h"
++#include "game_init.h"
+ #include "area.h"
+ #include "interaction.h"
+ #include "mario_actions_object.h"
+@@ -1853,6 +1854,13 @@ s32 act_long_jump_land(struct MarioState *m) {
+         m->forwardVel = 0.0f;
+     }
+ #endif
++
++    // BLJ anywhere cheat
++    if (Cheats.BLJAnywhere >= 7 && Cheats.EnableCheats == TRUE && m->forwardVel < 1.0f
++        && (m->controller->buttonDown & A_BUTTON)) {
++        set_jumping_action(m, ACT_LONG_JUMP, 0);
++        return FALSE;
++    }
+     
+     if (!(m->input & INPUT_Z_DOWN)) {
+         m->input &= ~INPUT_A_PRESSED;
+diff --git a/src/game/options_menu.c b/src/game/options_menu.c
+index e004749c..79a51688 100644
+--- a/src/game/options_menu.c
++++ b/src/game/options_menu.c
+@@ -101,6 +101,7 @@ static const u8 optsCheatsStr[][64] = {
+     { TEXT_OPT_CHEAT7 },
+     { TEXT_OPT_CHEAT8 },
+     { TEXT_OPT_CHEAT9 },
++    { TEXT_OPT_CHEAT10 },
+ };
+ 
+ static const u8 bindStr[][32] = {
+@@ -124,6 +125,22 @@ static const u8 bindStr[][32] = {
+     { TEXT_OPT_RUMBLE }
+ };
+ 
++static const u8 optsBLJCheatStr[][32] = {
++    { TEXT_OPT_BLJCHT1 },
++    { TEXT_OPT_BLJCHT2 },
++    { TEXT_OPT_BLJCHT3 },
++    { TEXT_OPT_BLJCHT4 },
++    { TEXT_OPT_BLJCHT5 },
++    { TEXT_OPT_BLJCHT6 },
++    { TEXT_OPT_BLJCHT7 },
++    { TEXT_OPT_BLJCHT8 },
++    { TEXT_OPT_BLJCHT9 },
++    { TEXT_OPT_BLJCHT10 },
++    { TEXT_OPT_BLJCHT11 },
++    { TEXT_OPT_BLJCHT12 },
++    { TEXT_OPT_BLJCHT13 },
++};
++
+ static const u8 *filterChoices[] = {
+     optsVideoStr[2],
+     optsVideoStr[3],
+@@ -136,6 +153,22 @@ static const u8 *vsyncChoices[] = {
+     optsVideoStr[6],
+ };
+ 
++static const u8 *bljCheatChoices[] = {
++    optsBLJCheatStr[0],
++    optsBLJCheatStr[1],
++    optsBLJCheatStr[2],
++    optsBLJCheatStr[3],
++    optsBLJCheatStr[4],
++    optsBLJCheatStr[5],
++    optsBLJCheatStr[6],
++    optsBLJCheatStr[7],
++    optsBLJCheatStr[8],
++    optsBLJCheatStr[9],
++    optsBLJCheatStr[10],
++    optsBLJCheatStr[11],
++    optsBLJCheatStr[12],
++};
++
+ enum OptType {
+     OPT_INVALID = 0,
+     OPT_TOGGLE,
+@@ -277,6 +310,7 @@ static struct Option optsCheats[] = {
+     DEF_OPT_TOGGLE( optsCheatsStr[6], &Cheats.ExitAnywhere ),
+     DEF_OPT_TOGGLE( optsCheatsStr[7], &Cheats.HugeMario ),
+     DEF_OPT_TOGGLE( optsCheatsStr[8], &Cheats.TinyMario ),
++    DEF_OPT_CHOICE( optsCheatsStr[9], &Cheats.BLJAnywhere, bljCheatChoices ),
+ 
+ };
+ 
+diff --git a/src/pc/cheats.h b/src/pc/cheats.h
+index eaf71ab4..3c62921b 100644
+--- a/src/pc/cheats.h
++++ b/src/pc/cheats.h
+@@ -13,6 +13,7 @@ struct CheatList {
+     bool         ExitAnywhere;
+     bool         HugeMario;
+     bool         TinyMario;
++    unsigned int BLJAnywhere;
+ };
+ 
+ extern struct CheatList Cheats;
