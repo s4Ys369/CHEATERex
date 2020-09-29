@@ -128,6 +128,7 @@ struct GraphNodeCamera *gCurGraphNodeCamera = NULL;
 struct GraphNodeObject *gCurGraphNodeObject = NULL;
 struct GraphNodeHeldObject *gCurGraphNodeHeldObject = NULL;
 u16 gAreaUpdateCounter = 0;
+u8 gInterpolatingSurfaces;
 
 #ifdef F3DEX_GBI_2
 LookAt lookAt;
@@ -924,7 +925,6 @@ static void geo_process_shadow(struct GraphNodeShadow *node) {
             gCurGraphNodeObject->prevShadowPosTimestamp = gGlobalTimer;
         }
 
-        extern u8 gInterpolatingSurfaces;
         gInterpolatingSurfaces = TRUE;
         shadowListInterpolated = create_shadow_below_xyz(shadowPosInterpolated[0], shadowPosInterpolated[1],
                                                          shadowPosInterpolated[2], shadowScale,
