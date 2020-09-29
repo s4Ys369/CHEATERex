@@ -299,10 +299,6 @@ ULTRA_BIN_DIRS := lib/bin
 
 GODDARD_SRC_DIRS := src/goddard src/goddard/dynlists
 
-# SMO Stuff
-SRC_DIRS += data/smo data/smo/system data/smo/object data/smo/mario data/smo/cappy data/smo/capture data/smo/debug
-include Makefile_smo
-
 MIPSISET := -mips2
 MIPSBIT := -32
 
