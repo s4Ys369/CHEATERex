@@ -1,5 +1,22 @@
 // tuxie.c.inc
 
+struct Object *sp2CAngry;
+
+/**
+ * Hitbox for Tuxie's mother (used only when she is furious).
+ */
+static struct ObjectHitbox sTuxiesMotherHitbox = {
+    /* interactType:      */ INTERACT_DAMAGE,
+    /* downOffset:        */ 0,
+    /* damageOrCoinValue: */ 16,
+    /* health:            */ 0,
+    /* numLootCoins:      */ 0,
+    /* radius:            */ 48,
+    /* height:            */ 52,
+    /* hurtboxRadius:     */ 0,
+    /* hurtboxHeight:     */ 0,
+};
+
 void play_penguin_walking_sound(s32 walk) {
     s32 sound;
     if (o->oSoundStateID == 0) {
@@ -16,7 +33,14 @@ void tuxies_mother_act_2(void) {
     UNUSED s32 unused;
     struct Object *sp1C = cur_obj_find_nearest_object_with_behavior(bhvSmallPenguin, &sp24);
 
-    if (cur_obj_find_nearby_held_actor(bhvUnused20E0, 1000.0f) != NULL) {
+    if (o->oSubAction == 7) {
+        cur_obj_init_animation_with_sound(0);
+        o->oForwardVel = 30.0f;
+        cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x1000);
+    } else if (sp2CAngry != NULL && sp2CAngry->oPosY < -4850) {
+        o->oSubAction = 7;
+        obj_set_hitbox(o, &sTuxiesMotherHitbox);
+    } else if (cur_obj_find_nearby_held_actor(bhvUnused20E0, 1000.0f) != NULL) {
         if (o->oSubAction == 0) {
             cur_obj_init_animation_with_sound(0);
             o->oForwardVel = 10.0f;
@@ -29,12 +53,13 @@ void tuxies_mother_act_2(void) {
             if (cur_obj_lateral_dist_from_mario_to_home() < 700.0f)
                 o->oSubAction = 0;
         }
+        sp2CAngry = cur_obj_find_nearby_held_actor(bhvUnused20E0, 1000.0f);
     } else {
         o->oForwardVel = 0.0f;
         cur_obj_init_animation_with_sound(3);
     }
     if (sp1C != NULL && sp24 < 300.0f && sp1C->oHeldState != HELD_FREE) {
-        o->oAction = 1;
+        // o->oAction = 1;
         sp1C->oSmallPenguinUnk88 = 1;
         o->prevObj = sp1C;
     }

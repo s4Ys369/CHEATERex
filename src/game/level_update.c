@@ -531,9 +531,12 @@ void warp_credits(void) {
 void check_instant_warp(void) {
     s16 cameraAngle;
     struct Surface *floor;
+    u32 saveFlags = save_file_get_flags();
 
     if (gCurrLevelNum == LEVEL_CASTLE
-        && save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 70) {
+        && save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 70
+		&& ((saveFlags & SAVE_FLAG_HAVE_KEY_1) || (saveFlags & SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)) 
+		&& ((saveFlags & SAVE_FLAG_HAVE_KEY_2) || (saveFlags & SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR))) {
         return;
     }
 

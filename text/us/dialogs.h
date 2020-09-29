@@ -84,8 +84,8 @@ just begun.\n\
 Other enemies are holding\n\
 the other Power Stars. If\n\
 you recover more Stars,\n\
-you can open new doors\n\
-that lead to new worlds!\n\
+you can open Bowser's\n\
+Star Door!\n\
 My Bob-omb Buddies are\n\
 waiting for you. Be sure\n\
 to talk to them--they'll\n\
@@ -317,10 +317,11 @@ It takes the power of\n\
 door. You need [%] more\n\
 Stars."))
 
-DEFINE_DIALOG(DIALOG_027, 1, 4, 95, 200, _("\
+DEFINE_DIALOG(DIALOG_027, 1, 5, 95, 200, _("\
 It takes the power of\n\
-30 Stars to open this\n\
-door. You need [%] more\n\
+30 Stars to solve the\n\
+mystery of the water\n\
+wall. You need [%] more\n\
 Stars."))
 
 DEFINE_DIALOG(DIALOG_028, 1, 4, 95, 200, _("\
@@ -330,10 +331,10 @@ door. You need [%] more\n\
 Stars."))
 
 DEFINE_DIALOG(DIALOG_029, 1, 5, 95, 200, _("\
-To open the door that\n\
-leads to the 『endless』\n\
-stairs, you need 70\n\
-Stars.\n\
+To solve the puzzle of\n\
+the 『endless』 stairs,\n\
+you need 70 Stars and\n\
+2 Golden Keys.\n\
 Bwa ha ha!"))
 
 DEFINE_DIALOG(DIALOG_030, 1, 6, 30, 200, _("\
@@ -914,14 +915,9 @@ more experienced, to pick\n\
 up difficult ones.\n\
 \n\
 \n\
-Whenever you find a Star,\n\
-a hint for finding the\n\
-next one will appear on\n\
-the course's start screen.\n\
-\n\
-You can, however, collect\n\
-any of the remaining\n\
-Stars next. You don't\n\
+You can collect any of\n\
+the remaining Stars in\n\
+a course. You don't\n\
 have to recover the one\n\
 described by the hint."))
 
@@ -982,12 +978,12 @@ great peril. I know that\n\
 Bowser is the cause...and\n\
 I know that only you can\n\
 stop him!\n\
-The doors in the castle\n\
-that have been sealed by\n\
+The door in the castle\n\
+that has been sealed by\n\
 Bowser can be opened only\n\
 with Star Power.\n\
 \n\
-But there are secret\n\
+There are secret\n\
 paths in the castle,\n\
 paths that Bowser hasn't\n\
 found.\n\
@@ -1587,19 +1583,13 @@ using their power to\n\
 create his own world in\n\
 the paintings and walls.\n\
 \n\
-Please recover the Power\n\
-Stars! As you find them,\n\
-you can use their power\n\
-to open the doors that\n\
-Bowser has sealed.\n\
-\n\
 There are four rooms on\n\
 the first floor. Start in\n\
 the one with the painting\n\
-of Bob-omb inside. It's\n\
-the only room that Bowser\n\
-hasn't sealed.\n\
-When you collect eight\n\
+of Bob-omb inside.\n\
+\n\
+\n\
+When you collect 70\n\
 Power Stars, you'll be\n\
 able to open the door\n\
 with the big star. The\n\
@@ -1748,10 +1738,10 @@ hear the Princess calling?"))
 
 DEFINE_DIALOG(DIALOG_144, 1, 6, 150, 200, _("\
 You've recovered 30\n\
-Power Stars! Now you can\n\
-open the door with the\n\
-big Star! But before you\n\
-move on, how's it going\n\
+Power Stars! You've\n\
+solved the mystery of the\n\
+water wall behind the big\n\
+Star door! How's it going\n\
 otherwise?\n\
 Did you pound the two\n\
 columns down? You didn't\n\
@@ -1783,11 +1773,11 @@ third floor is just ahead."))
 
 DEFINE_DIALOG(DIALOG_146, 1, 6, 150, 200, _("\
 You've found 70 Power\n\
-Stars! The mystery of the\n\
-endless stairs is solved,\n\
-thanks to you--and is\n\
-Bowser ever upset! Now,\n\
-on to the final bout!"))
+Stars! Make sure you've\n\
+collected the 2 Golden\n\
+Keys from Bowser to solve\n\
+the mystery of the\n\
+endless stairs!"))
 
 DEFINE_DIALOG(DIALOG_147, 1, 5, 30, 200, _("\
 Are you using the Cap\n\

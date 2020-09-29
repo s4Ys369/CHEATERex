@@ -913,34 +913,7 @@ u32 interact_warp_door(struct MarioState *m, UNUSED u32 interactType, struct Obj
     u32 actionArg;
 
     if (m->action == ACT_WALKING || m->action == ACT_DECELERATING) {
-        if (warpDoorId == 1 && !(saveFlags & SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR)) {
-            if (!(saveFlags & SAVE_FLAG_HAVE_KEY_2)) {
-                if (!sDisplayingDoorText) {
-                    set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG,
-                                     (saveFlags & SAVE_FLAG_HAVE_KEY_1) ? DIALOG_023 : DIALOG_022);
-                }
-                sDisplayingDoorText = TRUE;
 
-                return FALSE;
-            }
-
-            doorAction = ACT_UNLOCKING_KEY_DOOR;
-        }
-
-        if (warpDoorId == 2 && !(saveFlags & SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)) {
-            if (!(saveFlags & SAVE_FLAG_HAVE_KEY_1)) {
-                if (!sDisplayingDoorText) {
-                    // Moat door skip was intended confirmed
-                    set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG,
-                                     (saveFlags & SAVE_FLAG_HAVE_KEY_2) ? DIALOG_023 : DIALOG_022);
-                }
-                sDisplayingDoorText = TRUE;
-
-                return FALSE;
-            }
-
-            doorAction = ACT_UNLOCKING_KEY_DOOR;
-        }
 
         if (m->action == ACT_WALKING || m->action == ACT_DECELERATING) {
             actionArg = should_push_or_pull_door(m, o) + 0x00000004;
@@ -1005,9 +978,15 @@ u32 get_door_save_file_flag(struct Object *door) {
 u32 interact_door(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
     s16 requiredNumStars = o->oBehParams >> 24;
     s16 numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
+    u32 saveFlags = save_file_get_flags();
 
     if (m->action == ACT_WALKING || m->action == ACT_DECELERATING) {
-        if (numStars >= requiredNumStars) {
+        u8 bowser1 = requiredNumStars == 8 && numStars >= requiredNumStars;
+        u8 bowser2 = requiredNumStars == 30 && numStars >= requiredNumStars;
+        u8 bowser3 = requiredNumStars == 70 && numStars >= requiredNumStars
+			&& ((saveFlags & SAVE_FLAG_HAVE_KEY_1) || (saveFlags & SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)) 
+			&& ((saveFlags & SAVE_FLAG_HAVE_KEY_2) || (saveFlags & SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR));
+        if ((requiredNumStars != 8 && requiredNumStars != 30 && requiredNumStars != 70) || bowser1 || bowser2 || bowser3) {
             u32 actionArg = should_push_or_pull_door(m, o);
             u32 enterDoorAction;
             u32 doorSaveFileFlag;
@@ -1026,12 +1005,8 @@ u32 interact_door(struct MarioState *m, UNUSED u32 interactType, struct Object *
                 enterDoorAction = ACT_ENTERING_STAR_DOOR;
             }
 
-            if (doorSaveFileFlag != 0 && !(save_file_get_flags() & doorSaveFileFlag)) {
-                enterDoorAction = ACT_UNLOCKING_STAR_DOOR;
-            }
-
             return set_mario_action(m, enterDoorAction, actionArg);
-        } else if (!sDisplayingDoorText) {
+        } else if (!sDisplayingDoorText && (requiredNumStars == 8 || requiredNumStars == 30 || requiredNumStars == 70)) {
             u32 text = DIALOG_022 << 16;
 
             switch (requiredNumStars) {
@@ -1060,7 +1035,7 @@ u32 interact_door(struct MarioState *m, UNUSED u32 interactType, struct Object *
             sDisplayingDoorText = TRUE;
             return set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG, text);
         }
-    } else if (m->action == ACT_IDLE && sDisplayingDoorText == TRUE && requiredNumStars == 70) {
+    } else if (m->action == ACT_IDLE && sDisplayingDoorText == TRUE && (requiredNumStars == 30 || requiredNumStars == 70)) {
         m->interactObj = o;
         m->usedObj = o;
         return set_mario_action(m, ACT_ENTERING_STAR_DOOR, should_push_or_pull_door(m, o));

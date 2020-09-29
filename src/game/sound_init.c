@@ -177,9 +177,24 @@ void play_painting_eject_sound(void) {
 
 void play_infinite_stairs_music(void) {
     u8 shouldPlay = FALSE;
+    u32 saveFlags = save_file_get_flags();
+
+	u8 infiniteStairsActive = FALSE;
+
+	if (gMarioState->numStars < 70) {
+        infiniteStairsActive = TRUE;
+	}
+
+	if (!(saveFlags & SAVE_FLAG_HAVE_KEY_1) && !(saveFlags & SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)) {
+        infiniteStairsActive = TRUE;
+	}
+
+	if (!(saveFlags & SAVE_FLAG_HAVE_KEY_2) && !(saveFlags & SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR)) {
+        infiniteStairsActive = TRUE;
+	}
 
     /* Infinite stairs? */
-    if (gCurrLevelNum == LEVEL_CASTLE && gCurrAreaIndex == 2 && gMarioState->numStars < 70) {
+    if (gCurrLevelNum == LEVEL_CASTLE && gCurrAreaIndex == 2 && infiniteStairsActive) {
         if (gMarioState->floor != NULL && gMarioState->floor->room == 6) {
             if (gMarioState->pos[2] < 2540.0f) {
                 shouldPlay = TRUE;

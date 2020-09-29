@@ -32,7 +32,12 @@
 #include "pc/pc_main.h"
 
 // TODO: put this elsewhere
-enum SaveOption { SAVE_OPT_SAVE_AND_CONTINUE = 1, SAVE_OPT_SAVE_AND_QUIT, SAVE_OPT_SAVE_EXIT_GAME, SAVE_OPT_CONTINUE_DONT_SAVE };
+enum SaveOption {
+    SAVE_OPT_SAVE_AND_CONTINUE = 1,
+    SAVE_OPT_SAVE_AND_QUIT,
+    SAVE_OPT_SAVE_EXIT_GAME,
+    SAVE_OPT_CONTINUE_DONT_SAVE
+};
 
 static struct Object *sIntroWarpPipeObj;
 static struct Object *sEndPeachObj;
@@ -159,7 +164,8 @@ void print_displaying_credits_entry(void) {
 #endif
 
         while (numLines-- > 0) {
-            print_credits_str_ascii(CREDIT_TEXT_X_RIGHT - get_credits_str_width(*currStrPtr), strY, *currStrPtr);
+            print_credits_str_ascii(CREDIT_TEXT_X_RIGHT - get_credits_str_width(*currStrPtr), strY,
+                                    *currStrPtr);
 
 #ifdef VERSION_JP
             strY += 16;
@@ -237,13 +243,15 @@ s32 get_star_collection_dialog(struct MarioState *m) {
     s32 dialogID = 0;
     s32 numStarsRequired;
 
-    for (i = 0; i < 6; i++) {
-        numStarsRequired = sStarsNeededForDialog[i];
-        if (m->prevNumStarsForDialog < numStarsRequired && m->numStars >= numStarsRequired) {
-            dialogID = i + DIALOG_141;
-            break;
+    for (i = 2; i < 6; i++) {
+        if (i != 4) {
+            numStarsRequired = sStarsNeededForDialog[i];
+            if (m->prevNumStarsForDialog < numStarsRequired && m->numStars >= numStarsRequired) {
+                dialogID = i + DIALOG_141;
+                break;
+            }
         }
-    }
+	}
 
     m->prevNumStarsForDialog = m->numStars;
     return dialogID;
@@ -255,13 +263,15 @@ void handle_save_menu(struct MarioState *m) {
     // wait for the menu to show up
     if (is_anim_past_end(m) && gSaveOptSelectIndex != 0) {
         // save and continue / save and quit
-        if (gSaveOptSelectIndex == SAVE_OPT_SAVE_AND_CONTINUE || gSaveOptSelectIndex == SAVE_OPT_SAVE_EXIT_GAME || gSaveOptSelectIndex == SAVE_OPT_SAVE_AND_QUIT) {
+        if (gSaveOptSelectIndex == SAVE_OPT_SAVE_AND_CONTINUE
+            || gSaveOptSelectIndex == SAVE_OPT_SAVE_EXIT_GAME
+            || gSaveOptSelectIndex == SAVE_OPT_SAVE_AND_QUIT) {
             save_file_do_save(gCurrSaveFileNum - 1);
 
             if (gSaveOptSelectIndex == SAVE_OPT_SAVE_AND_QUIT) {
                 fade_into_special_warp(-2, 0); // reset game
             } else if (gSaveOptSelectIndex == SAVE_OPT_SAVE_EXIT_GAME) {
-                //initiate_warp(LEVEL_CASTLE, 1, 0x1F, 0);
+                // initiate_warp(LEVEL_CASTLE, 1, 0x1F, 0);
                 fade_into_special_warp(0, 0);
                 game_exit();
             }
@@ -289,7 +299,8 @@ void handle_save_menu(struct MarioState *m) {
  * Spawns object with given behavior and model and copies over Mario's position
  * and yaw plus relative yaw.
  */
-struct Object *spawn_obj_at_mario_rel_yaw(struct MarioState *m, s32 model, const BehaviorScript *behavior, s16 relYaw) {
+struct Object *spawn_obj_at_mario_rel_yaw(struct MarioState *m, s32 model,
+                                          const BehaviorScript *behavior, s16 relYaw) {
     struct Object *o = spawn_object(m->marioObj, model, behavior);
 
     o->oFaceAngleYaw = m->faceAngle[1] + relYaw;
@@ -609,9 +620,11 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
                     play_course_clear();
                 } else {
                     if (gCurrLevelNum == LEVEL_BOWSER_1 || gCurrLevelNum == LEVEL_BOWSER_2) {
-                        play_music(SEQ_PLAYER_ENV, SEQUENCE_ARGS(15, SEQ_EVENT_CUTSCENE_COLLECT_KEY), 0);
+                        play_music(SEQ_PLAYER_ENV, SEQUENCE_ARGS(15, SEQ_EVENT_CUTSCENE_COLLECT_KEY),
+                                   0);
                     } else {
-                        play_music(SEQ_PLAYER_ENV, SEQUENCE_ARGS(15, SEQ_EVENT_CUTSCENE_COLLECT_STAR), 0);
+                        play_music(SEQ_PLAYER_ENV, SEQUENCE_ARGS(15, SEQ_EVENT_CUTSCENE_COLLECT_STAR),
+                                   0);
                     }
                 }
                 break;
@@ -625,7 +638,8 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
                     level_trigger_warp(m, WARP_OP_STAR_EXIT);
                 } else {
                     enable_time_stop();
-                    create_dialog_box_with_response(gLastCompletedStarNum == 7 ? DIALOG_013 : DIALOG_014);
+                    create_dialog_box_with_response(gLastCompletedStarNum == 7 ? DIALOG_013
+                                                                               : DIALOG_014);
                     m->actionState = 1;
                 }
                 break;
@@ -1123,7 +1137,8 @@ s32 act_exit_land_save_dialog(struct MarioState *m) {
             animFrame = set_mario_animation(m, MARIO_ANIM_THROW_CATCH_KEY);
             switch (animFrame) {
                 case -1:
-                    spawn_obj_at_mario_rel_yaw(m, MODEL_BOWSER_KEY_CUTSCENE, bhvBowserKeyCourseExit, -32768);
+                    spawn_obj_at_mario_rel_yaw(m, MODEL_BOWSER_KEY_CUTSCENE, bhvBowserKeyCourseExit,
+                                               -32768);
                     //! fall through
                 case 67:
                     play_sound(SOUND_ACTION_KEY_SWISH, m->marioObj->header.gfx.cameraToObject);
@@ -1671,9 +1686,9 @@ static void intro_cutscene_hide_hud_and_mario(struct MarioState *m) {
 }
 
 #ifdef VERSION_EU
-    #define TIMER_SPAWN_PIPE 47
+#define TIMER_SPAWN_PIPE 47
 #else
-    #define TIMER_SPAWN_PIPE 37
+#define TIMER_SPAWN_PIPE 37
 #endif
 
 static void intro_cutscene_peach_lakitu_scene(struct MarioState *m) {
@@ -1689,9 +1704,9 @@ static void intro_cutscene_peach_lakitu_scene(struct MarioState *m) {
 #undef TIMER_SPAWN_PIPE
 
 #ifdef VERSION_EU
-    #define TIMER_RAISE_PIPE 28
+#define TIMER_RAISE_PIPE 28
 #else
-    #define TIMER_RAISE_PIPE 38
+#define TIMER_RAISE_PIPE 38
 #endif
 
 static void intro_cutscene_raise_pipe(struct MarioState *m) {
@@ -1722,9 +1737,9 @@ static void intro_cutscene_jump_out_of_pipe(struct MarioState *m) {
         play_sound_if_no_flag(m, SOUND_MARIO_YAHOO, MARIO_MARIO_SOUND_PLAYED);
 #else
         play_sound_if_no_flag(m, SOUND_MARIO_YAHOO, MARIO_MARIO_SOUND_PLAYED);
-    #ifndef VERSION_JP
+#ifndef VERSION_JP
         play_sound_if_no_flag(m, SOUND_ACTION_HIT_3, MARIO_ACTION_SOUND_PLAYED);
-    #endif
+#endif
 #endif
 
         set_mario_animation(m, MARIO_ANIM_SINGLE_JUMP);
@@ -2055,11 +2070,11 @@ static void end_peach_cutscene_summon_jumbo_star(struct MarioState *m) {
 }
 
 #ifdef VERSION_EU
-    #define TIMER_FADE_IN_PEACH 201
-    #define TIMER_DESCEND_PEACH 280
+#define TIMER_FADE_IN_PEACH 201
+#define TIMER_DESCEND_PEACH 280
 #else
-    #define TIMER_FADE_IN_PEACH 276
-    #define TIMER_DESCEND_PEACH 355
+#define TIMER_FADE_IN_PEACH 276
+#define TIMER_DESCEND_PEACH 355
 #endif
 
 // free peach from the stained glass window
@@ -2114,9 +2129,9 @@ static void end_peach_cutscene_spawn_peach(struct MarioState *m) {
 }
 
 #ifdef VERSION_EU
-    #define TIMER_RUN_TO_PEACH 531
+#define TIMER_RUN_TO_PEACH 531
 #else
-    #define TIMER_RUN_TO_PEACH 584
+#define TIMER_RUN_TO_PEACH 584
 #endif
 
 // descend peach
@@ -2231,11 +2246,11 @@ static void end_peach_cutscene_dialog_1(struct MarioState *m) {
 }
 
 #ifdef VERSION_EU
-    #define TIMER_SOMETHING_SPECIAL 150
-    #define TIMER_PEACH_KISS        260
+#define TIMER_SOMETHING_SPECIAL 150
+#define TIMER_PEACH_KISS 260
 #else
-    #define TIMER_SOMETHING_SPECIAL 130
-    #define TIMER_PEACH_KISS        200
+#define TIMER_SOMETHING_SPECIAL 130
+#define TIMER_PEACH_KISS 200
 #endif
 
 // dialog 2
