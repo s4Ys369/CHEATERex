@@ -32,6 +32,7 @@
 #include "memory.h"
 #include "model_ids.h"
 #include "object_fields.h"
+#include "obj_behaviors.h"
 #include "object_helpers.h"
 #include "object_list_processor.h"
 #include "print.h"
@@ -88,6 +89,12 @@ void cheats_mario_inputs(struct MarioState *m) {
     m->flags &= 0xFFFFFF;
 
     while (Cheats.EnableCheats == true) {
+
+        /*Coin Spawner Prototype*/
+        if (m->controller->buttonPressed & Y_BUTTON) {
+            obj_spawn_yellow_coins(m->marioObj, 1);
+        }
+
         /*All Jumps Triple Cheat*/
         while (Cheats.Triple && (m->action & ACT_GROUP_MASK) != ACT_GROUP_SUBMERGED) {
             // While Triple Jump Cheat is true and Mario's is not underwater
