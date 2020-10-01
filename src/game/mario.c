@@ -1734,7 +1734,6 @@ void func_sh_8025574C(void) {
  * Main function for executing Mario's behavior.
  */
 s32 execute_mario_action(UNUSED struct Object *o) {
-    s32 inLoop = TRUE;
     /**
     * Cheat stuff
     */
@@ -1758,7 +1757,9 @@ s32 execute_mario_action(UNUSED struct Object *o) {
         mario_reset_bodystate(gMarioState);
         update_mario_inputs(gMarioState);
         mario_handle_special_floors(gMarioState);
-        mario_process_interactions(gMarioState);
+        if (gMarioState->action != ACT_SMO_POSSESSION) {
+            mario_process_interactions(gMarioState);
+        }
 
         // If Mario is OOB, stop executing actions.
         if (gMarioState->floor == NULL) {
@@ -1768,44 +1769,17 @@ s32 execute_mario_action(UNUSED struct Object *o) {
         // The function can loop through many action shifts in one frame,
         // which can lead to unexpected sub-frame behavior. Could potentially hang
         // if a loop of actions were found, but there has not been a situation found.
-        while (inLoop) {
-            switch (gMarioState->action & ACT_GROUP_MASK) {
-                case ACT_GROUP_STATIONARY:
-                    inLoop = mario_execute_stationary_action(gMarioState);
-                    break;
-
-                case ACT_GROUP_MOVING:
-                    inLoop = mario_execute_moving_action(gMarioState);
-                    break;
-
-                case ACT_GROUP_AIRBORNE:
-                    inLoop = mario_execute_airborne_action(gMarioState);
-                    break;
-
-                case ACT_GROUP_SUBMERGED:
-                    inLoop = mario_execute_submerged_action(gMarioState);
-                    break;
-
-                case ACT_GROUP_CUTSCENE:
-                    inLoop = mario_execute_cutscene_action(gMarioState);
-                    break;
-
-                case ACT_GROUP_AUTOMATIC:
-                    inLoop = mario_execute_automatic_action(gMarioState);
-                    break;
-
-                case ACT_GROUP_OBJECT:
-                    inLoop = mario_execute_object_action(gMarioState);
-                    break;
-            }
-        }
+        mario_execute_action(gMarioState);
 
         sink_mario_in_quicksand(gMarioState);
         squish_mario_model(gMarioState);
         set_submerged_cam_preset_and_spawn_bubbles(gMarioState);
-        update_mario_health(gMarioState);
+        if (!smo_update_mario_health(gMarioState)) {
+            update_mario_health(gMarioState);
+        }
         update_mario_info_for_cam(gMarioState);
         mario_update_hitbox_and_cap_model(gMarioState);
+        mario_update_cappy(gMarioState);
 
         // Both of the wind handling portions play wind audio only in
         // non-Japanese releases.
@@ -1918,6 +1892,11 @@ void init_mario(void) {
 
         capObject->oMoveAngleYaw = 0;
     }
+
+    // Init Mario SMO fields
+    mario_unload_cappy(gMarioState);
+    smo_free_all_data();
+    smo_obj_alloc_data(gMarioState->marioObj, gMarioState);
 }
 
 void init_mario_from_save_file(void) {

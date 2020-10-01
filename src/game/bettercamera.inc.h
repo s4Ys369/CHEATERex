@@ -550,6 +550,13 @@ static void newcam_update_values(void) {
             waterflag = 1;
     }
 
+    // SMO - Possessed flying objects
+    if (gMarioState->action == ACT_SMO_POSSESSION && gMarioState->oPossessedObject->oCameraBehindMario) {
+        gMarioState->forwardVel = gMarioState->oPossessedObject->oForwardVel;
+        newcam_modeflags |= NC_FLAG_XTURN;
+        waterflag = 1;
+    }
+
     if (waterflag && newcam_modeflags & NC_FLAG_XTURN) {
         newcam_yaw = (approach_s16_symmetric(newcam_yaw, -gMarioState->faceAngle[1] - 0x4000,
                                              (gMarioState->forwardVel * 128)));

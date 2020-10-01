@@ -1767,7 +1767,13 @@ void render_dialog_entries(void) {
 #else
     dialogTable = segmented_to_virtual(seg2_dialog_table);
 #endif
-    dialog = segmented_to_virtual(dialogTable[gDialogID]);
+    // SMO dialog handler
+    if (gDialogID >= DIALOG_SMO_START_INDEX) {
+        dialogTable = segmented_to_virtual(smo_dialog_table);
+        dialog = segmented_to_virtual(dialogTable[gDialogID - DIALOG_SMO_START_INDEX]);
+    } else {
+        dialog = segmented_to_virtual(dialogTable[gDialogID]);
+    }
 
     // if the dialog entry is invalid, set the ID to -1.
     if (segmented_to_virtual(NULL) == dialog) {
@@ -2700,7 +2706,7 @@ s16 render_pause_courses_and_castle(void) {
             }
 
 #ifdef VERSION_EU
-            if (gPlayer3Controller->buttonPressed & (A_BUTTON | START_BUTTON))
+            if (gPlayer3Controller->buttonPressed & (A_BUTTON | Z_TRIG | START_BUTTON))
 #else
             if (gPlayer3Controller->buttonPressed & A_BUTTON
              || gPlayer3Controller->buttonPressed & START_BUTTON)
@@ -2731,7 +2737,7 @@ s16 render_pause_courses_and_castle(void) {
             }
 
 #ifdef VERSION_EU
-            if (gPlayer3Controller->buttonPressed & (A_BUTTON | START_BUTTON))
+            if (gPlayer3Controller->buttonPressed & (A_BUTTON | Z_TRIG | START_BUTTON))
 #else
             if (gPlayer3Controller->buttonPressed & A_BUTTON
              || gPlayer3Controller->buttonPressed & START_BUTTON)
@@ -3105,6 +3111,9 @@ s16 render_course_complete_screen(void) {
             if (gCourseDoneMenuTimer > 110
                 && (gPlayer3Controller->buttonPressed & A_BUTTON
                  || gPlayer3Controller->buttonPressed & START_BUTTON
+#ifdef VERSION_EU
+                 || gPlayer3Controller->buttonPressed & Z_TRIG
+#endif
                 )) {
                 level_set_transition(0, 0);
                 play_sound(SOUND_MENU_STAR_SOUND, gDefaultSoundArgs);

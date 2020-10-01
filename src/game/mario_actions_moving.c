@@ -1988,7 +1988,7 @@ s32 check_common_moving_cancels(struct MarioState *m) {
 }
 
 s32 mario_execute_moving_action(struct MarioState *m) {
-    s32 cancel;
+    s32 cancel = 0;
 
     if (check_common_moving_cancels(m)) {
         return TRUE;

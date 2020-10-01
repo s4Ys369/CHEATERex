@@ -160,6 +160,8 @@ struct ObjectNode
 // NOTE: Since ObjectNode is the first member of Object, it is difficult to determine
 // whether some of these pointers point to ObjectNode or Object.
 
+struct SmoData;
+
 struct Object
 {
     /*0x000*/ struct ObjectNode header;
@@ -219,6 +221,9 @@ struct Object
     /*0x218*/ void *collisionData;
     /*0x21C*/ Mat4 transform;
     /*0x25C*/ void *respawnInfo;
+
+    // SMO related data
+    struct SmoData *smoData;
 };
 
 struct ObjectHitbox
