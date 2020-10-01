@@ -48,6 +48,8 @@ TEXTSAVES ?= 0
 EXTERNAL_DATA ?= 0
 # Enable Discord Rich Presence
 DISCORDRPC ?= 0
+# Only add sounds to base.zip
+NO_BASE_GFX ?= 0
 
 # Various workarounds for weird toolchains
 
@@ -707,16 +709,18 @@ $(BASEPACK_LST): $(EXE)
 	@echo "$(BUILD_DIR)/sound/sequences.bin sound/sequences.bin" >> $(BASEPACK_LST)
 	@echo "$(BUILD_DIR)/sound/sound_data.ctl sound/sound_data.ctl" >> $(BASEPACK_LST)
 	@echo "$(BUILD_DIR)/sound/sound_data.tbl sound/sound_data.tbl" >> $(BASEPACK_LST)
+ifeq ($(NO_BASE_GFX),0)
 	@$(foreach f, $(wildcard $(SKYTILE_DIR)/*), echo $(f) gfx/$(f:$(BUILD_DIR)/%=%) >> $(BASEPACK_LST);)
 	@find actors -name \*.png -exec echo "{} gfx/{}" >> $(BASEPACK_LST) \;
 	@find levels -name \*.png -exec echo "{} gfx/{}" >> $(BASEPACK_LST) \;
 	@find textures -name \*.png -exec echo "{} gfx/{}" >> $(BASEPACK_LST) \;
+endif
 
 # prepares the resource ZIP with base data
 $(BASEPACK_PATH): $(BASEPACK_LST)
 	@$(PYTHON) $(TOOLS_DIR)/mkzip.py $(BASEPACK_LST) $(BASEPACK_PATH)
-
 endif
+
 
 clean:
 	$(RM) -r $(BUILD_DIR_BASE)
