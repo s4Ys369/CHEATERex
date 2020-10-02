@@ -35,6 +35,6 @@ DYNOS_DEFINE_ACTION(go_to_level_select);
 #else
 // Provides a default config if DynOS is not installed
 // [X] key and (X) button for the mask 0x0040
-u32 gSmoConfigKeyCappy[MAX_BINDS] = { 0x002D, 0x1002, VK_INVALID };
+u32 gSmoConfigKeyCappy[MAX_BINDS] = { 0x002D, 0x1001, VK_INVALID };
 #endif
 
