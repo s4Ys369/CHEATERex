@@ -77,12 +77,14 @@ static const u8 optsRespStr[][16] = {
     { TEXT_OPT_R1 },
     { TEXT_OPT_R2 },
     { TEXT_OPT_R3 },
+    { TEXT_OPT_R4 },
 };
 
 static const u8 *RespChoices[] = {
     optsRespStr[0],
     optsRespStr[1],
     optsRespStr[2],
+    optsRespStr[3],
 };
 
 

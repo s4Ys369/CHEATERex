@@ -37,9 +37,10 @@
 #define TEXT_OPT_SS4   _("FAST")
 #define TEXT_OPT_SS5   _("FASTER")
 
-#define TEXT_OPT_R1     _("ORIGINAL")
-#define TEXT_OPT_R2     _("TIGHTER")
-#define TEXT_OPT_R3     _("SUPER")
+#define TEXT_OPT_R1     _("EMM")
+#define TEXT_OPT_R2     _("ORIGINAL")
+#define TEXT_OPT_R3     _("TIGHTER")
+#define TEXT_OPT_R4     _("SUPER")
 
 #define TEXT_OPT_PA1    _("DISABLED")
 #define TEXT_OPT_PA2    _("BLACK BOBOMB")
@@ -139,9 +140,10 @@
 #define TEXT_OPT_SS4   _("Fast")
 #define TEXT_OPT_SS5   _("Faster")
 
-#define TEXT_OPT_R1     _("Original")
-#define TEXT_OPT_R2     _("Tighter")
-#define TEXT_OPT_R3     _("Super")
+#define TEXT_OPT_R1     _("EMM")
+#define TEXT_OPT_R2     _("Original")
+#define TEXT_OPT_R3     _("Tighter")
+#define TEXT_OPT_R4     _("Super")
 
 #define TEXT_OPT_PA1    _("Disabled")
 #define TEXT_OPT_PA2    _("Black Bobomb")

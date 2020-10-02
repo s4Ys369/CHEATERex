@@ -503,19 +503,37 @@ void update_walking_speed(struct MarioState *m) {
     if (Cheats.EnableCheats) {
         switch (Cheats.Responsive) {
             case 0:
-                m->faceAngle[1] = m->intendedYaw - approach_s32((s16)(m->intendedYaw - m->faceAngle[1]), 0, 0x800, 0x800);
+                if (analog_stick_held_back(m)) {
+                    m->faceAngle[1] = m->intendedYaw;
+
+                    if (m->forwardVel < 0) {
+                        mario_set_forward_vel(m, -m->forwardVel);
+                    }
+                } else {
+                    m->faceAngle[1] = m->intendedYaw - approach_s32((s16)(m->intendedYaw - m->faceAngle[1]), 0, 0xC00, 0xC00);
+                }
             case 1:
+                m->faceAngle[1] = m->intendedYaw - approach_s32((s16)(m->intendedYaw - m->faceAngle[1]), 0, 0x800, 0x800);
+            case 2:
                 if (analog_stick_held_back(m)) {
                     m->faceAngle[1] = m->intendedYaw;
                 } else {
                     m->faceAngle[1] = m->intendedYaw - approach_s32((s16)(m->intendedYaw - m->faceAngle[1]), 0, 0xC00, 0xC00);
                 }
-            case 2:
+            case 3:
                 m->faceAngle[1] = m->intendedYaw;
         }
 
     } else {
-        m->faceAngle[1] = m->intendedYaw - approach_s32((s16)(m->intendedYaw - m->faceAngle[1]), 0, 0x800, 0x800);
+        if (analog_stick_held_back(m)) {
+            m->faceAngle[1] = m->intendedYaw;
+
+            if (m->forwardVel < 0) {
+                mario_set_forward_vel(m, -m->forwardVel);
+            }
+        } else {
+            m->faceAngle[1] = m->intendedYaw - approach_s32((s16)(m->intendedYaw - m->faceAngle[1]), 0, 0xC00, 0xC00);
+        }
     }
     apply_slope_accel(m);
 }

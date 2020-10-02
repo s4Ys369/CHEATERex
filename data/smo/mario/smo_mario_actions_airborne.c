@@ -157,9 +157,9 @@ static s32 smo_act_flying(struct MarioState *m) {
 }
 
 static s32 smo_act_flying_triple_jump(struct MarioState *m) {
-    if (SMO_MARIO == 1) {
-        m->input &= ~INPUT_B_PRESSED;
-    }
+    // if (SMO_MARIO == 1) {
+    //     m->input &= ~INPUT_B_PRESSED;
+    // }
     return ACTION_RESULT_CONTINUE;
 }
 
@@ -241,12 +241,9 @@ static s32 smo_act_cappy_jump(struct MarioState *m) {
 static s32 smo_act_ground_pound_jump(struct MarioState *m) {
     RETURN_CANCEL_IF_ACTION_SET(ACT_DIVE, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_JUMP_KICK, SMO_MARIO == 1);
-    RETURN_CANCEL_IF_ACTION_SET(ACT_GROUND_POUND, SMO_MARIO == 1);
+    // RETURN_CANCEL_IF_ACTION_SET(ACT_GROUND_POUND, SMO_MARIO == 1);
     RETURN_CANCEL_IF_ACTION_SET(ACT_SMO_CAPPY_THROW_AIRBORNE, SMO_CAPPY != 0);
 
-    m->particleFlags |= PARTICLE_SPARKLES;
-    play_mario_sound(m, SOUND_ACTION_TERRAIN_JUMP, SOUND_MARIO_YAHOO);
-    common_air_action_step(m, ACT_JUMP_LAND, MARIO_ANIM_TRIPLE_JUMP, AIR_STEP_CHECK_LEDGE_GRAB | AIR_STEP_CHECK_HANG);
     return ACTION_RESULT_CONTINUE;
 }
 
