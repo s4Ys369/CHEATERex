@@ -94,18 +94,6 @@ static const u8 optsAudioStr[][32] = {
     { TEXT_OPT_ENVVOLUME },
 };
 
-static const u8 optsCheatsStr[][64] = {
-    { TEXT_OPT_CHEAT1 },
-    { TEXT_OPT_CHEAT2 },
-    { TEXT_OPT_CHEAT3 },
-    { TEXT_OPT_CHEAT4 },
-    { TEXT_OPT_CHEAT5 },
-    { TEXT_OPT_CHEAT6 },
-    { TEXT_OPT_CHEAT7 },
-    { TEXT_OPT_CHEAT8 },
-    { TEXT_OPT_CHEAT9 },
-    { TEXT_OPT_NON },
-};
 static const u8 bindStr[][32] = {
     { TEXT_OPT_UNBOUND },
     { TEXT_OPT_PRESSKEY },
@@ -223,12 +211,6 @@ static void optvideo_apply(UNUSED struct Option *self, s32 arg) {
     if (!arg) configWindow.settings_changed = true;
 }
 
-static void setJBC(UNUSED struct Option *self, s32 arg) {
-    if (!arg)
-        Cheats.JBC = true;
-}
-
-
 /* submenu option lists */
 
 #ifdef BETTERCAMERA
@@ -300,29 +282,28 @@ static struct Option optsCheats[] = {
     DEF_OPT_TOGGLE(optsCheatsStr[7], &Cheats.HugeMario),
     DEF_OPT_TOGGLE(optsCheatsStr[8], &Cheats.TinyMario),
     DEF_OPT_CHOICE(optsCheatsStr[9], &Cheats.NON, stayInLevelChoices),
-    DEF_OPT_CHOICE(optsCheatsStr2[0], &Cheats.Coin, CoinChoices),
-    DEF_OPT_TOGGLE(optsCheatsStr2[1], &Cheats.Hover),
-    DEF_OPT_TOGGLE(optsCheatsStr2[2], &Cheats.Moon),
-    DEF_OPT_CHOICE(optsCheatsStr2[3], &Cheats.Run, SpeedChoices),
-    DEF_OPT_TOGGLE(optsCheatsStr2[4], &Cheats.NDB),
-    DEF_OPT_TOGGLE(optsCheatsStr2[5], &Cheats.Jump),
-    DEF_OPT_TOGGLE(optsCheatsStr2[6], &Cheats.SPD),
-    DEF_OPT_TOGGLE(optsCheatsStr2[7], &Cheats.TPF),
-    DEF_OPT_CHOICE(optsCheatsStr2[8], &Cheats.JB, SeqChoices),
-    DEF_OPT_BUTTON(optsCheatsStr2[9], setJBC),
-    DEF_OPT_TOGGLE(optsCheatsStr2[10], &Cheats.QuikEnd),
-    DEF_OPT_CHOICE(optsCheatsStr2[11], &Cheats.Hurt, HurtCheatChoices),
-    DEF_OPT_TOGGLE(optsCheatsStr2[12], &Cheats.Cann),
-    DEF_OPT_TOGGLE(optsCheatsStr2[13], &Cheats.AutoWK),
-    DEF_OPT_TOGGLE(optsCheatsStr2[14], &Cheats.GetShell),
-    DEF_OPT_TOGGLE(optsCheatsStr2[15], &Cheats.GetBob),
-    DEF_OPT_CHOICE(optsCheatsStr2[16], &Cheats.Spamba, SpamCheatChoices),
-    DEF_OPT_TOGGLE(optsCheatsStr2[17], &Cheats.Swim),
-    DEF_OPT_TOGGLE(optsCheatsStr2[18], &Cheats.DCM),
-    DEF_OPT_CHOICE(optsCheatsStr2[19], &Cheats.BLJAnywhere, bljCheatChoices),
-    DEF_OPT_CHOICE(optsCheatsStr2[20], &Cheats.PAC, PlayAsCheatChoices),
-    DEF_OPT_TOGGLE(optsCheatsStr2[21], &Cheats.Triple),
-    DEF_OPT_TOGGLE(optsCheatsStr2[22], &Cheats.Fly),
+    DEF_OPT_TOGGLE(optsCheatsStr[10], &Cheats.Hover),
+    DEF_OPT_TOGGLE(optsCheatsStr[11], &Cheats.Moon),
+    DEF_OPT_CHOICE(optsCheatsStr[12], &Cheats.Run, SpeedChoices),
+    DEF_OPT_TOGGLE(optsCheatsStr[13], &Cheats.NDB),
+    DEF_OPT_TOGGLE(optsCheatsStr[14], &Cheats.Jump),
+    DEF_OPT_TOGGLE(optsCheatsStr[15], &Cheats.SPD),
+    DEF_OPT_TOGGLE(optsCheatsStr[16], &Cheats.TPF),
+    DEF_OPT_CHOICE(optsCheatsStr[17], &Cheats.JB, SeqChoices),
+    DEF_OPT_TOGGLE(optsCheatsStr[18], &Cheats.JBC),
+    DEF_OPT_TOGGLE(optsCheatsStr[19], &Cheats.QuikEnd),
+    DEF_OPT_CHOICE(optsCheatsStr[20], &Cheats.Hurt, HurtCheatChoices),
+    DEF_OPT_TOGGLE(optsCheatsStr[21], &Cheats.Cann),
+    DEF_OPT_TOGGLE(optsCheatsStr[22], &Cheats.AutoWK),
+    DEF_OPT_TOGGLE(optsCheatsStr[23], &Cheats.GetShell),
+    DEF_OPT_TOGGLE(optsCheatsStr[24], &Cheats.GetBob),
+    DEF_OPT_CHOICE(optsCheatsStr[25], &Cheats.Spamba, SpamCheatChoices),
+    DEF_OPT_TOGGLE(optsCheatsStr[26], &Cheats.Swim),
+    DEF_OPT_TOGGLE(optsCheatsStr[27], &Cheats.DCM),
+    DEF_OPT_CHOICE(optsCheatsStr[28], &Cheats.BLJAnywhere, bljCheatChoices),
+    DEF_OPT_CHOICE(optsCheatsStr[29], &Cheats.PAC, PlayAsCheatChoices),
+    DEF_OPT_TOGGLE(optsCheatsStr[30], &Cheats.Triple),
+    DEF_OPT_TOGGLE(optsCheatsStr[31], &Cheats.Fly),
 
 };
 

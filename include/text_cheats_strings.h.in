@@ -4,7 +4,6 @@
 #if defined(VERSION_JP) || defined(VERSION_SH)
 
 #define TEXT_OPT_NON       _("STAY IN LEVEL AFTER STAR")
-#define TEXT_OPT_COIN      _("COIN CHEATS (HOLD B)")
 #define TEXT_OPT_HOVER     _("HOVER MODE (HOLD A)")
 #define TEXT_OPT_MOON      _("MOON GRAVITY")
 #define TEXT_OPT_RUN       _("RUN SPEED")
@@ -27,11 +26,6 @@
 #define TEXT_OPT_PAC   _("PLAY AS")
 #define TEXT_OPT_TRIPLE _("ALL JUMPS TRIPLE")
 #define TEXT_OPT_FLY _("FLYER")
-
-#define TEXT_OPT_COIN1 _("OFF")
-#define TEXT_OPT_COIN2 _("COIN")
-#define TEXT_OPT_COIN3 _("BLUE COIN")
-#define TEXT_OPT_COIN4 _("RED COIN")
 
 #define TEXT_CHEAT_STAY1    _("DISABLED")
 #define TEXT_CHEAT_STAY2    _("ENABLED (NORMAL)")
@@ -112,7 +106,6 @@
 #else // VERSION
 
 #define TEXT_OPT_NON       _("Stay in Level after Star")
-#define TEXT_OPT_COIN      _("Coin Cheats Hold [B]")
 #define TEXT_OPT_HOVER     _("Hover Mode Hold [A]")
 #define TEXT_OPT_MOON      _("Moon Gravity")
 #define TEXT_OPT_RUN       _("Run Speed Modifier")
@@ -135,11 +128,6 @@
 #define TEXT_OPT_PAC   _("Play as")
 #define TEXT_OPT_TRIPLE _("All Jumps Triple")
 #define TEXT_OPT_FLY _("FLYER")
-
-#define TEXT_OPT_COIN1 _("Off")
-#define TEXT_OPT_COIN2 _("Coin")
-#define TEXT_OPT_COIN3 _("Blue Coin"
-#define TEXT_OPT_COIN4 _("Red Coin")
 
 #define TEXT_CHEAT_STAY1    _("Disabled")
 #define TEXT_CHEAT_STAY2    _("Hold L to Exit")
