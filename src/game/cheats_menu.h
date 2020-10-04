@@ -13,6 +13,20 @@ static const u8 *stayInLevelChoices[] = {
     optsStayInLevelStr[2],
 };
 
+static const u8 optsCoinCheatStr[][32] = {
+    { TEXT_OPT_COIN1 },
+    { TEXT_OPT_COIN2 },
+    { TEXT_OPT_COIN3 },
+    { TEXT_OPT_COIN4 },
+};
+
+static const u8 *CoinChoices[] = {
+    optsCoinCheatStr[0],
+    optsCoinCheatStr[1],
+    optsCoinCheatStr[2],
+    optsCoinCheatStr[3],
+};
+
 static const u8 optsSeqStr[][64] = {
     { TEXT_OPT_SEQ1 },
     { TEXT_OPT_SEQ2 },
@@ -188,17 +202,8 @@ static const u8* bljCheatChoices[] = {
     optsBLJCheatStr[12],
 };
 
-static const u8 optsCheatsStr[][64] = {
-    { TEXT_OPT_CHEAT1 },
-    { TEXT_OPT_CHEAT2 },
-    { TEXT_OPT_CHEAT3 },
-    { TEXT_OPT_CHEAT4 },
-    { TEXT_OPT_CHEAT5 },
-    { TEXT_OPT_CHEAT6 },
-    { TEXT_OPT_CHEAT7 },
-    { TEXT_OPT_CHEAT8 },
-    { TEXT_OPT_CHEAT9 },
-    { TEXT_OPT_NON },
+static const u8 optsCheatsStr2[][64] = {
+    { TEXT_OPT_COIN },
     { TEXT_OPT_HOVER },
     { TEXT_OPT_MOON },
     { TEXT_OPT_RUN },

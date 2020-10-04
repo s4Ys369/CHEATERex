@@ -7,6 +7,7 @@
 #include <ctype.h>
 
 #include "platform.h"
+#include "cheats.h"
 #include "configfile.h"
 #include "cliopts.h"
 #include "gfx/gfx_screen_config.h"
@@ -164,6 +165,7 @@ static const struct ConfigOption options[] = {
     {.name = "exit_anywhere", .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.ExitAnywhere },
     {.name = "huge_mario", .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.HugeMario },
     {.name = "tiny_mario", .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.TinyMario },
+    {.name = "coin", .type = CONFIG_TYPE_UINT, .uintValue = &Cheats.Coin },
     {.name = "non_stop_mode", .type = CONFIG_TYPE_UINT, .uintValue = &Cheats.NON },
     {.name = "hover_mode", .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.Hover },
     {.name = "moon_gravity", .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.Moon },
