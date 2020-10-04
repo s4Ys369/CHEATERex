@@ -138,7 +138,7 @@
 
 #define TEXT_OPT_COIN1 _("Off")
 #define TEXT_OPT_COIN2 _("Coin")
-#define TEXT_OPT_COIN3 _("Blue Coin"
+#define TEXT_OPT_COIN3 _("Blue Coin")
 #define TEXT_OPT_COIN4 _("Red Coin")
 
 #define TEXT_CHEAT_STAY1    _("Disabled")
