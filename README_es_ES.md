@@ -70,7 +70,9 @@ Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para elim
  * "Menu C button support" por engima907
  * "Bugfixes" por JAGSTAX
  * "DynOS" por PeachyPeach
- * Y por supuesto, "CHEATERv8" por $4Y$, yo mismo
+    -"Exit to Main Menu" por Adya incluido
+    -"Go to Level Select" por $4Y$ incluido
+ * Y por supuesto, "CHEATERv9" por $4Y$, yo mismo
 
 ## Como agregar los trucos/mods
  * Usa `src/game/mario_cheats.c` para el código

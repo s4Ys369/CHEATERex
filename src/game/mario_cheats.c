@@ -90,10 +90,11 @@ void cheats_mario_inputs(struct MarioState *m) {
 
     while (Cheats.EnableCheats == true) {
 
-        /*100 Coin Star Spawner Prototype*/
-        //if (m->controller->buttonPressed & X_BUTTON) {
-            //spawn_object(m->marioObj, MODEL_STAR, bhvSpawnedStarNoLevelExit);
-        //}
+        if (Cheats.Fly) {
+            if (m->action == ACT_FLYING) {
+                m->particleFlags |= PARTICLE_SPARKLES;
+            }
+        }
 
         /*Coin Spawner Prototype*/
         if (m->controller->buttonPressed & Y_BUTTON) {
@@ -117,6 +118,7 @@ void cheats_mario_inputs(struct MarioState *m) {
         while (Cheats.Hover && m->controller->buttonDown & A_BUTTON) {
             if (m->action != ACT_GROUND_POUND) {
                 vec3f_set(m->vel, 0.0f, 2.0f, 300.0f);
+                m->forwardVel = 52.0f;
                 break;
             }
             break;
@@ -125,7 +127,7 @@ void cheats_mario_inputs(struct MarioState *m) {
         /*Moon Gravity*/
         while (Cheats.Moon) {
             while ((m->action & ACT_GROUP_MASK) == ACT_GROUP_AIRBORNE) {
-                if (m->action != ACT_FREEFALL) {
+                if (m->action != ACT_FREEFALL && m->action != ACT_LONG_JUMP) {
                     m->vel[1] += 2;
                     break;
                 }
@@ -154,22 +156,22 @@ void cheats_mario_inputs(struct MarioState *m) {
             case 0:
                 break;
             case 1:
-                if (m->action == ACT_WALKING) {
+                if (m->action == ACT_WALKING && m->forwardVel >= 0) {
                     m->forwardVel = (m->forwardVel - 0.5f);
                 }
                 break;
             case 2:
-                if (m->action == ACT_WALKING) {
+                if (m->action == ACT_WALKING && m->forwardVel >= 0) {
                     m->forwardVel = (m->forwardVel - 0.7f);
                 }
                 break;
             case 3:
-                if (m->action == ACT_WALKING) {
+                if (m->action == ACT_WALKING && m->forwardVel >= 0) {
                     m->forwardVel = (m->forwardVel * 1.2f);
                 }
                 break;
             case 4:
-                if (m->action == ACT_WALKING) {
+                if (m->action == ACT_WALKING && m->forwardVel >= 0) {
                     m->forwardVel = (m->forwardVel * 1.8f);
                 }
                 break;
@@ -184,32 +186,26 @@ void cheats_mario_inputs(struct MarioState *m) {
             case 1:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BLACK_BOBOMB];
                 m->marioObj->header.gfx.unk38.curAnim = bobomb_seg8_anims_0802396C[0];
-                is_anim_at_end(m);
                 break;
             case 2:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BOBOMB_BUDDY];
                 m->marioObj->header.gfx.unk38.curAnim = bobomb_seg8_anims_0802396C[0];
-                is_anim_at_end(m);
                 break;
             case 3:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_GOOMBA];
                 m->marioObj->header.gfx.unk38.curAnim = goomba_seg8_anims_0801DA4C[0];
-                is_anim_at_end(m);
                 break;
             case 4:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_AMP];
                 m->marioObj->header.gfx.unk38.curAnim = amp_seg8_anims_08004034[0];
-                is_anim_at_end(m);
                 break;
             case 5:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_CHUCKYA];
                 m->marioObj->header.gfx.unk38.curAnim = chuckya_seg8_anims_0800C070[0];
-                is_anim_at_end(m);
                 break; //Forgot this in v7
             case 6:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_FLYGUY];
                 m->marioObj->header.gfx.unk38.curAnim = flyguy_seg8_anims_08011A64[0];
-                is_anim_at_end(m);
                 break;
             }
         while (Cheats.PAC > 0) {
@@ -481,43 +477,81 @@ void cheats_mario_inputs(struct MarioState *m) {
             /*JBC is the bool, acting like the on/off*/
             switch(Cheats.JB) {
                 case 0:
-                    play_secondary_music(SEQ_EVENT_CUTSCENE_INTRO, 0, 100, 0);
+                    play_cap_music(SEQ_EVENT_CUTSCENE_INTRO);
+                    Cheats.JBC = false;
+                    break;
                 case 1:
-                    play_secondary_music(SEQ_LEVEL_GRASS, 0, 80, 0);
+                    play_cap_music(SEQ_LEVEL_GRASS);
+                    Cheats.JBC = false;
+                    break;
                 case 2:
-                    play_secondary_music(SEQ_LEVEL_INSIDE_CASTLE, 0, 80, 0);
+                    play_cap_music(SEQ_LEVEL_INSIDE_CASTLE);
+                    Cheats.JBC = false;
+                    break;
                 case 3:
-                    play_secondary_music(SEQ_LEVEL_WATER, 0, 80, 0);
+                    play_cap_music(SEQ_LEVEL_WATER);
+                    Cheats.JBC = false;
+                    break;
                 case 4:
-                    play_secondary_music(SEQ_LEVEL_HOT, 0, 80, 0);
+                    play_cap_music(SEQ_LEVEL_HOT);
+                    Cheats.JBC = false;
+                    break;
                 case 5:
-                    play_secondary_music(SEQ_LEVEL_BOSS_KOOPA, 0, 80, 0);
+                    play_cap_music(SEQ_LEVEL_BOSS_KOOPA);
+                    Cheats.JBC = false;
+                    break;
                 case 6:
-                    play_secondary_music(SEQ_LEVEL_SNOW, 0, 80, 0);
+                    play_cap_music(SEQ_LEVEL_SNOW);
+                    Cheats.JBC = false;
+                    break;
                 case 7:
-                    play_secondary_music(SEQ_LEVEL_SLIDE, 0, 80, 0);
+                    play_cap_music(SEQ_LEVEL_SLIDE);
+                    Cheats.JBC = false;
+                    break;
                 case 8:
-                    play_secondary_music(SEQ_LEVEL_SPOOKY, 0, 100, 0);
+                    play_cap_music(SEQ_LEVEL_SPOOKY);
+                    Cheats.JBC = false;
+                    break;
                 case 9:
-                    play_secondary_music(SEQ_LEVEL_UNDERGROUND, 0, 100, 0);
+                    play_cap_music(SEQ_LEVEL_UNDERGROUND);
+                    Cheats.JBC = false;
+                    break;
                 case 10:
-                    play_secondary_music(SEQ_LEVEL_KOOPA_ROAD, 0, 80, 0);
+                    play_cap_music(SEQ_LEVEL_KOOPA_ROAD);
+                    Cheats.JBC = false;
+                    break;
                 case 11:
-                    play_secondary_music(SEQ_LEVEL_BOSS_KOOPA_FINAL, 0, 80, 0);
+                    play_cap_music(SEQ_LEVEL_BOSS_KOOPA_FINAL);
+                    Cheats.JBC = false;
+                    break;
                 case 12:
-                    play_secondary_music(SEQ_MENU_TITLE_SCREEN, 0, 80, 0);
+                    play_cap_music(SEQ_MENU_TITLE_SCREEN);
+                    Cheats.JBC = false;
+                    break;
                 case 13:
-                    play_secondary_music(SEQ_MENU_FILE_SELECT, 0, 80, 0);
+                    play_cap_music(SEQ_MENU_FILE_SELECT);
+                    Cheats.JBC = false;
+                    break;
                 case 14:
-                    play_secondary_music(SEQ_EVENT_POWERUP, 0, 80, 0);
+                    play_cap_music(SEQ_EVENT_POWERUP);
+                    Cheats.JBC = false;
+                    break;
                 case 15:
-                    play_secondary_music(SEQ_EVENT_METAL_CAP, 0, 80, 0);
+                    play_cap_music(SEQ_EVENT_METAL_CAP);
+                    Cheats.JBC = false;
+                    break;
                 case 16:
-                    play_secondary_music(SEQ_EVENT_BOSS, 0, 80, 0);
+                    play_cap_music(SEQ_EVENT_BOSS);
+                    Cheats.JBC = false;
+                    break;
                 case 17:
-                    play_secondary_music(SEQ_EVENT_MERRY_GO_ROUND, 0, 80, 0);
+                    play_cap_music(SEQ_EVENT_MERRY_GO_ROUND);
+                    Cheats.JBC = false;
+                    break;
                 case 18:
-                    play_secondary_music(SEQ_EVENT_CUTSCENE_CREDITS, 0, 100, 0);
+                    play_cap_music(SEQ_EVENT_CUTSCENE_CREDITS);
+                    Cheats.JBC = false;
+                    break;
             }
         }
         break;
