@@ -3,7 +3,7 @@ Fork de [sm64pc/sm64ex](https://github.com/sm64pc/sm64ex) con parches adicionale
 Para poder ser usado como plantilla por modders, hackers y por gente tramposa.
 
 ** Solo es compatible con US, JP y EU en desarrollo **
- -JP, y EU, se puede probar con `DEBUG = 1`
+ -JP se puede probar con `DEBUG = 1`
 
 **no se subirá ningún archivo que tenga derechos de autor**. 
 Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para eliminar contenido originado del ROM.
@@ -60,14 +60,16 @@ Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para elim
  * "Captian Toad Castle Stars" por Keanine
  * "Leave Ending Screen" por GateGuy
  * "50 Coin 1UP" por Keanine
+ * "Odyssey Moveset" por PeachyPeach
+    -"Exit to Main Menu" por Adya incluido
+    -"Tighter Controls" por Keanine incluido
+    -"Go to Level Select" por $4Y$ incluido
  * "Open Castle v1.1" por Keanine
  * "Time Trials" por GateGuy y PechyPeach
  * "Stay In Level After Star (Cheat Version)" por GateGuy
  * "Menu C button support" por engima907
  * "Bugfixes" por JAGSTAX
  * "DynOS" por PeachyPeach
-    -"Exit to Main Menu" por Adya incluido
-    -"Go to Level Select" por $4Y$ incluido
  * Y por supuesto, "CHEATERv8" por $4Y$, yo mismo
 
 ## Como agregar los trucos/mods

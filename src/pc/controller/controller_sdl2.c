@@ -72,6 +72,9 @@ static void controller_sdl_bind(void) {
     bzero(mouse_binds, sizeof(mouse_binds));
     num_joy_binds = 0;
     num_mouse_binds = 0;
+#ifndef DYNOS
+    controller_add_binds(SMO_CAPPY_BUTTON, gSmoConfigKeyCappy);
+#endif
 
     controller_add_binds(A_BUTTON,     configKeyA);
     controller_add_binds(B_BUTTON,     configKeyB);

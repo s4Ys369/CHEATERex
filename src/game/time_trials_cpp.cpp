@@ -114,40 +114,5 @@ static void time_trials_restart_level(UNUSED struct Option *opt, s32 arg) {
         gHudDisplay.coins = 0;
     }
 }
-
-static void go_to_level_select(UNUSED struct Option *opt, s32 arg) {
-    if (!arg) {
-        optmenu_toggle();
-        unpause_game();
-        set_sound_disabled(FALSE);
-        play_shell_music();
-        stop_shell_music();
-        stop_cap_music();
-        gMarioState->healCounter = 0;
-        gMarioState->hurtCounter = 0;
-        gMarioState->numCoins = 0;
-        gHudDisplay.coins = 0;
-        fade_into_special_warp(-9, 1);
-    }
-}
-
-static void return_to_main_menu(UNUSED struct Option *opt, s32 arg) {
-    if (!arg) {
-        optmenu_toggle();
-        unpause_game();
-        set_sound_disabled(FALSE);
-        play_shell_music();
-        stop_shell_music();
-        stop_cap_music();
-        gMarioState->healCounter = 0;
-        gMarioState->hurtCounter = 0;
-        gMarioState->numCoins = 0;
-        gHudDisplay.coins = 0;
-        fade_into_special_warp(-2, 0);
-    }
-}
-
 DYNOS_DEFINE_ACTION(time_trials_restart_level);
-DYNOS_DEFINE_ACTION(return_to_main_menu);
-DYNOS_DEFINE_ACTION(go_to_level_select);
 #endif

@@ -23,6 +23,7 @@
 #define TEXT_OPT_SWIM       _("QUICK SWIM")
 #define TEXT_OPT_DCM       _("DISABLE CAP MUSIC")
 #define TEXT_OPT_BLJ   _("BLJ ANYWHERE")
+#define TEXT_OPT_FLJ   _("NO LONG JUMP SPEED CAP (FLJ)")
 #define TEXT_OPT_PAC   _("PLAY AS")
 #define TEXT_OPT_TRIPLE _("ALL JUMPS TRIPLE")
 #define TEXT_OPT_FLY _("FLYER")
@@ -37,9 +38,10 @@
 #define TEXT_OPT_SS4   _("FAST")
 #define TEXT_OPT_SS5   _("FASTER")
 
-#define TEXT_OPT_R1     _("ORIGINAL")
-#define TEXT_OPT_R2     _("TIGHTER")
-#define TEXT_OPT_R3     _("SUPER")
+#define TEXT_OPT_R1     _("EMM")
+#define TEXT_OPT_R2     _("ORIGINAL")
+#define TEXT_OPT_R3     _("TIGHTER")
+#define TEXT_OPT_R4     _("SUPER")
 
 #define TEXT_OPT_PA1    _("DISABLED")
 #define TEXT_OPT_PA2    _("BLACK BOBOMB")
@@ -125,6 +127,7 @@
 #define TEXT_OPT_SWIM      _("Swift Swim")
 #define TEXT_OPT_DCM       _("DISABLE Cap Music")
 #define TEXT_OPT_BLJ       _("BLJ Anywhere")
+#define TEXT_OPT_FLJ       _("No Long Jump Speed Cap (FLJ)")
 #define TEXT_OPT_PAC   _("Play as")
 #define TEXT_OPT_TRIPLE _("All Jumps Triple")
 #define TEXT_OPT_FLY _("FLYER")
@@ -139,9 +142,10 @@
 #define TEXT_OPT_SS4   _("Fast")
 #define TEXT_OPT_SS5   _("Faster")
 
-#define TEXT_OPT_R1     _("Original")
-#define TEXT_OPT_R2     _("Tighter")
-#define TEXT_OPT_R3     _("Super")
+#define TEXT_OPT_R1     _("EMM")
+#define TEXT_OPT_R2     _("Original")
+#define TEXT_OPT_R3     _("Tighter")
+#define TEXT_OPT_R4     _("Super")
 
 #define TEXT_OPT_PA1    _("Disabled")
 #define TEXT_OPT_PA2    _("Black Bobomb")

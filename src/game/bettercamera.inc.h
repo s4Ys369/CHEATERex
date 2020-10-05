@@ -461,7 +461,7 @@ static void newcam_zoom_button(void) {
         // the Player's yaw at the time.
         newcam_yaw_target = -gMarioState->faceAngle[1] - 0x4000;
         newcam_centering = 1;
-    } else if (gPlayer1Controller->buttonPressed & R_TRIG && newcam_modeflags & NC_FLAG_XTURN) {
+    } else if (gPlayer1Controller->buttonPressed & R_JPAD && newcam_modeflags & NC_FLAG_XTURN) {
 // Each time the player presses R, but NOT L the camera zooms out more, until it hits the limit and
 // resets back to close view.
 #ifndef nosound
@@ -548,6 +548,13 @@ static void newcam_update_values(void) {
     if (gMarioState->action & ACT_FLAG_SWIMMING) {
         if (gMarioState->forwardVel > 2)
             waterflag = 1;
+    }
+
+    // SMO - Possessed flying objects
+    if (gMarioState->action == ACT_SMO_POSSESSION && gMarioState->oPossessedObject->oCameraBehindMario) {
+        gMarioState->forwardVel = gMarioState->oPossessedObject->oForwardVel;
+        newcam_modeflags |= NC_FLAG_XTURN;
+        waterflag = 1;
     }
 
     if (waterflag && newcam_modeflags & NC_FLAG_XTURN) {
