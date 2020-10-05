@@ -376,24 +376,7 @@ void render_game(void) {
 
         gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, BORDER_HEIGHT, SCREEN_WIDTH,
                       SCREEN_HEIGHT - BORDER_HEIGHT);
-        if (SMO_HEALTH != 0) {
-#ifdef SMO_SGI
-            // Need this convoluted sh*t just to display Luigi's unlocked notification
-            // If someone reads this, please declare the function render_notification()
-            // in hud.h
-            struct Area *sCurrentArea = gCurrentArea;
-            struct HudDisplay sHudDisplay = gHudDisplay;
-            gCurrentArea = NULL;
-            gHudDisplay.flags = HUD_DISPLAY_FLAG_EMPHASIZE_POWER;
-            gHudDisplay.keys = 0;
-            render_hud();
-            gCurrentArea = sCurrentArea;
-            gHudDisplay = sHudDisplay;
-#endif
-            smo_render_hud(gMarioState);
-        } else {
-            render_hud();
-        }
+        render_hud();
 
         gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         render_text_labels();
@@ -402,9 +385,6 @@ void render_game(void) {
         gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, BORDER_HEIGHT, SCREEN_WIDTH,
                       SCREEN_HEIGHT - BORDER_HEIGHT);
         gPauseScreenMode = render_menus_and_dialogs();
-#ifdef SM64_DEBUG_H
-        debug_update();
-#endif
 
         if (gPauseScreenMode != 0) {
             gSaveOptSelectIndex = gPauseScreenMode;

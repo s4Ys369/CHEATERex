@@ -18,9 +18,6 @@
 #define STICK_YMASK 0xc0000
 
 #include <ultra64.h>
-#ifndef DYNOS
-#include "data/smo/system/smo_options.h"
-#endif
 
 struct ControllerAPI {
    const u32 vkbase;                            // base number in the virtual keyspace (e.g. keyboard is 0x0000-0x1000)

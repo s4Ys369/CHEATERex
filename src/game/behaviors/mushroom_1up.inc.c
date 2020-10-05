@@ -4,12 +4,8 @@ void bhv_1up_interact(void) {
     UNUSED s32 sp1C;
 
     if (obj_check_if_collided_with_object(o, gMarioObject) == 1) {
-        if (SMO_HEALTH != 0) {
-            smo_life_up_mario(gMarioState);
-        } else {
-            play_sound(SOUND_GENERAL_COLLECT_1UP, gDefaultSoundArgs);
-            gMarioState->numLives++;
-        }
+        play_sound(SOUND_GENERAL_COLLECT_1UP, gDefaultSoundArgs);
+        gMarioState->numLives++;
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
 }

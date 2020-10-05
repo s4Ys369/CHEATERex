@@ -30,9 +30,6 @@ static int keyboard_map_scancode(int scancode) {
 }
 
 bool keyboard_on_key_down(int scancode) {
-#ifdef SM64_DEBUG_H
-    debug_set_key_down(scancode);
-#endif
     int mapped = keyboard_map_scancode(scancode);
     keyboard_buttons_down |= mapped;
     keyboard_lastkey = scancode;
@@ -40,9 +37,6 @@ bool keyboard_on_key_down(int scancode) {
 }
 
 bool keyboard_on_key_up(int scancode) {
-#ifdef SM64_DEBUG_H
-    debug_set_key_up(scancode);
-#endif
     int mapped = keyboard_map_scancode(scancode);
     keyboard_buttons_down &= ~mapped;
     if (keyboard_lastkey == (u32) scancode)
@@ -67,9 +61,6 @@ static void keyboard_add_binds(int mask, unsigned int *scancode) {
 static void keyboard_bindkeys(void) {
     bzero(keyboard_mapping, sizeof(keyboard_mapping));
     num_keybinds = 0;
-#ifndef DYNOS
-    keyboard_add_binds(SMO_CAPPY_BUTTON, gSmoConfigKeyCappy);
-#endif
 
     keyboard_add_binds(STICK_UP,     configKeyStickUp);
     keyboard_add_binds(STICK_LEFT,   configKeyStickLeft);

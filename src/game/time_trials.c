@@ -17,6 +17,15 @@
 #include "engine/math_util.h"
 #include <stdio.h>
 
+#ifdef VERSION_EU
+#include "eu_translation.h"
+extern s32 gInGameLanguage;
+#define seg2_course_name_table                                                                         \
+    (gInGameLanguage == LANGUAGE_GERMAN                                                                \
+         ? course_name_table_eu_de                                                                     \
+         : (gInGameLanguage == LANGUAGE_FRENCH ? course_name_table_eu_fr : course_name_table_eu_en))
+#endif
+
 //
 // Models
 //

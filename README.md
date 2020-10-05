@@ -2,8 +2,8 @@
 Fork of [sm64pc/sm64ex](https://github.com/sm64pc/sm64ex) with additional patches built-in.
 To be used as a template for modders, hackers and cheaters.
 
-**Only supports US - JP and EU compatible in development**
- -JP is testable with `DEBUG=1`
+**Only supports US - JP and EU in development**
+ -JP and EU can be tested with `DEBUG=1`
 
 **no upload of any copyrighted asset**. 
 Run `./extract_assets.py --clean && make clean` or `make distclean` to remove ROM-originated content.
@@ -63,10 +63,6 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
  * Captian Toad Castle Stars by Keanine
  * Leave Ending Screen by GateGuy
  * 50 Coin 1UP by Keanine
- * Odyssey Moveset by PeachyPeach
-    -Exit to Main Menu by Adya
-    -Tighter Controls by Keanine
-    -Go to Level Select by $4Y$
  * Open Castle v1.1 by Keanine
  * Time Trials by GateGuy and PeachyPeach
  * Stay In Level After Star (Cheat Version) by GateGuy
@@ -76,7 +72,6 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
     -Exit to Main Menu by Adya
     -Go to Level Select by $4Y$
  * And of course, CHEATERv9 by $4Y$, me
-
 
 ## How to add cheats/mods
  * Use `src/game/mario_cheats.c` for code

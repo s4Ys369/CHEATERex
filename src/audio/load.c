@@ -8,7 +8,6 @@
 
 #include "pc/platform.h"
 #include "pc/fs/fs.h"
-#include "data/smo/system/smo_sound.h"
 
 #define ALIGN16(val) (((val) + 0xF) & ~0xF)
 
@@ -881,9 +880,6 @@ static inline void *load_sound_res(const char *path) {
     if (!data) sys_fatal("could not load sound data from '%s'", path);
     // FIXME: figure out where it is safe to free this shit
     //        can't free it immediately after in audio_init()
-    if (strcmp(path, "sound/sequences.bin") == 0) {
-        smo_perform_sequence_checks(data);
-    }
     return data;
 }
 #else

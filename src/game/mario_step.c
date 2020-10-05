@@ -546,28 +546,6 @@ void apply_gravity(struct MarioState *m) {
         if (m->vel[1] < -75.0f) {
             m->vel[1] = -75.0f;
         }
-    } else if (m->action == ACT_SPIN_JUMP) {
-        if ((m->flags & MARIO_WING_CAP) && m->vel[1] < 0.0f && (m->input & INPUT_A_DOWN)) {
-            m->marioBodyState->wingFlutter = TRUE;
-            m->vel[1] -= 0.7f;
-            if (m->vel[1] < -37.5f) {
-                if ((m->vel[1] += 1.4f) > -37.5f) {
-                    m->vel[1] = -37.5f;
-                }
-            }
-        }
-        else
-        {
-            m->vel[1] -= (m->vel[1] > 0.0f) ? 4.0f : 1.4f;
-            if (m->vel[1] < -75.0f) {
-                m->vel[1] = -75.5f;
-            }
-        }
-    } else if (m->action == ACT_WALL_SLIDE) {
-        m->vel[1] -= 2.0f;
-        if (m->vel[1] < -15.0f) {
-            m->vel[1] = -15.0f;
-        }
     } else if (m->action == ACT_LAVA_BOOST || m->action == ACT_FALL_AFTER_STAR_GRAB) {
         m->vel[1] -= 3.2f;
         if (m->vel[1] < -65.0f) {
@@ -635,12 +613,7 @@ s32 perform_air_step(struct MarioState *m, u32 stepArg) {
     s32 quarterStepResult;
     s32 stepResult = AIR_STEP_NONE;
 
-    //! @bug If the game detects a wall on the first, second or third qstep, but
-    // not on the fourth, AIR_STEP_HIT_WALL is returned but m->wall is NULL,
-    // turning the hit into a ceiling/OOB hit
-    //m->wall = NULL;
-
-    struct Surface *wall = NULL;
+    m->wall = NULL;
 
     for (i = 0; i < 4; i++) {
         intendedPos[0] = m->pos[0] + m->vel[0] / 4.0f;
@@ -655,10 +628,6 @@ s32 perform_air_step(struct MarioState *m, u32 stepArg) {
 
         if (quarterStepResult != AIR_STEP_NONE) {
             stepResult = quarterStepResult;
-        }
-
-        if (quarterStepResult == AIR_STEP_HIT_WALL && m->wall != NULL) {
-            wall = m->wall;
         }
 
         if (quarterStepResult == AIR_STEP_LANDED || quarterStepResult == AIR_STEP_GRABBED_LEDGE
@@ -681,10 +650,6 @@ s32 perform_air_step(struct MarioState *m, u32 stepArg) {
 
     vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
     vec3s_set(m->marioObj->header.gfx.angle, 0, m->faceAngle[1], 0);
-
-    if (stepResult == AIR_STEP_HIT_WALL) {
-        m->wall = wall;
-    }
 
     return stepResult;
 }

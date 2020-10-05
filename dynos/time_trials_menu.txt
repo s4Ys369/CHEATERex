@@ -33,3 +33,5 @@ CHOICE  "PSS GHOST"               "time_trials_pss"     0 "STAR 1" "STAR 2"
 TOGGLE  "100 COINS STAR EXIT"     "time_trials_100"     0
 TOGGLE  "TIME TRIALS WITH CHEATS" "time_trials_cheats"  0
 MBUTTON "RESTART LEVEL"           "time_trials_restart" "time_trials_restart_level"
+MBUTTON "BACK TO MAIN MENU"       "back_to_menu" "return_to_main_menu"
+MBUTTON "GO TO LEVEL SELECT"      "level_select" "go_to_level_select"
