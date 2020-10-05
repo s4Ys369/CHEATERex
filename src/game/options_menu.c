@@ -211,6 +211,11 @@ static void optvideo_apply(UNUSED struct Option *self, s32 arg) {
     if (!arg) configWindow.settings_changed = true;
 }
 
+static void setJBC(UNUSED struct Option *self, s32 arg) {
+    if (!arg)
+        Cheats.JBC = true;
+}
+
 /* submenu option lists */
 
 #ifdef BETTERCAMERA
@@ -290,7 +295,7 @@ static struct Option optsCheats[] = {
     DEF_OPT_TOGGLE(optsCheatsStr[15], &Cheats.SPD),
     DEF_OPT_TOGGLE(optsCheatsStr[16], &Cheats.TPF),
     DEF_OPT_CHOICE(optsCheatsStr[17], &Cheats.JB, SeqChoices),
-    DEF_OPT_TOGGLE(optsCheatsStr[18], &Cheats.JBC),
+    DEF_OPT_BUTTON(optsCheatsStr[18], setJBC),
     DEF_OPT_TOGGLE(optsCheatsStr[19], &Cheats.QuikEnd),
     DEF_OPT_CHOICE(optsCheatsStr[20], &Cheats.Hurt, HurtCheatChoices),
     DEF_OPT_TOGGLE(optsCheatsStr[21], &Cheats.Cann),

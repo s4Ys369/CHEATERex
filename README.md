@@ -71,7 +71,7 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
  * DynOS by PeachyPeach
     -Exit to Main Menu by Adya
     -Go to Level Select by $4Y$
- * And of course, CHEATERv8 by $4Y$, me
+ * And of course, CHEATERv9 by $4Y$, me
 
 ## How to add cheats/mods
  * Use `src/game/mario_cheats.c` for code

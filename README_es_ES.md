@@ -68,7 +68,7 @@ Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para elim
  * "DynOS" por PeachyPeach
     -"Exit to Main Menu" por Adya incluido
     -"Go to Level Select" por $4Y$ incluido
- * Y por supuesto, "CHEATERv8" por $4Y$, yo mismo
+ * Y por supuesto, "CHEATERv9" por $4Y$, yo mismo
 
 ## Como agregar los trucos/mods
  * Usa `src/game/mario_cheats.c` para el código
