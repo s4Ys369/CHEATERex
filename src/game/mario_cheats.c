@@ -91,9 +91,9 @@ void cheats_mario_inputs(struct MarioState *m) {
     while (Cheats.EnableCheats == true) {
 
         /*100 Coin Star Spawner Prototype*/
-        if (m->controller->buttonPressed & X_BUTTON) {
-            spawn_object(m->marioObj, MODEL_STAR, bhvSpawnedStarNoLevelExit);
-        }
+        //if (m->controller->buttonPressed & X_BUTTON) {
+            //spawn_object(m->marioObj, MODEL_STAR, bhvSpawnedStarNoLevelExit);
+        //}
 
         /*Coin Spawner Prototype*/
         if (m->controller->buttonPressed & Y_BUTTON) {
