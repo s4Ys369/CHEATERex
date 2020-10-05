@@ -38,6 +38,7 @@ struct CheatList {
     bool         DCM;
     bool         NormalCap;
     unsigned int BLJAnywhere;
+    bool         FLJ;
     unsigned int PAC;
     bool         Triple;
     bool         Fly;
