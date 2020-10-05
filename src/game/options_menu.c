@@ -301,9 +301,10 @@ static struct Option optsCheats[] = {
     DEF_OPT_TOGGLE(optsCheatsStr[26], &Cheats.Swim),
     DEF_OPT_TOGGLE(optsCheatsStr[27], &Cheats.DCM),
     DEF_OPT_CHOICE(optsCheatsStr[28], &Cheats.BLJAnywhere, bljCheatChoices),
-    DEF_OPT_CHOICE(optsCheatsStr[29], &Cheats.PAC, PlayAsCheatChoices),
-    DEF_OPT_TOGGLE(optsCheatsStr[30], &Cheats.Triple),
-    DEF_OPT_TOGGLE(optsCheatsStr[31], &Cheats.Fly),
+    DEF_OPT_TOGGLE(optsCheatsStr[29], &Cheats.FLJ),
+    DEF_OPT_CHOICE(optsCheatsStr[30], &Cheats.PAC, PlayAsCheatChoices),
+    DEF_OPT_TOGGLE(optsCheatsStr[31], &Cheats.Triple),
+    DEF_OPT_TOGGLE(optsCheatsStr[32], &Cheats.Fly),
 
 };
 

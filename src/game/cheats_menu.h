@@ -220,6 +220,7 @@ static const u8 optsCheatsStr[][64] = {
     { TEXT_OPT_SWIM },
     { TEXT_OPT_DCM },
     { TEXT_OPT_BLJ },
+    { TEXT_OPT_FLJ },
     { TEXT_OPT_PAC },
     { TEXT_OPT_TRIPLE },
     { TEXT_OPT_FLY },
