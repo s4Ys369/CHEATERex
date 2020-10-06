@@ -15,7 +15,13 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
   * Instant Death/Level Exit L Trigger + R Trigger + A Button + B Button
   * FLYER
   * All Jumps Triple
-  * Hold A to Hover
+  * Hover Mode
+    - B button = Up
+    - A button = Down
+    - Hold L Trigger for speed boost
+    - Hold R Trigger to stop and rotate
+    - Press Z Trigger to exit
+    - CANNOT access pause screen while hovering
   * Moon Gravity
   * Run Speed Modifier
     -Slow x.75

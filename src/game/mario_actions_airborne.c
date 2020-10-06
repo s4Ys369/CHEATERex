@@ -336,13 +336,13 @@ void update_flying(struct MarioState *m) {
 
     /*Flyer Cheat*/
     if (Cheats.Fly) {
-        if (m->forwardVel < 60.0f) {
-            m->forwardVel += 3.0f;
+        if (m->forwardVel < 30.0f) {
+            m->forwardVel += 2.0f;
         }
-    } else {
-        m->forwardVel -= 2.0f * ((f32) m->faceAngle[0] / 0x4000) + 0.1f;
-        m->forwardVel -= 0.5f * (1.0f - coss(m->angleVel[1]));
     }
+    m->forwardVel -= 2.0f * ((f32) m->faceAngle[0] / 0x4000) + 0.1f;
+    m->forwardVel -= 0.5f * (1.0f - coss(m->angleVel[1]));
+
 
     if (m->forwardVel < 0.0f) {
         m->forwardVel = 0.0f;

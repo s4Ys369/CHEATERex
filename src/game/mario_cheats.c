@@ -115,13 +115,9 @@ void cheats_mario_inputs(struct MarioState *m) {
         }
 
         /*Hover Cheat*/
-        while (Cheats.Hover && m->controller->buttonDown & A_BUTTON) {
-            if (m->action != ACT_GROUND_POUND) {
-                vec3f_set(m->vel, 0.0f, 2.0f, 300.0f);
-                m->forwardVel = 52.0f;
-                break;
-            }
-            break;
+        if (Cheats.Hover) {
+            set_mario_action(m, ACT_DEBUG_FREE_MOVE, 0);
+            Cheats.Hover = false;
         }
 
         /*Moon Gravity*/

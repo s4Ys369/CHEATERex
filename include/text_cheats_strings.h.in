@@ -4,7 +4,7 @@
 #if defined(VERSION_JP) || defined(VERSION_SH)
 
 #define TEXT_OPT_NON       _("STAY IN LEVEL AFTER STAR")
-#define TEXT_OPT_HOVER     _("HOVER MODE (HOLD A)")
+#define TEXT_OPT_HOVER     _("HOVER MODE")
 #define TEXT_OPT_MOON      _("MOON GRAVITY")
 #define TEXT_OPT_RUN       _("RUN SPEED")
 #define TEXT_OPT_NDB       _("NO DEATH BARRIER")
@@ -106,7 +106,7 @@
 #else // VERSION
 
 #define TEXT_OPT_NON       _("Stay in Level after Star")
-#define TEXT_OPT_HOVER     _("Hover Mode Hold [A]")
+#define TEXT_OPT_HOVER     _("Hover Mode")
 #define TEXT_OPT_MOON      _("Moon Gravity")
 #define TEXT_OPT_RUN       _("Run Speed Modifier")
 #define TEXT_OPT_NDB       _("No Death Barrier")

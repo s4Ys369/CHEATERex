@@ -12,7 +12,7 @@ Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para elim
   * Muerte Instantanea/Salir del Nivel Gatillo L + Gatillo R + Boton A + Boton B
   * FLYER
   * Todos los saltos triples
-  * Mantenga presionado Boton A para flotar
+  * "HOVER MODE"
   * Gravedad de la Luna
   * Modificador de velocidad corriendo
     -Lento x.75
