@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <time.h>
 #include <PR/ultratypes.h>
 
 #include "sm64.h"
@@ -87,8 +89,86 @@ void cheats_mario_inputs(struct MarioState *m) {
     m->particleFlags = 0;
     m->collidedObjInteractTypes = m->marioObj->collidedObjInteractTypes;
     m->flags &= 0xFFFFFF;
+    u16 r;
 
     while (Cheats.EnableCheats == true) {
+
+        if (Cheats.Chaos) {
+            srand(time(NULL));
+            r = rand();
+
+            switch ((rand() % 12)) {
+                case 0:
+                    if (Cheats.SuperSpeed == true) {
+                        Cheats.SuperSpeed = false;
+                    } else {
+                        Cheats.SuperSpeed = true;
+                    }
+                    break;
+                case 1:
+                    if (Cheats.HugeMario == true) {
+                        Cheats.HugeMario = false;
+                    } else {
+                        Cheats.HugeMario = true;
+                    }
+                    break;
+                case 2:
+                    if (Cheats.TinyMario == true) {
+                        Cheats.TinyMario = false;
+                    } else {
+                        Cheats.TinyMario = true;
+                    }
+                    break;
+                case 3:
+                    if (Cheats.Moon == true) {
+                        Cheats.Moon = false;
+                    } else {
+                        Cheats.Moon = true;
+                    }
+                    break;
+                case 4:
+                    if (Cheats.Jump == true) {
+                        Cheats.Jump = false;
+                    } else {
+                        Cheats.Jump = true;
+                    }
+                    break;
+                case 5:
+                    if (Cheats.TPF == true) {
+                        Cheats.TPF = false;
+                    } else {
+                        Cheats.TPF = true;
+                    }
+                    break;
+                case 6:
+                    if (Cheats.Triple == true) {
+                        Cheats.Triple = false;
+                    } else {
+                        Cheats.Triple = true;
+                    }
+                    break;
+                case 7:
+                    obj_spawn_yellow_coins(m->marioObj, 1);
+                    break;
+                case 8:
+                    if (Cheats.PAC <= 5) {
+                        Cheats.PAC += 1;
+                    } else if (Cheats.PAC >= 6) {
+                        Cheats.PAC = 0;
+                    }
+                    break;
+                case 9:
+                    hurt_and_set_mario_action(m, ACT_SHOCKED, 0, 0);
+                    break;
+                case 10:
+                    spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_NONE,
+                                          bhvGoombaTripletSpawner);
+                    break;
+                case 11:
+                    spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_CHUCKYA, bhvChuckya);
+                    break;
+            }
+        }
 
         if (Cheats.Fly) {
             if (m->action == ACT_FLYING) {
