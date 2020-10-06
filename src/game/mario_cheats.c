@@ -94,15 +94,17 @@ void cheats_mario_inputs(struct MarioState *m) {
     while (Cheats.EnableCheats == true) {
 
         if (Cheats.Chaos) {
+            struct Object *obj = (struct Object *) gObjectLists[OBJ_LIST_LEVEL].next;
+            struct Object *first = (struct Object *) &gObjectLists[OBJ_LIST_LEVEL];
             srand(time(NULL));
             r = rand();
 
-            switch ((rand() % 12)) {
+            switch ((rand() % 15)) {
                 case 0:
-                    if (Cheats.SuperSpeed == true) {
-                        Cheats.SuperSpeed = false;
-                    } else {
-                        Cheats.SuperSpeed = true;
+                    if (Cheats.Run <= 3) {
+                        Cheats.PAC += 1;
+                    } else if (Cheats.PAC >= 4) {
+                        Cheats.PAC = 0;
                     }
                     break;
                 case 1:
@@ -158,14 +160,33 @@ void cheats_mario_inputs(struct MarioState *m) {
                     }
                     break;
                 case 9:
-                    hurt_and_set_mario_action(m, ACT_SHOCKED, 0, 0);
+                    hurt_and_set_mario_action(m, ACT_FORWARD_AIR_KB, 0, 0);
                     break;
                 case 10:
+                    while (obj != NULL && obj != first) {
+                        if (obj->behavior = bhvGoomba) {
+                            obj_mark_for_deletion(obj);
+                            break;
+                        }
+                        obj = (struct Object *) obj->header.next;
+                    }
                     spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_NONE,
                                           bhvGoombaTripletSpawner);
                     break;
                 case 11:
-                    spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_CHUCKYA, bhvChuckya);
+                    m->forwardVel = (m->forwardVel + 10.0f);
+                    break;
+                case 12:
+                    m->vel[1] -= 2;
+                    break;
+                case 13:
+                    // Empty Slot
+                    break;
+                case 14:
+                    // Empty Slot
+                    break;
+                case 15:
+                    // Empty Slot
                     break;
             }
         }
