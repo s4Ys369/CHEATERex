@@ -227,6 +227,9 @@ void cheats_mario_inputs(struct MarioState *m) {
                 if (m->action != ACT_FREEFALL && m->action != ACT_LONG_JUMP) {
                     m->vel[1] += 2;
                     break;
+                } else {
+                    m->vel[1] += 1;
+                    break;
                 }
                 break;
             }
