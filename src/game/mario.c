@@ -1225,6 +1225,12 @@ void squish_mario_model(struct MarioState *m) {
                 else if (Cheats.TinyMario) {
                     vec3f_set(m->marioObj->header.gfx.scale, 0.2f, 0.2f, 0.2f);
                 }
+                else if (Cheats.PAC == 3) {
+                    vec3f_set(m->marioObj->header.gfx.scale, 1.5f, 1.5f, 1.5f);
+                }
+                else if (Cheats.PAC == 5) {
+                    vec3f_set(m->marioObj->header.gfx.scale, 1.5f, 1.5f, 1.5f);
+                }
                 else {
                     vec3f_set(m->marioObj->header.gfx.scale, 1.0f, 1.0f, 1.0f);
                 }
