@@ -94,8 +94,6 @@ void cheats_mario_inputs(struct MarioState *m) {
     while (Cheats.EnableCheats == true) {
 
         if (Cheats.Chaos) {
-            struct Object *obj = (struct Object *) gObjectLists[OBJ_LIST_LEVEL].next;
-            struct Object *first = (struct Object *) &gObjectLists[OBJ_LIST_LEVEL];
             srand(time(NULL));
             r = rand();
 
@@ -163,13 +161,6 @@ void cheats_mario_inputs(struct MarioState *m) {
                     hurt_and_set_mario_action(m, ACT_FORWARD_AIR_KB, 0, 0);
                     break;
                 case 10:
-                    while (obj != NULL && obj != first) {
-                        if (obj->behavior = bhvGoomba) {
-                            obj_mark_for_deletion(obj);
-                            break;
-                        }
-                        obj = (struct Object *) obj->header.next;
-                    }
                     spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_NONE,
                                           bhvGoombaTripletSpawner);
                     break;
@@ -286,31 +277,79 @@ void cheats_mario_inputs(struct MarioState *m) {
             case 1:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BLACK_BOBOMB];
                 m->marioObj->header.gfx.unk38.curAnim = bobomb_seg8_anims_0802396C[0];
+                if (m->controller->buttonPressed & B_BUTTON) {
+                    spawn_object(gCurrentObject, MODEL_SMOKE, bhvBobombBullyDeathSmoke);
+                    obj_scale(gCurrentObject, gCurrentObject->oTimer / 4.f + 1.0f);
+                    gCurrentObject->oOpacity -= 14;
+                    gCurrentObject->oAnimState++;
+                    play_sound(SOUND_GENERAL2_BOBOMB_EXPLOSION, m->marioObj->header.gfx.cameraToObject);
+                    m->particleFlags |= PARTICLE_TRIANGLE;
+                    obj_spawn_yellow_coins(m->marioObj, 1);
+                    act_burning_ground(m);
+                    break;
+                }
                 break;
             case 2:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BOBOMB_BUDDY];
                 m->marioObj->header.gfx.unk38.curAnim = bobomb_seg8_anims_0802396C[0];
+                if (m->controller->buttonPressed & B_BUTTON) {
+                    spawn_object_relative(1, 0, 200, 0, gCurrentObject, MODEL_NONE, bhvCannon);
+                    break;
+                }
                 break;
             case 3:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_GOOMBA];
                 m->marioObj->header.gfx.unk38.curAnim = goomba_seg8_anims_0801DA4C[0];
+                if (m->action == ACT_WALKING && m->forwardVel >= 0) {
+                    m->forwardVel = (m->forwardVel * 1.1f);
+                }
+                if (m->controller->buttonDown & B_BUTTON) {
+                    m->forwardVel = (m->forwardVel * 1.1f);
+                    break;
+                }
                 break;
             case 4:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_AMP];
                 m->marioObj->header.gfx.unk38.curAnim = amp_seg8_anims_08004034[0];
+                obj_set_pos(m->marioObj, 0, 50, 0);
+                if (m->controller->buttonDown & B_BUTTON) {
+                    vec3f_set(m->vel, 0.0f, 1.0f, 60.0f);
+                    set_mario_action(m, ACT_LONG_JUMP, 0);
+                    break;
+                }
                 break;
             case 5:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_CHUCKYA];
                 m->marioObj->header.gfx.unk38.curAnim = chuckya_seg8_anims_0800C070[0];
+                m->health = 0x880;
+                if (m->action == ACT_WALKING && m->forwardVel >= 0) {
+                    m->forwardVel = (m->forwardVel - 0.5f);
+                }
+                if (m->controller->buttonPressed & B_BUTTON) {
+                    spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_CHUCKYA, bhvChuckya);
+                    break;
+                }
                 break; //Forgot this in v7
             case 6:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_FLYGUY];
                 m->marioObj->header.gfx.unk38.curAnim = flyguy_seg8_anims_08011A64[0];
+                if (m->controller->buttonDown & B_BUTTON) {
+                    m->vel[1] = 25;
+                    set_mario_action(m, ACT_TWIRLING, 0);
+                    obj_spawn_yellow_coins(m->marioObj, 1);
+                    break;
+                }
                 break;
             }
         while (Cheats.PAC > 0) {
-                /*Instead of making a custom hitbox for each character,
-                I neutralized the only consistent problem, doors*/
+            if (m->action == ACT_STANDING_DEATH) {
+                level_trigger_warp(m, WARP_OP_DEATH);
+                m->numLives += 1;
+                update_mario_health(m);
+                break;
+            }
+            /*Instead of making a custom hitbox for each character,
+            I neutralized the only consistent problem, doors*/
             while (m->collidedObjInteractTypes & INTERACT_DOOR) {
                 obj_mark_for_deletion(m->usedObj);
                 spawn_object(gCurrentObject, MODEL_SMOKE, bhvBobombBullyDeathSmoke);
