@@ -1,6 +1,6 @@
 #include <PR/ultratypes.h>
 
-#include"mario_cheats.h"
+#include "mario_cheats.h"
 #include "sm64.h"
 #include "area.h"
 #include "audio/data.h"
@@ -1693,6 +1693,9 @@ void mario_update_hitbox_and_cap_model(struct MarioState *m) {
     // Short hitbox for crouching/crawling/etc.
     if (m->action & ACT_FLAG_SHORT_HITBOX) {
         m->marioObj->hitboxHeight = 100.0f;
+    } else if (Cheats.EnableCheats && Cheats.PAC > 0) {
+        m->marioObj->hitboxHeight = 120.0f;
+        m->marioObj->hurtboxHeight = 120.0f;
     } else {
         m->marioObj->hitboxHeight = 160.0f;
     }

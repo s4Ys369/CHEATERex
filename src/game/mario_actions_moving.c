@@ -118,7 +118,24 @@ void check_ledge_climb_down(struct MarioState *m) {
         if (find_wall_collisions(&wallCols) != 0) {
             floorHeight = find_floor(wallCols.x, wallCols.y, wallCols.z, &floor);
             if (floor != NULL) {
-                if (wallCols.y - floorHeight > 160.0f) {
+                if (Cheats.EnableCheats && Cheats.PAC > 0) {
+                    if (wallCols.y - floorHeight > 120.0f) {
+                        wall = wallCols.walls[wallCols.numWalls - 1];
+                        wallAngle = atan2s(wall->normal.z, wall->normal.x);
+                        wallDYaw = wallAngle - m->faceAngle[1];
+
+                        if (wallDYaw > -0x4000 && wallDYaw < 0x4000) {
+                            m->pos[0] = wallCols.x - 20.0f * wall->normal.x;
+                            m->pos[2] = wallCols.z - 20.0f * wall->normal.z;
+
+                            m->faceAngle[0] = 0;
+                            m->faceAngle[1] = wallAngle + 0x8000;
+
+                            set_mario_action(m, ACT_LEDGE_CLIMB_DOWN, 0);
+                            set_mario_animation(m, MARIO_ANIM_CLIMB_DOWN_LEDGE);
+                        }
+                    }
+                } else if (wallCols.y - floorHeight > 160.0f) {
                     wall = wallCols.walls[wallCols.numWalls - 1];
                     wallAngle = atan2s(wall->normal.z, wall->normal.x);
                     wallDYaw = wallAngle - m->faceAngle[1];

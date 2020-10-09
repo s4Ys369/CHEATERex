@@ -8,6 +8,7 @@
 #include "game_init.h"
 #include "interaction.h"
 #include "mario_step.h"
+#include "pc/cheats.h"
 
 static s16 sMovingSandSpeeds[] = { 12, 8, 4, 0 };
 
@@ -134,7 +135,13 @@ u32 mario_update_quicksand(struct MarioState *m, f32 sinkingSpeed) {
 
             case SURFACE_DEEP_QUICKSAND:
             case SURFACE_DEEP_MOVING_QUICKSAND:
-                if ((m->quicksandDepth += sinkingSpeed) >= 160.0f) {
+                if (Cheats.EnableCheats && Cheats.PAC) {
+                    if ((m->quicksandDepth += sinkingSpeed) >= 120.0f) {
+                        update_mario_sound_and_camera(m);
+                        return drop_and_set_mario_action(m, ACT_QUICKSAND_DEATH, 0);
+                    }
+                    break;
+                } else if ((m->quicksandDepth += sinkingSpeed) >= 160.0f) {
                     update_mario_sound_and_camera(m);
                     return drop_and_set_mario_action(m, ACT_QUICKSAND_DEATH, 0);
                 }
@@ -283,8 +290,18 @@ static s32 perform_ground_quarter_step(struct MarioState *m, Vec3f nextPos) {
         floor = &gWaterSurfacePseudoFloor;
         floor->originOffset = floorHeight; //! Wrong origin offset (no effect)
     }
+    if (Cheats.EnableCheats && Cheats.PAC > 0) {
+        if (nextPos[1] > floorHeight + 100.0f) {
+            if (nextPos[1] + 120.0f >= ceilHeight) {
+                return GROUND_STEP_HIT_WALL_STOP_QSTEPS;
+            }
 
-    if (nextPos[1] > floorHeight + 100.0f) {
+            vec3f_copy(m->pos, nextPos);
+            m->floor = floor;
+            m->floorHeight = floorHeight;
+            return GROUND_STEP_LEFT_GROUND;
+        }
+    } else if (nextPos[1] > floorHeight + 100.0f) {
         if (nextPos[1] + 160.0f >= ceilHeight) {
             return GROUND_STEP_HIT_WALL_STOP_QSTEPS;
         }
@@ -295,7 +312,11 @@ static s32 perform_ground_quarter_step(struct MarioState *m, Vec3f nextPos) {
         return GROUND_STEP_LEFT_GROUND;
     }
 
-    if (floorHeight + 160.0f >= ceilHeight) {
+    if (Cheats.EnableCheats && Cheats.PAC > 0) {
+        if (floorHeight + 120.0f >= ceilHeight) {
+            return GROUND_STEP_HIT_WALL_STOP_QSTEPS;
+        }
+    } else if (floorHeight + 160.0f >= ceilHeight) {
         return GROUND_STEP_HIT_WALL_STOP_QSTEPS;
     }
 
@@ -368,7 +389,11 @@ u32 check_ledge_grab(struct MarioState *m, struct Surface *wall, Vec3f intendedP
     // a higher ledge than expected (glitchy ledge grab)
     ledgePos[0] = nextPos[0] - wall->normal.x * 60.0f;
     ledgePos[2] = nextPos[2] - wall->normal.z * 60.0f;
-    ledgePos[1] = find_floor(ledgePos[0], nextPos[1] + 160.0f, ledgePos[2], &ledgeFloor);
+    if (Cheats.EnableCheats && Cheats.PAC > 0) {
+        ledgePos[1] = find_floor(ledgePos[0], nextPos[1] + 120.0f, ledgePos[2], &ledgeFloor);
+    } else {
+        ledgePos[1] = find_floor(ledgePos[0], nextPos[1] + 160.0f, ledgePos[2], &ledgeFloor);
+    }
 
     if (ledgePos[1] - nextPos[1] <= 100.0f) {
         return 0;
@@ -429,7 +454,14 @@ s32 perform_air_quarter_step(struct MarioState *m, Vec3f intendedPos, u32 stepAr
 
     //! This check uses f32, but findFloor uses short (overflow jumps)
     if (nextPos[1] <= floorHeight) {
-        if (ceilHeight - floorHeight > 160.0f) {
+        if (Cheats.EnableCheats && Cheats.PAC > 0) {
+            if (ceilHeight - floorHeight > 120.0f) {
+                m->pos[0] = nextPos[0];
+                m->pos[2] = nextPos[2];
+                m->floor = floor;
+                m->floorHeight = floorHeight;
+            }
+        } else if (ceilHeight - floorHeight > 160.0f) {
             m->pos[0] = nextPos[0];
             m->pos[2] = nextPos[2];
             m->floor = floor;
@@ -442,8 +474,30 @@ s32 perform_air_quarter_step(struct MarioState *m, Vec3f intendedPos, u32 stepAr
         m->pos[1] = floorHeight;
         return AIR_STEP_LANDED;
     }
+    if (Cheats.EnableCheats && Cheats.PAC > 0) {
+        if (nextPos[1] + 120.0f > ceilHeight) {
+            if (m->vel[1] >= 0.0f) {
+                m->vel[1] = 0.0f;
 
-    if (nextPos[1] + 160.0f > ceilHeight) {
+                //! Uses referenced ceiling instead of ceil (ceiling hang upwarp)
+                if ((stepArg & AIR_STEP_CHECK_HANG) && m->ceil != NULL
+                    && m->ceil->type == SURFACE_HANGABLE) {
+                    return AIR_STEP_GRABBED_CEILING;
+                }
+
+                return AIR_STEP_NONE;
+            }
+
+            //! Potential subframe downwarp->upwarp?
+            if (nextPos[1] <= m->floorHeight) {
+                m->pos[1] = m->floorHeight;
+                return AIR_STEP_LANDED;
+            }
+
+            m->pos[1] = nextPos[1];
+            return AIR_STEP_HIT_WALL;
+        }
+    } else if (nextPos[1] + 160.0f > ceilHeight) {
         if (m->vel[1] >= 0.0f) {
             m->vel[1] = 0.0f;
 

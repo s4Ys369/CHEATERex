@@ -13,6 +13,7 @@
 #include "mario.h"
 #include "mario_step.h"
 #include "camera.h"
+#include "pc/cheats.h"
 #include "audio/external.h"
 #include "behavior_data.h"
 #include "level_table.h"
@@ -84,7 +85,19 @@ static u32 perform_water_full_step(struct MarioState *m, Vec3f nextPos) {
     }
 
     if (nextPos[1] >= floorHeight) {
-        if (ceilHeight - nextPos[1] >= 160.0f) {
+        if (Cheats.EnableCheats && Cheats.PAC > 0) {
+            if (ceilHeight - nextPos[1] >= 120.0f) {
+                vec3f_copy(m->pos, nextPos);
+                m->floor = floor;
+                m->floorHeight = floorHeight;
+
+                if (wall != NULL) {
+                    return WATER_STEP_HIT_WALL;
+                } else {
+                    return WATER_STEP_NONE;
+                }
+            }
+        } else if (ceilHeight - nextPos[1] >= 160.0f) {
             vec3f_copy(m->pos, nextPos);
             m->floor = floor;
             m->floorHeight = floorHeight;
@@ -96,17 +109,32 @@ static u32 perform_water_full_step(struct MarioState *m, Vec3f nextPos) {
             }
         }
 
-        if (ceilHeight - floorHeight < 160.0f) {
+        if (Cheats.EnableCheats && Cheats.PAC > 0) {
+            if (ceilHeight - floorHeight < 120.0f) {
+                return WATER_STEP_CANCELLED;
+            }
+        } else if (ceilHeight - floorHeight < 160.0f) {
             return WATER_STEP_CANCELLED;
         }
 
         //! Water ceiling downwarp
-        vec3f_set(m->pos, nextPos[0], ceilHeight - 160.0f, nextPos[2]);
-        m->floor = floor;
-        m->floorHeight = floorHeight;
-        return WATER_STEP_HIT_CEILING;
+        if (Cheats.EnableCheats && Cheats.PAC > 0) {
+            vec3f_set(m->pos, nextPos[0], ceilHeight - 120.0f, nextPos[2]);
+            m->floor = floor;
+            m->floorHeight = floorHeight;
+            return WATER_STEP_HIT_CEILING;
+        } else {
+            vec3f_set(m->pos, nextPos[0], ceilHeight - 160.0f, nextPos[2]);
+            m->floor = floor;
+            m->floorHeight = floorHeight;
+            return WATER_STEP_HIT_CEILING;
+        }
     } else {
-        if (ceilHeight - floorHeight < 160.0f) {
+        if (Cheats.EnableCheats && Cheats.PAC > 0) {
+            if (ceilHeight - floorHeight < 120.0f) {
+                return WATER_STEP_CANCELLED;
+            }
+        } else if (ceilHeight - floorHeight < 160.0f) {
             return WATER_STEP_CANCELLED;
         }
 
