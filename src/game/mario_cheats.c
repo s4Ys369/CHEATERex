@@ -201,6 +201,12 @@ void cheats_mario_inputs(struct MarioState *m) {
             }
         }
 
+        /*Time Stop Prototype*/
+        if (m->controller->buttonPressed & X_BUTTON) {
+            enable_time_stop();
+            set_mario_action(m, ACT_IDLE, 0);
+        }
+
         /*Coin Spawner Prototype*/
         if (m->controller->buttonPressed & Y_BUTTON) {
             obj_spawn_yellow_coins(m->marioObj, 1);
