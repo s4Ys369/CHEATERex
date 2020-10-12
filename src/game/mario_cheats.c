@@ -89,7 +89,7 @@ void cheats_mario_inputs(struct MarioState *m) {
     m->particleFlags = 0;
     m->collidedObjInteractTypes = m->marioObj->collidedObjInteractTypes;
     m->flags &= 0xFFFFFF;
-    u16 r;
+    u32 r;
 
     while (Cheats.EnableCheats == true) {
 
@@ -97,12 +97,12 @@ void cheats_mario_inputs(struct MarioState *m) {
             srand(time(NULL));
             r = rand();
 
-            switch ((rand() % 15)) {
+            switch ((rand() % 30)) {
                 case 0:
                     if (Cheats.Run <= 3) {
-                        Cheats.PAC += 1;
-                    } else if (Cheats.PAC >= 4) {
-                        Cheats.PAC = 0;
+                        Cheats.Run += 1;
+                    } else if (Cheats.Run >= 4) {
+                        Cheats.Run = 0;
                     }
                     break;
                 case 1:
@@ -134,11 +134,8 @@ void cheats_mario_inputs(struct MarioState *m) {
                     }
                     break;
                 case 5:
-                    if (Cheats.TPF == true) {
-                        Cheats.TPF = false;
-                    } else {
-                        Cheats.TPF = true;
-                    }
+                    spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_BLACK_BOBOMB,
+                                          bhvBobomb);
                     break;
                 case 6:
                     if (Cheats.Triple == true) {
@@ -165,10 +162,10 @@ void cheats_mario_inputs(struct MarioState *m) {
                                           bhvGoombaTripletSpawner);
                     break;
                 case 11:
-                    m->forwardVel = (m->forwardVel + 10.0f);
+                    m->forwardVel = (m->forwardVel + 5.0f);
                     break;
                 case 12:
-                    m->vel[1] -= 2;
+                    m->vel[1] -= 5;
                     break;
                 case 13:
                     // Empty Slot
@@ -178,6 +175,22 @@ void cheats_mario_inputs(struct MarioState *m) {
                     break;
                 case 15:
                     // Empty Slot
+                    break;
+                case 16:
+                case 17:
+                case 18:
+                case 19:
+                case 20:
+                case 21:
+                case 22:
+                case 23:
+                case 24:
+                case 25:
+                case 26:
+                case 27:
+                case 28:
+                case 29:
+                case 30:
                     break;
             }
         }
