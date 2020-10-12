@@ -825,6 +825,7 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
         // func_802521A0
 #endif
 
+        noExit = time_trials_save_time_and_stop_timer(gCurrSaveFileNum - 1, gCurrCourseNum, gCurrLevelNum, starIndex, (!noExit || grandStar));
         if (grandStar) {
             return set_mario_action(m, ACT_JUMBO_STAR_CUTSCENE, 0);
         }

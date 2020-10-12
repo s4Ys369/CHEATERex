@@ -2,7 +2,7 @@
 #define AREA_H
 
 #include <PR/ultratypes.h>
-
+#include "time_trials.h"
 #include "types.h"
 #include "camera.h"
 #include "engine/graph_node.h"

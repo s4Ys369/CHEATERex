@@ -13,6 +13,10 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
 
 ## Additional Cheats
   * Instant Death/Level Exit L Trigger + R Trigger + A Button + B Button
+  * CHAOS Mode
+  * Time Stop
+  - Just press Y to stop time
+  - Can be reserved by CAP cheat or level transition
   * FLYER
   * All Jumps Triple
   * Hover Mode
@@ -76,8 +80,7 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
  * Bugfixes by JAGSTAX
  * DynOS by PeachyPeach
     -Exit to Main Menu by Adya
-    -Go to Level Select by $4Y$
- * And of course, CHEATERv9 by $4Y$, me
+ * And of course, CHEATERv9.5 by $4Y$, me
 
 ## How to add cheats/mods
  * Use `src/game/mario_cheats.c` for code

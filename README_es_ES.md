@@ -10,6 +10,9 @@ Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para elim
 
 ## Trucos adicionales
   * Muerte Instantanea/Salir del Nivel Gatillo L + Gatillo R + Boton A + Boton B
+  * "CHAOS Mode"
+  * "Time Stop"
+    - Botón Y
   * FLYER
   * Todos los saltos triples
   * "HOVER MODE"
@@ -67,8 +70,7 @@ Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para elim
  * "Bugfixes" por JAGSTAX
  * "DynOS" por PeachyPeach
     -"Exit to Main Menu" por Adya incluido
-    -"Go to Level Select" por $4Y$ incluido
- * Y por supuesto, "CHEATERv9" por $4Y$, yo mismo
+ * Y por supuesto, "CHEATERv9.5" por $4Y$, yo mismo
 
 ## Como agregar los trucos/mods
  * Usa `src/game/mario_cheats.c` para el código

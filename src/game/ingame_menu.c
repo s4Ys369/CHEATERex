@@ -2716,9 +2716,11 @@ s16 render_pause_courses_and_castle(void) {
                 break;
             case DIALOG_STATE_HORIZONTAL:
                 shade_screen();
+            if (!time_trials_render_pause_castle_main_strings(gCurrSaveFileNum - 1, &gDialogLineNum)) {
                 print_hud_pause_colorful_str();
                 render_pause_castle_menu_box(160, 143);
                 render_pause_castle_main_strings(104, 60);
+            }
 
 #ifdef VERSION_EU
             if (gPlayer3Controller->buttonPressed & (A_BUTTON | Z_TRIG | START_BUTTON))
@@ -2921,7 +2923,7 @@ void render_course_complete_lvl_info_and_hud_str(void) {
         play_star_fanfare_and_flash_hud(1, 1 << (gLastCompletedStarNum - 1));
 
         if (gLastCompletedStarNum == 7) {
-            name = segmented_to_virtual(actNameTbl[COURSE_STAGES_MAX * 6 + 1]);
+            name = segmented_to_virtual(actNameTbl[COURSE_STAGES_MAX * 6]);
         } else {
             name = segmented_to_virtual(actNameTbl[(gLastCompletedCourseNum - 1) * 6 + gLastCompletedStarNum - 1]);
         }
@@ -3121,6 +3123,7 @@ s16 render_menus_and_dialogs() {
     s16 mode = 0;
 
     create_dl_ortho_matrix();
+    time_trials_update(gMarioState, gMenuMode != -1);
 
     if (gMenuMode != -1) {
         switch (gMenuMode) {

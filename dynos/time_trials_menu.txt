@@ -1,0 +1,25 @@
+# Dynamic Options System aka DynOS v0.4
+# By PeachyPeach
+#
+# This is a comment
+# Here are the available commands:
+# SUBMENU [Name] [Label] [Label2]
+# TOGGLE  [Name] [Label] [ConfigName] [InitialValue]
+# SCROLL  [Name] [Label] [ConfigName] [InitialValue] [Min] [Max] [Step]
+# CHOICE  [Name] [Label] [ConfigName] [InitialValue] [ChoiceStrings...]
+# BIND    [Name] [Label] [ConfigName] [Mask] [DefaultValues]
+# BUTTON  [Name] [Label] [FuncName]
+# ENDMENU
+#
+# Valid Label characters:
+# 0-9 A-Z a-z
+# '.,-()&:!%?"~_
+#
+
+
+SUBMENU "time_trials_submenu" "Time Trials" "TIME TRIALS"
+	TOGGLE	"time_trials"			"Time Trials"				"time_trials"			1
+	CHOICE	"time_trials_ghost1"	"Time Trials Ghost"			"time_trials_ghost1"	1 "Hide" "Show"
+	CHOICE	"time_trials_ghost2"	"Time Trials Special Ghost"	"time_trials_ghost2"	1 "Hide" "Show"
+	TOGGLE	"time_trials_cheats"	"Time Trials with Cheats"	"time_trials_cheats"	0
+ENDMENU
