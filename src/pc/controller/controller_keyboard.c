@@ -9,7 +9,6 @@
 
 #include "../configfile.h"
 #include "controller_keyboard.h"
-#include "pc/dynamic_options.h"
 
 static int keyboard_buttons_down;
 
@@ -82,7 +81,6 @@ static void keyboard_bindkeys(void) {
     keyboard_add_binds(L_TRIG,       configKeyL);
     keyboard_add_binds(R_TRIG,       configKeyR);
     keyboard_add_binds(START_BUTTON, configKeyStart);
-    dynos_add_binds((void(*)(u32, u32 *)) keyboard_add_binds);
 }
 
 static void keyboard_init(void) {

@@ -347,9 +347,6 @@ static s32 optmenu_sin_timer = 0;
 
 static struct SubMenu *currentMenu = &menuMain;
 
-/* DynOS implementation */
-#include "pc/dynamic_options.inl"
-
 static inline s32 wrap_add(s32 a, const s32 b, const s32 min, const s32 max) {
     a += b;
     if (a < min) a = max - (min - a) + 1;
@@ -523,7 +520,6 @@ void optmenu_draw_prompt(void) {
     gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     optmenu_draw_text(264, 212, optSmallStr[optmenu_open], 0);
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
-    optmenu_draw_prompt_dynos();
 }
 
 void optmenu_toggle(void) {
@@ -566,9 +562,6 @@ void optmenu_check_buttons(void) {
         }
         return;
     }
-
-    if (gPlayer1Controller->buttonPressed & Z_TRIG)
-        optmenu_toggle_dynos();
 
     if (gPlayer1Controller->buttonPressed & R_TRIG)
         optmenu_toggle();

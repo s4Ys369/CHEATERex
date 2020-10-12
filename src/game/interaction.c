@@ -825,17 +825,6 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
         // func_802521A0
 #endif
 
-        // Time Trials
-        if (TIME_TRIALS_100_COINS_STAR_EXIT == 1 && starIndex == 6) {
-            drop_queued_background_music();
-            fadeout_level_music(126);
-            noExit = FALSE;
-        }
-        time_trials_save_time(gCurrSaveFileNum - 1, gCurrCourseNum, gCurrLevelNum, starIndex, noExit);
-        if (!noExit || grandStar) {
-            time_trials_stop_timer();
-        }
-        
         if (grandStar) {
             return set_mario_action(m, ACT_JUMBO_STAR_CUTSCENE, 0);
         }
