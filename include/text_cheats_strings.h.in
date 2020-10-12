@@ -26,7 +26,7 @@
 #define TEXT_OPT_PAC   _("PLAY AS")
 #define TEXT_OPT_TRIPLE _("ALL JUMPS TRIPLE")
 #define TEXT_OPT_FLY _("FLYER")
-#define TEXT_OPT_CHAOS _("CHAOS MODE")
+#define TEXT_OPT_NOB _("NO BOUNDS")
 
 #define TEXT_CHEAT_STAY1    _("DISABLED")
 #define TEXT_CHEAT_STAY2    _("ENABLED (NORMAL)")
@@ -129,7 +129,7 @@
 #define TEXT_OPT_PAC   _("Play as")
 #define TEXT_OPT_TRIPLE _("All Jumps Triple")
 #define TEXT_OPT_FLY _("FLYER")
-#define TEXT_OPT_CHAOS _("CHAOS MODE")
+#define TEXT_OPT_NOB _("NO BOUNDS")
 
 #define TEXT_CHEAT_STAY1    _("Disabled")
 #define TEXT_CHEAT_STAY2    _("Hold L to Exit")

@@ -221,7 +221,7 @@ static const u8 optsCheatsStr[][64] = {
     { TEXT_OPT_PAC },
     { TEXT_OPT_TRIPLE },
     { TEXT_OPT_FLY },
-    { TEXT_OPT_CHAOS },
+    { TEXT_OPT_NOB },
 
 };
 

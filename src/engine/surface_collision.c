@@ -5,6 +5,7 @@
 #include "game/level_update.h"
 #include "game/mario.h"
 #include "game/object_list_processor.h"
+#include "pc/cheats.h"
 #include "surface_collision.h"
 #include "surface_load.h"
 #include "math_util.h"
@@ -39,6 +40,10 @@ static s32 find_wall_collisions_from_list(struct SurfaceNode *surfaceNode,
     while (surfaceNode != NULL) {
         surf = surfaceNode->surface;
         surfaceNode = surfaceNode->next;
+
+        if (Cheats.EnableCheats && Cheats.NoBounds) {
+            continue;
+        }
 
         // Exclude a large number of walls immediately to optimize.
         if (y < surf->lowerY || y > surf->upperY) {
@@ -178,7 +183,11 @@ s32 f32_find_wall_collision(f32 *xPtr, f32 *yPtr, f32 *zPtr, f32 offsetY, f32 ra
 
     collision.numWalls = 0;
 
-    numCollisions = find_wall_collisions(&collision);
+    if (Cheats.EnableCheats && Cheats.NoBounds) {
+        numCollisions = 0;
+    } else {
+        numCollisions = find_wall_collisions(&collision);
+    }
 
     *xPtr = collision.x;
     *yPtr = collision.y;
@@ -198,6 +207,10 @@ s32 find_wall_collisions(struct WallCollisionData *colData) {
     s16 z = colData->z;
 
     colData->numWalls = 0;
+
+    if (Cheats.EnableCheats && Cheats.NoBounds) {
+        return numCollisions;
+    }
 
     if (x <= -LEVEL_BOUNDARY_MAX || x >= LEVEL_BOUNDARY_MAX) {
         return numCollisions;
@@ -244,6 +257,10 @@ static struct Surface *find_ceil_from_list(struct SurfaceNode *surfaceNode, s32 
     while (surfaceNode != NULL) {
         surf = surfaceNode->surface;
         surfaceNode = surfaceNode->next;
+
+        if (Cheats.EnableCheats && Cheats.NoBounds) {
+            continue;
+        }
 
         x1 = surf->vertex1[0];
         z1 = surf->vertex1[2];
@@ -328,6 +345,10 @@ f32 find_ceil(f32 posX, f32 posY, f32 posZ, struct Surface **pceil) {
     y = (s16) posY;
     z = (s16) posZ;
     *pceil = NULL;
+
+    if (Cheats.EnableCheats && Cheats.NoBounds) {
+        return height;
+    }
 
     if (x <= -LEVEL_BOUNDARY_MAX || x >= LEVEL_BOUNDARY_MAX) {
         return height;

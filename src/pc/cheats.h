@@ -14,6 +14,7 @@ struct CheatList {
     bool         HugeMario;
     bool         TinyMario;
     unsigned int NON;
+    bool         NoBounds;
     bool         Hover;
     bool         Moon;
     unsigned int Run;
