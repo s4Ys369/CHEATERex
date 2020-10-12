@@ -837,7 +837,7 @@ static bool dynos_update_controller_from_keyboard(struct DynosOption *opt, void 
         struct Controller *controller = (struct Controller *) data;
         for (int i = 0; i != MAX_BINDS; ++i) {
             int scancode = (int) opt->bind.pbinds[i];
-            if (scancode < sDynosKeyboard->count) {
+            if (scancode >= 0 && scancode < sDynosKeyboard->count) {
                 controller->buttonPressed |= opt->bind.mask * (sDynosKeyboard->state[scancode].pressed);
                 controller->buttonDown    |= opt->bind.mask * (sDynosKeyboard->state[scancode].down);
             }
@@ -851,7 +851,7 @@ static bool dynos_update_controller_from_joystick(struct DynosOption *opt, void 
         struct Controller *controller = (struct Controller *) data;
         for (int i = 0; i != MAX_BINDS; ++i) {
             int scancode = (int) opt->bind.pbinds[i] - 0x1000;
-            if (scancode < sDynosJoystick->count) {
+            if (scancode >= 0 && scancode < sDynosJoystick->count) {
                 controller->buttonPressed |= opt->bind.mask * (sDynosJoystick->state[scancode].pressed);
                 controller->buttonDown    |= opt->bind.mask * (sDynosJoystick->state[scancode].down);
             }
