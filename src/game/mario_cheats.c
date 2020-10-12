@@ -328,9 +328,8 @@ void cheats_mario_inputs(struct MarioState *m) {
                 }
                 break;
             case 4:
-                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_AMP];
+                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_KOOPA_SHELL];
                 m->marioObj->header.gfx.unk38.curAnim = amp_seg8_anims_08004034[0];
-                obj_set_pos(m->marioObj, 0, 50, 0);
                 if (m->controller->buttonDown & B_BUTTON) {
                     vec3f_set(m->vel, 0.0f, 1.0f, 60.0f);
                     set_mario_action(m, ACT_LONG_JUMP, 0);
@@ -509,15 +508,15 @@ void cheats_mario_inputs(struct MarioState *m) {
             }
 
             /*This check should be added when creating a spawn cheat to prevent spamming*/
-            struct Object *obj = (struct Object *) gObjectLists[OBJ_LIST_LEVEL].next;
-            struct Object *first = (struct Object *) &gObjectLists[OBJ_LIST_LEVEL];
-            while (obj != NULL && obj != first) {
-                if (obj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_KOOPA_SHELL]) {
-                    obj_mark_for_deletion(obj);
-                    break;
-                }
-                obj = (struct Object *) obj->header.next;
-            }
+            //struct Object *obj = (struct Object *) gObjectLists[OBJ_LIST_LEVEL].next;
+            //struct Object *first = (struct Object *) &gObjectLists[OBJ_LIST_LEVEL];
+            //while (obj != NULL && obj != first) {
+            //    if (obj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_KOOPA_SHELL]) {
+            //        obj_mark_for_deletion(obj);
+            //        break;
+            //    }
+            //    obj = (struct Object *) obj->header.next;
+            //}
 
             if ((m->action & ACT_GROUP_MASK) == ACT_GROUP_SUBMERGED) {
                 spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_KOOPA_SHELL,

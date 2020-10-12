@@ -46,7 +46,7 @@
 #define TEXT_OPT_PA2    _("BLACK BOBOMB")
 #define TEXT_OPT_PA3    _("PINK BOBOMB")
 #define TEXT_OPT_PA4    _("GOOMBA")
-#define TEXT_OPT_PA5    _("AMP")
+#define TEXT_OPT_PA5    _("KAPPA SHELL")
 #define TEXT_OPT_PA6    _("CHUCKYA")
 #define TEXT_OPT_PA7    _("FLYGUY")
 
@@ -149,7 +149,7 @@
 #define TEXT_OPT_PA2    _("Black Bobomb")
 #define TEXT_OPT_PA3    _("Pink Bobomb")
 #define TEXT_OPT_PA4    _("Goomba")
-#define TEXT_OPT_PA5    _("Amp")
+#define TEXT_OPT_PA5    _("Koopa Shell")
 #define TEXT_OPT_PA6    _("Chuckya")
 #define TEXT_OPT_PA7    _("FlyGuy")
 
