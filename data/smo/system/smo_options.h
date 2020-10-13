@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-#define SMO_CAPPY_BUTTON 0x0040
+#define SMO_CAPPY_BUTTON 0x0080
 
 #ifdef DYNOS
 #include "pc/dynamic_options.h"

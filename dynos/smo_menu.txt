@@ -27,7 +27,7 @@ ID      "SuperMarioOdyssey"
 TITLE   "SUPER MARIO ODYSSEY"
 TOGGLE  "MARIO MOVESET"         "smo_mario"    0
 CHOICE  "CAPPY"                 "smo_cappy"    1 "DISABLED" "NO CAPTURE" "CAPTURE"
-BIND    "CAPPY THROW BUTTON"    "key_cappy"    0x0040 0x002D 0x1002 0xFFFF
+BIND    "CAPPY THROW BUTTON"    "key_cappy"    0x0080 0x002D 0xFFFF 0xFFFF
 CHOICE  "HEALTH SYSTEM"         "smo_health"   2 "DISABLED" "3-HEALTH" "6-HEALTH"
 TOGGLE  "UNLIMITED CAPPY JUMPS" "smo_ucj"      1
 MBUTTON "BACK TO MAIN MENU"     "back_to_menu" "smo_return_to_main_menu"
