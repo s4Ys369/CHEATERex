@@ -49,6 +49,7 @@
 #define TEXT_OPT_PA5    _("KAPPA SHELL")
 #define TEXT_OPT_PA6    _("CHUCKYA")
 #define TEXT_OPT_PA7    _("FLYGUY")
+#define TEXT_OPT_PA8    _("PER LEVEL")
 
 #define TEXT_OPT_SEQ1    _("INTRO")
 #define TEXT_OPT_SEQ2    _("GRASS")
@@ -152,6 +153,7 @@
 #define TEXT_OPT_PA5    _("Koopa Shell")
 #define TEXT_OPT_PA6    _("Chuckya")
 #define TEXT_OPT_PA7    _("FlyGuy")
+#define TEXT_OPT_PA8    _("Per Level")
 
 #define TEXT_OPT_SEQ1    _("Intro")
 #define TEXT_OPT_SEQ2    _("Grass")

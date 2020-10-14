@@ -95,6 +95,7 @@ static const u8 optsPlayAsCheatStr[][32] = {
     { TEXT_OPT_PA5 },
     { TEXT_OPT_PA6 },
     { TEXT_OPT_PA7 },
+    { TEXT_OPT_PA8 },
 };
 
 static const u8* PlayAsCheatChoices[] = {
@@ -105,6 +106,7 @@ static const u8* PlayAsCheatChoices[] = {
     optsPlayAsCheatStr[4],
     optsPlayAsCheatStr[5],
     optsPlayAsCheatStr[6],
+    optsPlayAsCheatStr[7],
 };
 
 

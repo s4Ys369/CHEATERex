@@ -5,6 +5,14 @@
 #include "sm64.h"
 #include "area.h"
 #include "actors/common0.h"
+#include "actors/group0.h"
+#include "actors/group4.h"
+#include "actors/group7.h"
+#include "actors/group9.h"
+#include "actors/group10.h"
+#include "actors/group12.h"
+#include "actors/group14.h"
+#include "actors/group15.h"
 #include "audio/data.h"
 #include "audio/external.h"
 #include "behavior_actions.h"
@@ -195,16 +203,16 @@ void cheats_mario_inputs(struct MarioState *m) {
             }
         }
 
-        if (Cheats.Fly) {
-            if (m->action == ACT_FLYING) {
-                m->particleFlags |= PARTICLE_SPARKLES;
-            }
-        }
-
         /*Time Stop Cheat*/
         if (m->controller->buttonPressed & TIME_BUTTON) {
             enable_time_stop();
             set_mario_action(m, ACT_IDLE, 0);
+        }
+
+        if (Cheats.Fly) {
+            if (m->action == ACT_FLYING) {
+                m->particleFlags |= PARTICLE_SPARKLES;
+            }
         }
 
         /*Coin Spawner Prototype*/
@@ -287,11 +295,12 @@ void cheats_mario_inputs(struct MarioState *m) {
                 break;
         }
         /*Play As Cheat*/
-        switch(Cheats.PAC) {
+        switch (Cheats.PAC) {
             /*Model Choices*/
             case 0:
-                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO]; //Use MODEL_PLAYER
-                m->animation = &D_80339D10; //Only Mario's animations
+                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO]; // Use
+                                                                                      // MODEL_PLAYER
+                m->animation = &D_80339D10; // Only Mario's animations
                 break;
             case 1:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BLACK_BOBOMB];
@@ -347,7 +356,7 @@ void cheats_mario_inputs(struct MarioState *m) {
                     spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_CHUCKYA, bhvChuckya);
                     break;
                 }
-                break; //Forgot this in v7
+                break; // Forgot this in v7
             case 6:
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_FLYGUY];
                 m->marioObj->header.gfx.unk38.curAnim = flyguy_seg8_anims_08011A64[0];
@@ -358,7 +367,33 @@ void cheats_mario_inputs(struct MarioState *m) {
                     break;
                 }
                 break;
-            }
+            case 7:
+                switch (gCurrLevelNum) {
+                    case LEVEL_CASTLE_GROUNDS:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_YOSHI];
+                        m->marioObj->header.gfx.unk38.curAnim = yoshi_seg5_anims_05024100[0];
+                        break;
+                    case LEVEL_BOB:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_KOOPA_WITH_SHELL];
+                        break;
+                    case LEVEL_CASTLE_COURTYARD:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BOO];
+                        break;
+                    case LEVEL_WF:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_WHOMP];
+                        m->marioObj->header.gfx.unk38.curAnim = whomp_seg6_anims_06020A04[0];
+                        break;
+                    case LEVEL_JRB:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_SUSHI];
+                        m->marioObj->header.gfx.unk38.curAnim = sushi_seg5_anims_0500AE54[0];
+                        break;
+                    case LEVEL_CCM:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_PENGUIN];
+                        m->marioObj->header.gfx.unk38.curAnim = penguin_seg5_anims_05008B74[0];
+                        break;
+                }
+                break;
+        }
         while (Cheats.PAC > 0) {
             if (m->action == ACT_STANDING_DEATH) {
                 level_trigger_warp(m, WARP_OP_DEATH);
