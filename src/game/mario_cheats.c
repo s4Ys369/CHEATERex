@@ -201,7 +201,7 @@ void cheats_mario_inputs(struct MarioState *m) {
             }
         }
 
-        /*Time Stop Prototype*/
+        /*Time Stop Cheat*/
         if (m->controller->buttonPressed & TIME_BUTTON) {
             enable_time_stop();
             set_mario_action(m, ACT_IDLE, 0);
