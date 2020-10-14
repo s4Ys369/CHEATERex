@@ -1,0 +1,23 @@
+# Dynamic Options System aka DynOS v0.4
+# By PeachyPeach
+#
+# This is a comment
+# Here are the available commands:
+# SUBMENU [Name] [Label] [Label2]
+# TOGGLE  [Name] [Label] [ConfigName] [InitialValue]
+# SCROLL  [Name] [Label] [ConfigName] [InitialValue] [Min] [Max] [Step]
+# CHOICE  [Name] [Label] [ConfigName] [InitialValue] [ChoiceStrings...]
+# BIND    [Name] [Label] [ConfigName] [Mask] [DefaultValues]
+# BUTTON  [Name] [Label] [FuncName]
+# ENDMENU
+#
+# Valid Label characters:
+# 0-9 A-Z a-z
+# '.,-()&:!%?"~_
+#
+
+
+SUBMENU "cheater_submenu" "CHEATER" "CHEATER"
+	TOGGLE	"chaos_mode"	"CHAOS MODE"		"chaos_mode"	0
+	BIND	"time_button"	"Time Stop Button"	"time_button	0x0080	0x0008 0x1001 0xFFFF
+ENDMENU

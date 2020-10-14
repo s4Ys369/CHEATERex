@@ -93,7 +93,7 @@ void cheats_mario_inputs(struct MarioState *m) {
 
     while (Cheats.EnableCheats == true) {
 
-        if (Cheats.Chaos) {
+        if (CHAOS_MODE == 1) {
             srand(time(NULL));
             r = rand();
 
@@ -202,7 +202,7 @@ void cheats_mario_inputs(struct MarioState *m) {
         }
 
         /*Time Stop Prototype*/
-        if (m->controller->buttonPressed & X_BUTTON) {
+        if (m->controller->buttonPressed & TIME_BUTTON) {
             enable_time_stop();
             set_mario_action(m, ACT_IDLE, 0);
         }
