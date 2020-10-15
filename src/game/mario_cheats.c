@@ -433,8 +433,8 @@ void cheats_mario_inputs(struct MarioState *m) {
                         m->marioObj->header.gfx.unk38.curAnim = ukiki_seg5_anims_05015784[0];
                         break;
                     case LEVEL_THI:
-                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_SPINY];
-                        m->marioObj->header.gfx.unk38.curAnim = spiny_seg5_anims_05016EAC[0];
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BOWLING_BALL];
+                        // m->marioObj->header.gfx.unk38.curAnim = spiny_seg5_anims_05016EAC[0];
                         break;
                     case LEVEL_TTC:
                         m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_THWOMP];
@@ -450,31 +450,31 @@ void cheats_mario_inputs(struct MarioState *m) {
                     case LEVEL_COTMC:
                         m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_SNUFIT];
                         break;
-                break;
+                }
+                while (Cheats.PAC > 0) {
+                    if (m->action == ACT_STANDING_DEATH) {
+                        level_trigger_warp(m, WARP_OP_DEATH);
+                        m->numLives += 1;
+                        update_mario_health(m);
+                        break;
+                    }
+                    /*Instead of making a custom hitbox for each character,
+                    I neutralized the only consistent problem, doors*/
+                    while (m->collidedObjInteractTypes & INTERACT_DOOR) {
+                        obj_mark_for_deletion(m->usedObj);
+                        spawn_object(gCurrentObject, MODEL_SMOKE, bhvBobombBullyDeathSmoke);
+                        obj_scale(gCurrentObject, gCurrentObject->oTimer / 4.f + 1.0f);
+                        gCurrentObject->oOpacity -= 14;
+                        gCurrentObject->oAnimState++;
+                        play_sound(SOUND_GENERAL2_BOBOMB_EXPLOSION,
+                                   m->marioObj->header.gfx.cameraToObject);
+                        m->particleFlags |= PARTICLE_TRIANGLE;
+                        obj_set_pos(m->marioObj, 0, 0, 100);
+                        break;
+                    }
+                    break;
+                }
         }
-        while (Cheats.PAC > 0) {
-            if (m->action == ACT_STANDING_DEATH) {
-                level_trigger_warp(m, WARP_OP_DEATH);
-                m->numLives += 1;
-                update_mario_health(m);
-                break;
-            }
-            /*Instead of making a custom hitbox for each character,
-            I neutralized the only consistent problem, doors*/
-            while (m->collidedObjInteractTypes & INTERACT_DOOR) {
-                obj_mark_for_deletion(m->usedObj);
-                spawn_object(gCurrentObject, MODEL_SMOKE, bhvBobombBullyDeathSmoke);
-                obj_scale(gCurrentObject, gCurrentObject->oTimer / 4.f + 1.0f);
-                gCurrentObject->oOpacity -= 14;
-                gCurrentObject->oAnimState++;
-                play_sound(SOUND_GENERAL2_BOBOMB_EXPLOSION, m->marioObj->header.gfx.cameraToObject);
-                m->particleFlags |= PARTICLE_TRIANGLE;
-                obj_set_pos(m->marioObj, 0, 0, 100);
-                break;
-            }
-            break;
-        }
-
 
         /*Speed Display*/
         if (Cheats.SPD == true) {
@@ -602,9 +602,9 @@ void cheats_mario_inputs(struct MarioState *m) {
             }
 
             /*This check should be added when creating a spawn cheat to prevent spamming*/
-            //struct Object *obj = (struct Object *) gObjectLists[OBJ_LIST_LEVEL].next;
-            //struct Object *first = (struct Object *) &gObjectLists[OBJ_LIST_LEVEL];
-            //while (obj != NULL && obj != first) {
+            // struct Object *obj = (struct Object *) gObjectLists[OBJ_LIST_LEVEL].next;
+            // struct Object *first = (struct Object *) &gObjectLists[OBJ_LIST_LEVEL];
+            // while (obj != NULL && obj != first) {
             //    if (obj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_KOOPA_SHELL]) {
             //        obj_mark_for_deletion(obj);
             //        break;
@@ -726,7 +726,7 @@ void cheats_mario_inputs(struct MarioState *m) {
         /*Jukebox*/
         if (Cheats.JBC) {
             /*JBC is the bool, acting like the on/off*/
-            switch(Cheats.JB) {
+            switch (Cheats.JB) {
                 case 0:
                     play_cap_music(SEQ_EVENT_CUTSCENE_INTRO);
                     Cheats.JBC = false;
