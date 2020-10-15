@@ -433,8 +433,8 @@ void cheats_mario_inputs(struct MarioState *m) {
                         m->marioObj->header.gfx.unk38.curAnim = ukiki_seg5_anims_05015784[0];
                         break;
                     case LEVEL_THI:
-                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BOWLING_BALL];
-                        // m->marioObj->header.gfx.unk38.curAnim = spiny_seg5_anims_05016EAC[0];
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_SPINY];
+                        m->marioObj->header.gfx.unk38.curAnim = spiny_seg5_anims_05016EAC[0];
                         break;
                     case LEVEL_TTC:
                         m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_THWOMP];
