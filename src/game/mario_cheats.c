@@ -535,7 +535,8 @@ void cheats_mario_inputs(struct MarioState *m) {
 
         /*InstantDeath cheat*/
         if (m->controller->buttonDown & L_TRIG && m->controller->buttonDown & A_BUTTON
-            && m->controller->buttonPressed & B_BUTTON && m->controller->buttonDown & R_TRIG) {
+            && m->controller->buttonPressed & B_BUTTON && m->controller->buttonDown & R_TRIG
+            && m->controller->buttonDown & Z_TRIG) {
             level_trigger_warp(m, WARP_OP_DEATH);
             break;
         };
