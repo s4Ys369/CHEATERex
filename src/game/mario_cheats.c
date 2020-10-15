@@ -5,14 +5,22 @@
 #include "sm64.h"
 #include "area.h"
 #include "actors/common0.h"
+#include "actors/common1.h"
 #include "actors/group0.h"
+#include "actors/group1.h"
+#include "actors/group2.h"
 #include "actors/group4.h"
+#include "actors/group5.h"
+#include "actors/group6.h"
 #include "actors/group7.h"
 #include "actors/group9.h"
 #include "actors/group10.h"
+#include "actors/group11.h"
 #include "actors/group12.h"
+#include "actors/group13.h"
 #include "actors/group14.h"
 #include "actors/group15.h"
+#include "actors/group17.h"
 #include "audio/data.h"
 #include "audio/external.h"
 #include "behavior_actions.h"
@@ -156,9 +164,9 @@ void cheats_mario_inputs(struct MarioState *m) {
                     obj_spawn_yellow_coins(m->marioObj, 1);
                     break;
                 case 8:
-                    if (Cheats.PAC <= 5) {
+                    if (Cheats.PAC <= 6) {
                         Cheats.PAC += 1;
-                    } else if (Cheats.PAC >= 6) {
+                    } else if (Cheats.PAC >= 7) {
                         Cheats.PAC = 0;
                     }
                     break;
@@ -375,23 +383,73 @@ void cheats_mario_inputs(struct MarioState *m) {
                         break;
                     case LEVEL_BOB:
                         m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_KOOPA_WITH_SHELL];
+                        m->marioObj->header.gfx.unk38.curAnim = koopa_seg6_anims_06011364[0];
+                        m->marioObj->header.gfx.unk38.animFrame += 1;
                         break;
-                    case LEVEL_CASTLE_COURTYARD:
-                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BOO];
+                    case LEVEL_BBH:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MAD_PIANO];
+                        m->marioObj->header.gfx.unk38.curAnim = mad_piano_seg5_anims_05009B14[0];
                         break;
                     case LEVEL_WF:
                         m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_WHOMP];
                         m->marioObj->header.gfx.unk38.curAnim = whomp_seg6_anims_06020A04[0];
                         break;
                     case LEVEL_JRB:
-                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_SUSHI];
-                        m->marioObj->header.gfx.unk38.curAnim = sushi_seg5_anims_0500AE54[0];
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_CLAM_SHELL];
+                        m->marioObj->header.gfx.unk38.curAnim = clam_shell_seg5_anims_05001744[0];
                         break;
                     case LEVEL_CCM:
                         m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_PENGUIN];
                         m->marioObj->header.gfx.unk38.curAnim = penguin_seg5_anims_05008B74[0];
                         break;
-                }
+                    case LEVEL_PSS:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_WOODEN_SIGNPOST];
+                        break;
+                    case LEVEL_HMC:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_HMC_ROLLING_ROCK];
+                        break;
+                    case LEVEL_LLL:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BULLY];
+                        m->marioObj->header.gfx.unk38.curAnim = bully_seg5_anims_0500470C[0];
+                        break;
+                    case LEVEL_SSL:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_KLEPTO];
+                        m->marioObj->header.gfx.unk38.curAnim = klepto_seg5_anims_05008CFC[0];
+                        break;
+                    case LEVEL_DDD:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_SUSHI];
+                        m->marioObj->header.gfx.unk38.curAnim = sushi_seg5_anims_0500AE54[0];
+                        break;
+                    case LEVEL_SL:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_SPINDRIFT];
+                        m->marioObj->header.gfx.unk38.curAnim = spindrift_seg5_anims_05002D68[0];
+                        break;
+                    case LEVEL_WDW:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_SKEETER];
+                        m->marioObj->header.gfx.unk38.curAnim = skeeter_seg6_anims_06007DE0[0];
+                        break;
+                    case LEVEL_TTM:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_UKIKI];
+                        m->marioObj->header.gfx.unk38.curAnim = ukiki_seg5_anims_05015784[0];
+                        break;
+                    case LEVEL_THI:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_SPINY];
+                        m->marioObj->header.gfx.unk38.curAnim = spiny_seg5_anims_05016EAC[0];
+                        break;
+                    case LEVEL_TTC:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_THWOMP];
+                        break;
+                    case LEVEL_RR:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_ENEMY_LAKITU];
+                        m->marioObj->header.gfx.unk38.curAnim = lakitu_enemy_seg5_anims_050144D4[0];
+                        break;
+                    case LEVEL_SA:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MANTA_RAY];
+                        m->marioObj->header.gfx.unk38.curAnim = manta_seg5_anims_05008EB4[0];
+                        break;
+                    case LEVEL_COTMC:
+                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_SNUFIT];
+                        break;
                 break;
         }
         while (Cheats.PAC > 0) {
