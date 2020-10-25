@@ -109,6 +109,23 @@ void cheats_mario_inputs(struct MarioState *m) {
 
     while (Cheats.EnableCheats == true) {
 
+        /*Swim Anywhere*/
+        if (SWIM_ANY == 1) {
+            set_submerged_cam_preset_and_spawn_bubbles(m);
+            m->waterLevel = m->pos[1] + 300;
+        }
+
+        /*No Hold Heavy*/
+        if (NO_HEAVY == 1) {
+            while ((m->action & ACT_GROUP_MASK) == ACT_GROUP_MOVING) {
+                if (m->action == ACT_HOLD_HEAVY_WALKING) {
+                    set_mario_action(m, ACT_HOLD_WALKING, 0);
+                    break;
+                }
+                break;
+            }
+        }
+
         if (CHAOS_MODE == 1) {
             srand(time(NULL));
             r = rand();
