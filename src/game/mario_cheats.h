@@ -20,8 +20,10 @@ void cheats_mario_inputs(struct MarioState *m);
 #define __time_button__ dynos_get_value("time_button")
 #define __no_heavy__ dynos_get_value("no_heavy")
 #define __swim_any__ dynos_get_value("swim_any")
+#define __haz_walk__ dynos_get_value("haz_walk")
 #define CHAOS_MODE (__chaos_mode__ == 1)
 #define NO_HEAVY (__no_heavy__ == 1)
 #define SWIM_ANY (__swim_any__ == 1)
+#define HAZ_WALK (__haz_walk__ == 1)
 
 #endif // MARIO_CHEATS_H

@@ -21,5 +21,6 @@ SUBMENU "cheater_submenu" "CHEATER" "CHEATER"
 	TOGGLE	"chaos_mode"	"CHAOS MODE"			"chaos_mode"	0
 	BIND	"time_button"	"Time Stop Button"		"time_button"	0x0080	0x0008 0x1001 0xFFFF
 	TOGGLE	"no_heavy"		"No Hold Heavy"			"no_heavy"		0
-	TOGGLE	"swim_any"		"Swim Anywhere"			"swim_any"	0
+	TOGGLE	"swim_any"		"Swim Anywhere"			"swim_any"		0
+	TOGGLE	"haz_walk"		"Walk On Hazards"		"haz_walk"		0
 ENDMENU

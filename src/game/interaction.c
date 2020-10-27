@@ -15,6 +15,7 @@
 #include "interaction.h"
 #include "level_update.h"
 #include "mario.h"
+#include "mario_cheats.h"
 #include "mario_step.h"
 #include "memory.h"
 #include "obj_behaviors.h"
@@ -1776,13 +1777,15 @@ void check_death_barrier(struct MarioState *m) {
 }
 
 void check_lava_boost(struct MarioState *m) {
-    if (!(m->action & ACT_FLAG_RIDING_SHELL) && m->pos[1] < m->floorHeight + 10.0f) {
-        if (!(m->flags & MARIO_METAL_CAP)) {
-            m->hurtCounter += (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18;
-        }
+    if (HAZ_WALK != 1) {
+        if (!(m->action & ACT_FLAG_RIDING_SHELL) && m->pos[1] < m->floorHeight + 10.0f) {
+            if (!(m->flags & MARIO_METAL_CAP)) {
+                m->hurtCounter += (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18;
+            }
 
-        update_mario_sound_and_camera(m);
-        drop_and_set_mario_action(m, ACT_LAVA_BOOST, 0);
+            update_mario_sound_and_camera(m);
+            drop_and_set_mario_action(m, ACT_LAVA_BOOST, 0);
+        }
     }
 }
 
@@ -1836,6 +1839,9 @@ void mario_handle_special_floors(struct MarioState *m) {
         if (!(m->action & ACT_FLAG_AIR) && !(m->action & ACT_FLAG_SWIMMING)) {
             switch (floorType) {
                 case SURFACE_BURNING:
+                    if (Cheats.EnableCheats && HAZ_WALK == 1) {
+                        break;
+                    }
                     check_lava_boost(m);
                     break;
             }

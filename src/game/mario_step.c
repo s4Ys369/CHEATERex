@@ -7,6 +7,7 @@
 #include "audio/external.h"
 #include "game_init.h"
 #include "interaction.h"
+#include "mario_cheats.h"
 #include "mario_step.h"
 #include "pc/cheats.h"
 
@@ -106,6 +107,9 @@ void mario_bonk_reflection(struct MarioState *m, u32 negateSpeed) {
 }
 
 u32 mario_update_quicksand(struct MarioState *m, f32 sinkingSpeed) {
+    if (Cheats.EnableCheats && HAZ_WALK == 1) {
+        m->quicksandDepth = 0.0f;
+    } else
     if (m->action & ACT_FLAG_RIDING_SHELL) {
         m->quicksandDepth = 0.0f;
     } else {
@@ -290,6 +294,11 @@ static s32 perform_ground_quarter_step(struct MarioState *m, Vec3f nextPos) {
         floor = &gWaterSurfacePseudoFloor;
         floor->originOffset = floorHeight; //! Wrong origin offset (no effect)
     }
+    if (Cheats.EnableCheats && HAZ_WALK == 1 && floorHeight < waterLevel) {
+        floorHeight = waterLevel;
+        floor = &gWaterSurfacePseudoFloor;
+        floor->originOffset = floorHeight; //! Wrong origin offset (no effect)
+    }
     if (Cheats.EnableCheats && Cheats.PAC > 0) {
         if (nextPos[1] > floorHeight + 100.0f) {
             if (nextPos[1] + 120.0f >= ceilHeight) {
@@ -447,6 +456,12 @@ s32 perform_air_quarter_step(struct MarioState *m, Vec3f intendedPos, u32 stepAr
     }
 
     if ((m->action & ACT_FLAG_RIDING_SHELL) && floorHeight < waterLevel) {
+        floorHeight = waterLevel;
+        floor = &gWaterSurfacePseudoFloor;
+        floor->originOffset = floorHeight; //! Incorrect origin offset (no effect)
+    }
+
+    if (Cheats.EnableCheats && HAZ_WALK == 1 && floorHeight < waterLevel) {
         floorHeight = waterLevel;
         floor = &gWaterSurfacePseudoFloor;
         floor->originOffset = floorHeight; //! Incorrect origin offset (no effect)
