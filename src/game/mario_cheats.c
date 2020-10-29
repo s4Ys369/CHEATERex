@@ -110,25 +110,42 @@ void cheats_mario_inputs(struct MarioState *m) {
     while (Cheats.EnableCheats == true) {
 
         /*Coin Magnet*/
-        struct Object *coinmag = cur_obj_nearest_object_with_behavior(bhvYellowCoin);
+        struct Object *coinMag = cur_obj_nearest_object_with_behavior(bhvYellowCoin);
+        struct Object *coinMagMove = cur_obj_nearest_object_with_behavior(bhvMovingYellowCoin);
         f32 oDist;
-        if (coinmag != NULL && m->marioObj != NULL) {
-            oDist = dist_between_objects(coinmag, m->marioObj);
+        f32 oDistMove;
+        if (coinMag != NULL && m->marioObj != NULL) {
+            oDist = dist_between_objects(coinMag, m->marioObj);
         }
-        while (COIN_MAG == 1 && oDist != 0 && oDist >= 100) {
+        if (coinMagMove != NULL && m->marioObj != NULL) {
+            oDistMove = dist_between_objects(coinMagMove, m->marioObj);
+        }
+        while (COIN_MAG == 1 && oDist != 0 && oDist >= 100 && oDist < 1000) {
             while (oDist >= 10) {
-                coinmag->oPosX = approach_f32_symmetric(coinmag->oPosX, m->pos[0], 28);
-                coinmag->oPosY = approach_f32_symmetric(coinmag->oPosY, m->pos[1], 28);
-                coinmag->oPosZ = approach_f32_symmetric(coinmag->oPosZ, m->pos[2], 28);
+                coinMag->oPosX = approach_f32_symmetric(coinMag->oPosX, m->pos[0], 28);
+                coinMag->oPosY = approach_f32_symmetric(coinMag->oPosY, m->pos[1], 28);
+                coinMag->oPosZ = approach_f32_symmetric(coinMag->oPosZ, m->pos[2], 28);
                 break;
             }
             break;
         }
         while (oDist == 0) {
-            obj_mark_for_deletion(coinmag);
+            obj_mark_for_deletion(coinMag);
             break;
         }
-
+        while (COIN_MAG == 1 && oDistMove != 0 && oDistMove >= 100 && oDistMove < 1000) {
+            while (oDistMove >= 10) {
+                coinMagMove->oPosX = approach_f32_symmetric(coinMagMove->oPosX, m->pos[0], 28);
+                coinMagMove->oPosY = approach_f32_symmetric(coinMagMove->oPosY, m->pos[1], 28);
+                coinMagMove->oPosZ = approach_f32_symmetric(coinMagMove->oPosZ, m->pos[2], 28);
+                break;
+            }
+            break;
+        }
+        while (oDistMove == 0) {
+            obj_mark_for_deletion(coinMagMove);
+            break;
+        }
 
         /*Swim Anywhere*/
         if (SWIM_ANY == 1) {
