@@ -129,11 +129,11 @@ void cheats_mario_inputs(struct MarioState *m) {
             }
             break;
         }
-        while (oDist == 0) {
+        if (oDist == 0 && oDist > 1000) {
             obj_mark_for_deletion(coinMag);
             break;
         }
-        while (COIN_MAG == 1 && oDistMove != 0 && oDistMove >= 100 && oDistMove < 1000) {
+        while (COIN_MAG == 1 && coinMagMove != NULL && oDistMove >= 100 && oDistMove < 1000) {
             while (oDistMove >= 10) {
                 coinMagMove->oPosX = approach_f32_symmetric(coinMagMove->oPosX, m->pos[0], 28);
                 coinMagMove->oPosY = approach_f32_symmetric(coinMagMove->oPosY, m->pos[1], 28);
@@ -142,7 +142,7 @@ void cheats_mario_inputs(struct MarioState *m) {
             }
             break;
         }
-        while (oDistMove == 0) {
+        if (oDistMove == 0 && oDistMove > 1000) {
             obj_mark_for_deletion(coinMagMove);
             break;
         }
