@@ -23,4 +23,5 @@ SUBMENU "cheater_submenu" "CHEATER" "CHEATER"
 	TOGGLE	"no_heavy"		"No Hold Heavy"			"no_heavy"		0
 	TOGGLE	"swim_any"		"Swim Anywhere"			"swim_any"		0
 	TOGGLE	"haz_walk"		"Walk On Hazards"		"haz_walk"		0
+	TOGGLE	"coin_mag"		"Coin Magnet"			"coin_mag"		0
 ENDMENU

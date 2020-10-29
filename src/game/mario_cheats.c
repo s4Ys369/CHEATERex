@@ -109,6 +109,27 @@ void cheats_mario_inputs(struct MarioState *m) {
 
     while (Cheats.EnableCheats == true) {
 
+        /*Coin Magnet*/
+        struct Object *coinmag = cur_obj_nearest_object_with_behavior(bhvYellowCoin);
+        f32 oDist;
+        if (coinmag != NULL && m->marioObj != NULL) {
+            oDist = dist_between_objects(coinmag, m->marioObj);
+        }
+        while (COIN_MAG == 1 && oDist != 0 && oDist >= 100) {
+            while (oDist >= 10) {
+                coinmag->oPosX = approach_f32_symmetric(coinmag->oPosX, m->pos[0], 28);
+                coinmag->oPosY = approach_f32_symmetric(coinmag->oPosY, m->pos[1], 28);
+                coinmag->oPosZ = approach_f32_symmetric(coinmag->oPosZ, m->pos[2], 28);
+                break;
+            }
+            break;
+        }
+        while (oDist == 0) {
+            obj_mark_for_deletion(coinmag);
+            break;
+        }
+
+
         /*Swim Anywhere*/
         if (SWIM_ANY == 1) {
             set_submerged_cam_preset_and_spawn_bubbles(m);
