@@ -105,7 +105,6 @@ void cheats_mario_inputs(struct MarioState *m) {
     m->particleFlags = 0;
     m->collidedObjInteractTypes = m->marioObj->collidedObjInteractTypes;
     m->flags &= 0xFFFFFF;
-    u32 r;
 
     while (Cheats.EnableCheats == true) {
 
@@ -147,6 +146,17 @@ void cheats_mario_inputs(struct MarioState *m) {
             break;
         }
 
+        /*Water Modifier*/
+        f32 watLev;
+        watLev -= 800;
+        if (WAT_CON == 1) {
+            watLev += WAT_LEV * 100;
+        }
+        if (WAT_CON == 1 && gCurrLevelNum == LEVEL_JRB) {
+            gEnvironmentRegions[6] = approach_f32_symmetric(gEnvironmentRegions[6], watLev * 10, 10.0f);
+            gEnvironmentRegions[12] = approach_f32_symmetric(gEnvironmentRegions[12], watLev * 10, 10.0f);
+        }
+
         /*Swim Anywhere*/
         if (SWIM_ANY == 1) {
             set_submerged_cam_preset_and_spawn_bubbles(m);
@@ -164,6 +174,8 @@ void cheats_mario_inputs(struct MarioState *m) {
             }
         }
 
+        /*CHAOS Mode*/
+        u32 r;
         if (CHAOS_MODE == 1) {
             srand(time(NULL));
             r = rand();

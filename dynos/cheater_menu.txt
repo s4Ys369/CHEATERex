@@ -24,4 +24,6 @@ SUBMENU "cheater_submenu" "CHEATER" "CHEATER"
 	TOGGLE	"swim_any"		"Swim Anywhere"			"swim_any"		0
 	TOGGLE	"haz_walk"		"Walk On Hazards"		"haz_walk"		0
 	TOGGLE	"coin_mag"		"Coin Magnet"			"coin_mag"		0
+	TOGGLE	"wat_con"		"Drain JRB?"			"wat_con"		0
+	SCROLL	"wat_lev"		"Water Level"			"wat_lev"		0 1 20 1
 ENDMENU
