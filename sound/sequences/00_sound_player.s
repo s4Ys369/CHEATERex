@@ -4148,7 +4148,11 @@ layer_end
     chan_setbank 9
     chan_setinstr 3
   .else
-    chan_setinstr 128
+    chan_setbank 9
+    chan_setinstr 3
+    chan_setlayer 0, .layer_1907
+    chan_setlayer 1, .layer_1902
+    chan_setlayer 2, .layer_1909
   .endif
   chan_setenvelope .envelope_3378
   chan_setlayer 0, .layer_1907

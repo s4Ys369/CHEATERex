@@ -1,3 +1,4 @@
+#include "pc/cheats.h"
 /**
  * This file contains the initialization and behavior for red coins.
  * Behavior controls audio and the orange number spawned, as well as interacting with
@@ -58,22 +59,37 @@ void bhv_red_coin_loop(void) {
             o->parentObj->oHiddenStarTriggerCounter++;
 
             // For JP version, play an identical sound for all coins.
-#ifdef VERSION_JP
+if (Cheats.RedCoinSound == FALSE) {
+    #ifdef VERSION_JP
             create_sound_spawner(SOUND_GENERAL_RED_COIN);
 #endif
+}
+else {
+    #ifdef VERSION_US
+            create_sound_spawner(SOUND_GENERAL_RED_COIN);
+#endif
+}
             // Spawn the orange number counter, as long as it isn't the last coin.
             if (o->parentObj->oHiddenStarTriggerCounter != 8) {
                 spawn_orange_number(o->parentObj->oHiddenStarTriggerCounter, 0, 0, 0);
             }
 
             // On all versions but the JP version, each coin collected plays a higher noise.
-#ifndef VERSION_JP
+if (Cheats.RedCoinSound == FALSE) {
+    #ifndef VERSION_JP
             play_sound(SOUND_MENU_COLLECT_RED_COIN
                            + (((u8) o->parentObj->oHiddenStarTriggerCounter - 1) << 16),
                        gDefaultSoundArgs);
 #endif
+}
+else {
+    #ifndef VERSION_US
+            play_sound(SOUND_MENU_COLLECT_RED_COIN
+                           + (((u8) o->parentObj->oHiddenStarTriggerCounter - 1) << 16),
+                       gDefaultSoundArgs);
+#endif
+}
         }
-
         coin_collected();
         // Despawn the coin.
         o->oInteractStatus = 0;

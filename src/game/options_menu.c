@@ -88,10 +88,16 @@ static const u8 optsVideoStr[][32] = {
 };
 
 static const u8 optsAudioStr[][32] = {
-    { TEXT_OPT_MVOLUME },    
+    { TEXT_OPT_MVOLUME },
     { TEXT_OPT_MUSVOLUME },
     { TEXT_OPT_SFXVOLUME },
     { TEXT_OPT_ENVVOLUME },
+    { TEXT_OPT_REDCOIN },
+};
+
+static const u8 optsARCStr[][32] = {
+    { TEXT_OPT_RED1 },
+    { TEXT_OPT_RED2 },
 };
 
 static const u8 bindStr[][32] = {
@@ -119,6 +125,11 @@ static const u8 bindStr[][32] = {
     { TEXT_BIND_RIGHT },
     { TEXT_OPT_DEADZONE },
     { TEXT_OPT_RUMBLE }
+};
+
+static const u8 *ARCChoices[] = {
+    optsARCStr[0],
+    optsARCStr[1],
 };
 
 static const u8 *filterChoices[] = {
@@ -274,6 +285,7 @@ static struct Option optsAudio[] = {
     DEF_OPT_SCROLL( optsAudioStr[1], &configMusicVolume, 0, MAX_VOLUME, 1),
     DEF_OPT_SCROLL( optsAudioStr[2], &configSfxVolume, 0, MAX_VOLUME, 1),
     DEF_OPT_SCROLL( optsAudioStr[3], &configEnvVolume, 0, MAX_VOLUME, 1),
+    DEF_OPT_CHOICE( optsAudioStr[4], &Cheats.RedCoinSound, ARCChoices),
 };
 
 static struct Option optsCheats[] = {

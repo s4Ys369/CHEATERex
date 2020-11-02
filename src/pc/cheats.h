@@ -43,6 +43,7 @@ struct CheatList {
     bool         Triple;
     bool         Fly;
     bool         Chaos;
+    bool  RedCoinSound;
 };
 
 extern struct CheatList Cheats;

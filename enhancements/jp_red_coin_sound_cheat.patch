@@ -1,0 +1,67 @@
+diff --git a/sound/sequences/00_sound_player.s b/sound/sequences/00_sound_player.s
+index e1297da..1f16fdf 100644
+--- a/sound/sequences/00_sound_player.s
++++ b/sound/sequences/00_sound_player.s
+@@ -4148,7 +4148,11 @@ layer_end
+     chan_setbank 9
+     chan_setinstr 3
+   .else
+-    chan_setinstr 128
++    chan_setbank 9
++    chan_setinstr 3
++    chan_setlayer 0, .layer_1907
++    chan_setlayer 1, .layer_1902
++    chan_setlayer 2, .layer_1909
+   .endif
+   chan_setenvelope .envelope_3378
+   chan_setlayer 0, .layer_1907
+diff --git a/src/game/behaviors/red_coin.inc.c b/src/game/behaviors/red_coin.inc.c
+index 1e5c858..c8e82fb 100644
+--- a/src/game/behaviors/red_coin.inc.c
++++ b/src/game/behaviors/red_coin.inc.c
+@@ -1,3 +1,4 @@
++#include "pc/cheats.h"
+ /**
+  * This file contains the initialization and behavior for red coins.
+  * Behavior controls audio and the orange number spawned, as well as interacting with
+@@ -58,22 +59,37 @@ void bhv_red_coin_loop(void) {
+             o->parentObj->oHiddenStarTriggerCounter++;
+ 
+             // For JP version, play an identical sound for all coins.
+-#ifdef VERSION_JP
++if (Cheats.RedCoinSound == FALSE) {
++    #ifdef VERSION_JP
+             create_sound_spawner(SOUND_GENERAL_RED_COIN);
+ #endif
++}
++else {
++    #ifdef VERSION_US
++            create_sound_spawner(SOUND_GENERAL_RED_COIN);
++#endif
++}
+             // Spawn the orange number counter, as long as it isn't the last coin.
+             if (o->parentObj->oHiddenStarTriggerCounter != 8) {
+                 spawn_orange_number(o->parentObj->oHiddenStarTriggerCounter, 0, 0, 0);
+             }
+ 
+             // On all versions but the JP version, each coin collected plays a higher noise.
+-#ifndef VERSION_JP
++if (Cheats.RedCoinSound == FALSE) {
++    #ifndef VERSION_JP
+             play_sound(SOUND_MENU_COLLECT_RED_COIN
+                            + (((u8) o->parentObj->oHiddenStarTriggerCounter - 1) << 16),
+                        gDefaultSoundArgs);
+ #endif
++}
++else {
++    #ifndef VERSION_US
++            play_sound(SOUND_MENU_COLLECT_RED_COIN
++                           + (((u8) o->parentObj->oHiddenStarTriggerCounter - 1) << 16),
++                       gDefaultSoundArgs);
++#endif
++}
+         }
+-
+         coin_collected();
+         // Despawn the coin.
+         o->oInteractStatus = 0;

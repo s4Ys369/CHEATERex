@@ -1,0 +1,4958 @@
+diff --git a/Makefile b/Makefile
+index b66723bf..86510d14 100644
+--- a/Makefile
++++ b/Makefile
+@@ -354,6 +354,7 @@ SEG_FILES := $(SEGMENT_ELF_FILES) $(ACTOR_ELF_FILES) $(LEVEL_ELF_FILES)
+ ##################### Compiler Options #######################
+ INCLUDE_CFLAGS := -I include -I $(BUILD_DIR) -I $(BUILD_DIR)/include -I src -I .
+ ENDIAN_BITWIDTH := $(BUILD_DIR)/endian-and-bitwidth
++include Makefile_dynos
+ 
+ # Huge deleted N64 section was here
+ 
+diff --git a/Makefile_dynos b/Makefile_dynos
+new file mode 100644
+index 00000000..d3c223b6
+--- /dev/null
++++ b/Makefile_dynos
+@@ -0,0 +1,24 @@
++# ----------------------
++# Dynamic Options System
++# ----------------------
++
++DYNOS_INPUT_DIR := ./dynos
++DYNOS_OUTPUT_DIR := $(BUILD_DIR)/$(BASEDIR)
++DYNOS_COPY_TO_RES := \
++    mkdir -p $(DYNOS_INPUT_DIR); \
++    mkdir -p $(DYNOS_OUTPUT_DIR); \
++    for f in $(DYNOS_INPUT_DIR)/*.txt; do \
++        [ -f "$$f" ] || continue; \
++        cp -f $$f $(DYNOS_OUTPUT_DIR)/$$(basename -- $$f); \
++    done;
++
++DYNOS := $(shell $(call DYNOS_COPY_TO_RES))
++
++INCLUDE_CFLAGS += -DDYNOS
++
++# Render96 v2.0 detection flag
++ifeq ($(findstring src/text/libs,$(SRC_DIRS)),src/text/libs)
++INCLUDE_CFLAGS += -DRENDER96_2_0
++else
++$(BUILD_DIR)/src/pc/dynamic_options.o: $(BUILD_DIR)/include/text_strings.h
++endif
+diff --git a/dynos/cheater_menu.txt b/dynos/cheater_menu.txt
+new file mode 100644
+index 00000000..9a0d0957
+--- /dev/null
++++ b/dynos/cheater_menu.txt
+@@ -0,0 +1,31 @@
++# Dynamic Options System aka DynOS v0.4
++# By PeachyPeach
++#
++# This is a comment
++# Here are the available commands:
++# SUBMENU [Name] [Label] [Label2]
++# TOGGLE  [Name] [Label] [ConfigName] [InitialValue]
++# SCROLL  [Name] [Label] [ConfigName] [InitialValue] [Min] [Max] [Step]
++# CHOICE  [Name] [Label] [ConfigName] [InitialValue] [ChoiceStrings...]
++# BIND    [Name] [Label] [ConfigName] [Mask] [DefaultValues]
++# BUTTON  [Name] [Label] [FuncName]
++# ENDMENU
++#
++# Valid Label characters:
++# 0-9 A-Z a-z
++# '.,-()&:!%?"~_
++#
++
++
++SUBMENU "cheater_submenu" "CHEATER" "CHEATER"
++	TOGGLE	"chaos_mode"	"CHAOS MODE"		"chaos_mode"	0
++	BIND	"time_button"	"Time Stop Button"	"time_button"	0x0080	0x0008 0x1001 0xFFFF
++	TOGGLE	"no_heavy"		"No Hold Heavy"		"no_heavy"		0
++	TOGGLE	"haz_walk"		"Walk On Hazards"	"haz_walk"		0
++	TOGGLE	"swim_any"		"Swim Anywhere"		"swim_any"		0
++	TOGGLE	"coin_mag"		"Coin Magnet"		"coin_mag"		0
++	SUBMENU "drain_submenu" "Drain JRB?" "CHEATER"
++		TOGGLE	"wat_con"	"Control Water"		"wat_con"		0
++		SCROLL	"wat_lev"	"Water Level (9)"	"wat_lev"		0 1 20 1
++	ENDMENU
++ENDMENU
+diff --git a/include/libc/time.h b/include/libc/time.h
+new file mode 100644
+index 00000000..907fcbee
+--- /dev/null
++++ b/include/libc/time.h
+@@ -0,0 +1,234 @@
++/* Copyright (C) 1991-2017 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, see
++   <http://www.gnu.org/licenses/>.  */
++/*
++ *        ISO C99 Standard: 7.23 Date and time        <time.h>
++ */
++#ifndef        _TIME_H
++#define _TIME_H        1
++#include <features.h>
++#define __need_size_t
++#define __need_NULL
++#include <stddef.h>
++/* This defines CLOCKS_PER_SEC, which is the number of processor clock
++   ticks per second, and possibly a number of other constants.   */
++#include <bits/time.h>
++/* Many of the typedefs and structs whose official home is this header
++   may also need to be defined by other headers.  */
++#include <bits/types/clock_t.h>
++#include <bits/types/time_t.h>
++#include <bits/types/struct_tm.h>
++#if defined __USE_POSIX199309 || defined __USE_ISOC11
++# include <bits/types/struct_timespec.h>
++#endif
++#ifdef __USE_POSIX199309
++# include <bits/types/clockid_t.h>
++# include <bits/types/timer_t.h>
++# include <bits/types/struct_itimerspec.h>
++struct sigevent;
++#endif
++#ifdef __USE_XOPEN2K
++# ifndef __pid_t_defined
++typedef __pid_t pid_t;
++#  define __pid_t_defined
++# endif
++#endif
++#ifdef __USE_XOPEN2K8
++# include <bits/types/locale_t.h>
++#endif
++#ifdef __USE_ISOC11
++/* Time base values for timespec_get.  */
++# define TIME_UTC 1
++#endif
++__BEGIN_DECLS
++/* Time used by the program so far (user time + system time).
++   The result / CLOCKS_PER_SECOND is program time in seconds.  */
++extern clock_t clock (void) __THROW;
++/* Return the current time and put it in *TIMER if TIMER is not NULL.  */
++extern time_t time (time_t *__timer) __THROW;
++/* Return the difference between TIME1 and TIME0.  */
++extern double difftime (time_t __time1, time_t __time0)
++     __THROW __attribute__ ((__const__));
++/* Return the `time_t' representation of TP and normalize TP.  */
++extern time_t mktime (struct tm *__tp) __THROW;
++/* Format TP into S according to FORMAT.
++   Write no more than MAXSIZE characters and return the number
++   of characters written, or 0 if it would exceed MAXSIZE.  */
++extern size_t strftime (char *__restrict __s, size_t __maxsize,
++                        const char *__restrict __format,
++                        const struct tm *__restrict __tp) __THROW;
++#ifdef __USE_XOPEN
++/* Parse S according to FORMAT and store binary time information in TP.
++   The return value is a pointer to the first unparsed character in S.  */
++extern char *strptime (const char *__restrict __s,
++                       const char *__restrict __fmt, struct tm *__tp)
++     __THROW;
++#endif
++#ifdef __USE_XOPEN2K8
++/* Similar to the two functions above but take the information from
++   the provided locale and not the global locale.  */
++extern size_t strftime_l (char *__restrict __s, size_t __maxsize,
++                          const char *__restrict __format,
++                          const struct tm *__restrict __tp,
++                          locale_t __loc) __THROW;
++#endif
++#ifdef __USE_GNU
++extern char *strptime_l (const char *__restrict __s,
++                         const char *__restrict __fmt, struct tm *__tp,
++                         locale_t __loc) __THROW;
++#endif
++/* Return the `struct tm' representation of *TIMER
++   in Universal Coordinated Time (aka Greenwich Mean Time).  */
++extern struct tm *gmtime (const time_t *__timer) __THROW;
++/* Return the `struct tm' representation
++   of *TIMER in the local timezone.  */
++extern struct tm *localtime (const time_t *__timer) __THROW;
++#ifdef __USE_POSIX
++/* Return the `struct tm' representation of *TIMER in UTC,
++   using *TP to store the result.  */
++extern struct tm *gmtime_r (const time_t *__restrict __timer,
++                            struct tm *__restrict __tp) __THROW;
++/* Return the `struct tm' representation of *TIMER in local time,
++   using *TP to store the result.  */
++extern struct tm *localtime_r (const time_t *__restrict __timer,
++                               struct tm *__restrict __tp) __THROW;
++#endif        /* POSIX */
++/* Return a string of the form "Day Mon dd hh:mm:ss yyyy\n"
++   that is the representation of TP in this format.  */
++extern char *asctime (const struct tm *__tp) __THROW;
++/* Equivalent to `asctime (localtime (timer))'.  */
++extern char *ctime (const time_t *__timer) __THROW;
++#ifdef __USE_POSIX
++/* Reentrant versions of the above functions.  */
++/* Return in BUF a string of the form "Day Mon dd hh:mm:ss yyyy\n"
++   that is the representation of TP in this format.  */
++extern char *asctime_r (const struct tm *__restrict __tp,
++                        char *__restrict __buf) __THROW;
++/* Equivalent to `asctime_r (localtime_r (timer, *TMP*), buf)'.  */
++extern char *ctime_r (const time_t *__restrict __timer,
++                      char *__restrict __buf) __THROW;
++#endif        /* POSIX */
++/* Defined in localtime.c.  */
++extern char *__tzname[2];        /* Current timezone names.  */
++extern int __daylight;                /* If daylight-saving time is ever in use.  */
++extern long int __timezone;        /* Seconds west of UTC.  */
++#ifdef        __USE_POSIX
++/* Same as above.  */
++extern char *tzname[2];
++/* Set time conversion information from the TZ environment variable.
++   If TZ is not defined, a locale-dependent default is used.  */
++extern void tzset (void) __THROW;
++#endif
++#if defined __USE_MISC || defined __USE_XOPEN
++extern int daylight;
++extern long int timezone;
++#endif
++#ifdef __USE_MISC
++/* Set the system time to *WHEN.
++   This call is restricted to the superuser.  */
++extern int stime (const time_t *__when) __THROW;
++#endif
++/* Nonzero if YEAR is a leap year (every 4 years,
++   except every 100th isn't, and every 400th is).  */
++#define __isleap(year)        \
++  ((year) % 4 == 0 && ((year) % 100 != 0 || (year) % 400 == 0))
++#ifdef __USE_MISC
++/* Miscellaneous functions many Unices inherited from the public domain
++   localtime package.  These are included only for compatibility.  */
++/* Like `mktime', but for TP represents Universal Time, not local time.  */
++extern time_t timegm (struct tm *__tp) __THROW;
++/* Another name for `mktime'.  */
++extern time_t timelocal (struct tm *__tp) __THROW;
++/* Return the number of days in YEAR.  */
++extern int dysize (int __year) __THROW  __attribute__ ((__const__));
++#endif
++#ifdef __USE_POSIX199309
++/* Pause execution for a number of nanoseconds.
++   This function is a cancellation point and therefore not marked with
++   __THROW.  */
++extern int nanosleep (const struct timespec *__requested_time,
++                      struct timespec *__remaining);
++/* Get resolution of clock CLOCK_ID.  */
++extern int clock_getres (clockid_t __clock_id, struct timespec *__res) __THROW;
++/* Get current value of clock CLOCK_ID and store it in TP.  */
++extern int clock_gettime (clockid_t __clock_id, struct timespec *__tp) __THROW;
++/* Set clock CLOCK_ID to value TP.  */
++extern int clock_settime (clockid_t __clock_id, const struct timespec *__tp)
++     __THROW;
++# ifdef __USE_XOPEN2K
++/* High-resolution sleep with the specified clock.
++   This function is a cancellation point and therefore not marked with
++   __THROW.  */
++extern int clock_nanosleep (clockid_t __clock_id, int __flags,
++                            const struct timespec *__req,
++                            struct timespec *__rem);
++/* Return clock ID for CPU-time clock.  */
++extern int clock_getcpuclockid (pid_t __pid, clockid_t *__clock_id) __THROW;
++# endif
++/* Create new per-process timer using CLOCK_ID.  */
++extern int timer_create (clockid_t __clock_id,
++                         struct sigevent *__restrict __evp,
++                         timer_t *__restrict __timerid) __THROW;
++/* Delete timer TIMERID.  */
++extern int timer_delete (timer_t __timerid) __THROW;
++/* Set timer TIMERID to VALUE, returning old value in OVALUE.  */
++extern int timer_settime (timer_t __timerid, int __flags,
++                          const struct itimerspec *__restrict __value,
++                          struct itimerspec *__restrict __ovalue) __THROW;
++/* Get current value of timer TIMERID and store it in VALUE.  */
++extern int timer_gettime (timer_t __timerid, struct itimerspec *__value)
++     __THROW;
++/* Get expiration overrun for timer TIMERID.  */
++extern int timer_getoverrun (timer_t __timerid) __THROW;
++#endif
++#ifdef __USE_ISOC11
++/* Set TS to calendar time based in time base BASE.  */
++extern int timespec_get (struct timespec *__ts, int __base)
++     __THROW __nonnull ((1));
++#endif
++#ifdef __USE_XOPEN_EXTENDED
++/* Set to one of the following values to indicate an error.
++     1  the DATEMSK environment variable is null or undefined,
++     2  the template file cannot be opened for reading,
++     3  failed to get file status information,
++     4  the template file is not a regular file,
++     5  an error is encountered while reading the template file,
++     6  memory allication failed (not enough memory available),
++     7  there is no line in the template that matches the input,
++     8  invalid input specification Example: February 31 or a time is
++        specified that can not be represented in a time_t (representing
++        the time in seconds since 00:00:00 UTC, January 1, 1970) */
++extern int getdate_err;
++/* Parse the given string as a date specification and return a value
++   representing the value.  The templates from the file identified by
++   the environment variable DATEMSK are used.  In case of an error
++   `getdate_err' is set.
++   This function is a possible cancellation point and therefore not
++   marked with __THROW.  */
++extern struct tm *getdate (const char *__string);
++#endif
++#ifdef __USE_GNU
++/* Since `getdate' is not reentrant because of the use of `getdate_err'
++   and the static buffer to return the result in, we provide a thread-safe
++   variant.  The functionality is the same.  The result is returned in
++   the buffer pointed to by RESBUFP and in case of an error the return
++   value is != 0 with the same values as given above for `getdate_err'.
++   This function is not part of POSIX and therefore no official
++   cancellation point.  But due to similarity with an POSIX interface
++   or due to the implementation it is a cancellation point and
++   therefore not marked with __THROW.  */
++extern int getdate_r (const char *__restrict __string,
++                      struct tm *__restrict __resbufp);
++#endif
++__END_DECLS
++#endif /* time.h.  */
+\ No newline at end of file
+diff --git a/levels/bowser_1/script.c b/levels/bowser_1/script.c
+index e70de999..10da1481 100644
+--- a/levels/bowser_1/script.c
++++ b/levels/bowser_1/script.c
+@@ -22,8 +22,11 @@ const LevelScript level_bowser_1_entry[] = {
+     LOAD_MIO0(/*seg*/ 0x0A, _bidw_skybox_mio0SegmentRomStart, _bidw_skybox_mio0SegmentRomEnd),
+     LOAD_MIO0(/*seg*/ 0x06, _group12_mio0SegmentRomStart, _group12_mio0SegmentRomEnd),
+     LOAD_RAW( /*seg*/ 0x0D, _group12_geoSegmentRomStart, _group12_geoSegmentRomEnd),
++    LOAD_MIO0(/*seg*/ 0x08, _common0_mio0SegmentRomStart, _common0_mio0SegmentRomEnd),
++    LOAD_RAW(/*seg*/ 0x0F, _common0_geoSegmentRomStart, _common0_geoSegmentRomEnd),
+     ALLOC_LEVEL_POOL(),
+     MARIO(/*model*/ MODEL_MARIO, /*behParam*/ 0x00000001, /*beh*/ bhvMario),
++    JUMP_LINK(script_func_global_1),
+     JUMP_LINK(script_func_global_13),
+     LOAD_MODEL_FROM_GEO(MODEL_LEVEL_GEOMETRY_03, bowser_1_yellow_sphere_geo),
+ 
+diff --git a/levels/bowser_2/script.c b/levels/bowser_2/script.c
+index b848c00c..984dfded 100644
+--- a/levels/bowser_2/script.c
++++ b/levels/bowser_2/script.c
+@@ -32,8 +32,11 @@ const LevelScript level_bowser_2_entry[] = {
+     LOAD_MIO0(        /*seg*/ 0x07, _bowser_2_segment_7SegmentRomStart, _bowser_2_segment_7SegmentRomEnd),
+     LOAD_MIO0(        /*seg*/ 0x06, _group12_mio0SegmentRomStart, _group12_mio0SegmentRomEnd),
+     LOAD_RAW(         /*seg*/ 0x0D, _group12_geoSegmentRomStart, _group12_geoSegmentRomEnd),
++    LOAD_MIO0(        /*seg*/ 0x08, _common0_mio0SegmentRomStart, _common0_mio0SegmentRomEnd),
++    LOAD_RAW(         /*seg*/ 0x0F, _common0_geoSegmentRomStart, _common0_geoSegmentRomEnd),
+     ALLOC_LEVEL_POOL(),
+     MARIO(/*model*/ MODEL_MARIO, /*behParam*/ 0x00000001, /*beh*/ bhvMario),
++    JUMP_LINK(script_func_global_1),
+     JUMP_LINK(script_func_global_13),
+     LOAD_MODEL_FROM_GEO(MODEL_BOWSER_2_TILTING_ARENA, bowser_2_geo_000170),
+ 
+diff --git a/levels/bowser_3/script.c b/levels/bowser_3/script.c
+index 756ef81b..c87e6a5c 100644
+--- a/levels/bowser_3/script.c
++++ b/levels/bowser_3/script.c
+@@ -40,8 +40,11 @@ const LevelScript level_bowser_3_entry[] = {
+     LOAD_MIO0(/*seg*/ 0x06, _group12_mio0SegmentRomStart, _group12_mio0SegmentRomEnd),
+     LOAD_RAW( /*seg*/ 0x0D, _group12_geoSegmentRomStart,  _group12_geoSegmentRomEnd),
+     LOAD_MIO0(/*seg*/ 0x0A, _bits_skybox_mio0SegmentRomStart, _bits_skybox_mio0SegmentRomEnd),
++    LOAD_MIO0(/*seg*/ 0x08, _common0_mio0SegmentRomStart, _common0_mio0SegmentRomEnd),
++    LOAD_RAW(/*seg*/ 0x0F, _common0_geoSegmentRomStart, _common0_geoSegmentRomEnd),
+     ALLOC_LEVEL_POOL(),
+     MARIO(/*model*/ MODEL_MARIO, /*behParam*/ 0x00000001, /*beh*/ bhvMario),
++    JUMP_LINK(script_func_global_1),
+     JUMP_LINK(script_func_global_13),
+     LOAD_MODEL_FROM_GEO(MODEL_BOWSER_3_FALLING_PLATFORM_1,  bowser_3_geo_000290),
+     LOAD_MODEL_FROM_GEO(MODEL_BOWSER_3_FALLING_PLATFORM_2,  bowser_3_geo_0002A8),
+diff --git a/levels/castle_inside/script.c b/levels/castle_inside/script.c
+index 5d9ae4fb..1792886e 100644
+--- a/levels/castle_inside/script.c
++++ b/levels/castle_inside/script.c
+@@ -225,8 +225,11 @@ const LevelScript level_castle_inside_entry[] = {
+     LOAD_MIO0_TEXTURE(/*seg*/ 0x09, _inside_mio0SegmentRomStart, _inside_mio0SegmentRomEnd),
+     LOAD_MIO0(        /*seg*/ 0x06, _group15_mio0SegmentRomStart, _group15_mio0SegmentRomEnd),
+     LOAD_RAW(         /*seg*/ 0x0D, _group15_geoSegmentRomStart,  _group15_geoSegmentRomEnd),
++    LOAD_MIO0(        /*seg*/ 0x08, _common0_mio0SegmentRomStart, _common0_mio0SegmentRomEnd),
++    LOAD_RAW(         /*seg*/ 0x0F, _common0_geoSegmentRomStart, _common0_geoSegmentRomEnd),
+     ALLOC_LEVEL_POOL(),
+     MARIO(/*model*/ MODEL_MARIO, /*behParam*/ 0x00000001, /*beh*/ bhvMario),
++    JUMP_LINK(script_func_global_1),
+     JUMP_LINK(script_func_global_16),
+     LOAD_MODEL_FROM_GEO(MODEL_CASTLE_BOWSER_TRAP,        castle_geo_000F18),
+     LOAD_MODEL_FROM_GEO(MODEL_CASTLE_WATER_LEVEL_PILLAR, castle_geo_001940),
+diff --git a/src/engine/surface_collision.c b/src/engine/surface_collision.c
+index 5b6775fe..d8f568dc 100644
+--- a/src/engine/surface_collision.c
++++ b/src/engine/surface_collision.c
+@@ -5,6 +5,7 @@
+ #include "game/level_update.h"
+ #include "game/mario.h"
+ #include "game/object_list_processor.h"
++#include "pc/cheats.h"
+ #include "surface_collision.h"
+ #include "surface_load.h"
+ #include "math_util.h"
+@@ -40,6 +41,11 @@ static s32 find_wall_collisions_from_list(struct SurfaceNode *surfaceNode,
+         surf = surfaceNode->surface;
+         surfaceNode = surfaceNode->next;
+ 
++        /*No Clip Cheats*/
++        if (Cheats.EnableCheats && Cheats.NoBounds) {
++            continue;
++        }
++
+         // Exclude a large number of walls immediately to optimize.
+         if (y < surf->lowerY || y > surf->upperY) {
+             continue;
+@@ -170,7 +176,12 @@ s32 f32_find_wall_collision(f32 *xPtr, f32 *yPtr, f32 *zPtr, f32 offsetY, f32 ra
+ 
+     collision.numWalls = 0;
+ 
+-    numCollisions = find_wall_collisions(&collision);
++    /*No Clip Cheats*/
++    if (Cheats.EnableCheats && Cheats.NoBounds) {
++        numCollisions = 0;
++    } else {
++        numCollisions = find_wall_collisions(&collision);
++    }
+ 
+     *xPtr = collision.x;
+     *yPtr = collision.y;
+@@ -191,6 +202,10 @@ s32 find_wall_collisions(struct WallCollisionData *colData) {
+ 
+     colData->numWalls = 0;
+ 
++    if (Cheats.EnableCheats && Cheats.NoBounds) {
++        return numCollisions;
++    }
++
+     if (x <= -LEVEL_BOUNDARY_MAX || x >= LEVEL_BOUNDARY_MAX) {
+         return numCollisions;
+     }
+@@ -236,6 +251,10 @@ static struct Surface *find_ceil_from_list(struct SurfaceNode *surfaceNode, s32
+         surf = surfaceNode->surface;
+         surfaceNode = surfaceNode->next;
+ 
++        if (Cheats.EnableCheats && Cheats.NoBounds) {
++            continue;
++        }
++
+         x1 = surf->vertex1[0];
+         z1 = surf->vertex1[2];
+         z2 = surf->vertex2[2];
+@@ -320,6 +339,10 @@ f32 find_ceil(f32 posX, f32 posY, f32 posZ, struct Surface **pceil) {
+     z = (s16) posZ;
+     *pceil = NULL;
+ 
++    if (Cheats.EnableCheats && Cheats.NoBounds) {
++        return height;
++    }
++
+     if (x <= -LEVEL_BOUNDARY_MAX || x >= LEVEL_BOUNDARY_MAX) {
+         return height;
+     }
+diff --git a/src/game/cheats_menu.h b/src/game/cheats_menu.h
+new file mode 100644
+index 00000000..93bb7be7
+--- /dev/null
++++ b/src/game/cheats_menu.h
+@@ -0,0 +1,217 @@
++#ifndef CHEATS_MENU_H
++#define CHEATS_MENU_H
++
++#include "text/text-loader.h"
++
++static const u8 optsCoinCheatStr[][32] = {
++    "TEXT_OPT_COIN1",
++    "TEXT_OPT_COIN2",
++    "TEXT_OPT_COIN3",
++    "TEXT_OPT_COIN4",
++};
++
++static const u8 *CoinChoices[] = {
++    optsCoinCheatStr[0],
++    optsCoinCheatStr[1],
++    optsCoinCheatStr[2],
++    optsCoinCheatStr[3],
++};
++
++static const u8 optsSeqStr[][64] = {
++    "TEXT_OPT_SEQ1",
++    "TEXT_OPT_SEQ2",
++    "TEXT_OPT_SEQ3",
++    "TEXT_OPT_SEQ4",
++    "TEXT_OPT_SEQ5",
++    "TEXT_OPT_SEQ6",
++    "TEXT_OPT_SEQ7",
++    "TEXT_OPT_SEQ8",
++    "TEXT_OPT_SEQ9",
++    "TEXT_OPT_SEQ10",
++    "TEXT_OPT_SEQ11",
++    "TEXT_OPT_SEQ12",
++    "TEXT_OPT_SEQ13",
++    "TEXT_OPT_SEQ14",
++    "TEXT_OPT_SEQ15",
++    "TEXT_OPT_SEQ16",
++    "TEXT_OPT_SEQ17",
++    "TEXT_OPT_SEQ18",
++    "TEXT_OPT_SEQ19",
++};
++
++static const u8 *SeqChoices[] = {
++    optsSeqStr[0],
++    optsSeqStr[1],
++    optsSeqStr[2],
++    optsSeqStr[3],
++    optsSeqStr[4],
++    optsSeqStr[5],
++    optsSeqStr[6],
++    optsSeqStr[7],
++    optsSeqStr[8],
++    optsSeqStr[9],
++    optsSeqStr[10],
++    optsSeqStr[11],
++    optsSeqStr[12],
++    optsSeqStr[13],
++    optsSeqStr[14],
++    optsSeqStr[15],
++    optsSeqStr[16],
++    optsSeqStr[17],
++    optsSeqStr[18],
++};
++
++static const u8 optsSpeedStr[][16] = {
++    "TEXT_OPT_SS1",
++    "TEXT_OPT_SS2",
++    "TEXT_OPT_SS3",
++    "TEXT_OPT_SS4",
++    "TEXT_OPT_SS5",
++};
++
++static const u8 *SpeedChoices[] = {
++    optsSpeedStr[0],
++    optsSpeedStr[1],
++    optsSpeedStr[2],
++    optsSpeedStr[3],
++    optsSpeedStr[4],
++};
++
++static const u8 optsPlayAsCheatStr[][32] = {
++    "TEXT_OPT_PA1",
++    "TEXT_OPT_PA2",
++    "TEXT_OPT_PA3",
++    "TEXT_OPT_PA4",
++    "TEXT_OPT_PA5",
++    "TEXT_OPT_PA6",
++    "TEXT_OPT_PA7",
++    "TEXT_OPT_PA8",
++};
++
++static const u8* PlayAsCheatChoices[] = {
++    optsPlayAsCheatStr[0],
++    optsPlayAsCheatStr[1],
++    optsPlayAsCheatStr[2],
++    optsPlayAsCheatStr[3],
++    optsPlayAsCheatStr[4],
++    optsPlayAsCheatStr[5],
++    optsPlayAsCheatStr[6],
++    optsPlayAsCheatStr[7],
++};
++
++
++static const u8 optsHurtCheatStr[][32] = {
++    "TEXT_OPT_HURTCHT1",
++    "TEXT_OPT_HURTCHT2",
++    "TEXT_OPT_HURTCHT3",
++    "TEXT_OPT_HURTCHT4",
++};
++
++static const u8* HurtCheatChoices[] = {
++    optsHurtCheatStr[0],
++    optsHurtCheatStr[1],
++    optsHurtCheatStr[2],
++    optsHurtCheatStr[3],
++};
++
++static const u8 optsSpamCheatStr[][32] = {
++    "TEXT_OPT_SPAMCHT1",
++    "TEXT_OPT_SPAMCHT2",
++    "TEXT_OPT_SPAMCHT3",
++    "TEXT_OPT_SPAMCHT4",
++    "TEXT_OPT_SPAMCHT5",
++    "TEXT_OPT_SPAMCHT6",
++    "TEXT_OPT_SPAMCHT7",
++    "TEXT_OPT_SPAMCHT8",
++    "TEXT_OPT_SPAMCHT9",
++    "TEXT_OPT_SPAMCHT10",
++    "TEXT_OPT_SPAMCHT11",
++    "TEXT_OPT_SPAMCHT12",
++    "TEXT_OPT_SPAMCHT13",
++    "TEXT_OPT_SPAMCHT14",
++};
++
++static const u8* SpamCheatChoices[] = {
++    optsSpamCheatStr[0],
++    optsSpamCheatStr[1],
++    optsSpamCheatStr[2],
++    optsSpamCheatStr[3],
++    optsSpamCheatStr[4],
++    optsSpamCheatStr[5],
++    optsSpamCheatStr[6],
++    optsSpamCheatStr[7],
++    optsSpamCheatStr[8],
++    optsSpamCheatStr[9],
++    optsSpamCheatStr[10],
++    optsSpamCheatStr[11],
++    optsSpamCheatStr[12],
++    optsSpamCheatStr[13],
++};
++
++static const u8 optsBLJCheatStr[][32] = {
++    "TEXT_OPT_BLJCHT1",
++    "TEXT_OPT_BLJCHT2",
++    "TEXT_OPT_BLJCHT3",
++    "TEXT_OPT_BLJCHT4",
++    "TEXT_OPT_BLJCHT5",
++    "TEXT_OPT_BLJCHT6",
++    "TEXT_OPT_BLJCHT7",
++    "TEXT_OPT_BLJCHT8",
++    "TEXT_OPT_BLJCHT9",
++    "TEXT_OPT_BLJCHT10",
++    "TEXT_OPT_BLJCHT11",
++    "TEXT_OPT_BLJCHT12",
++    "TEXT_OPT_BLJCHT13",
++};
++
++static const u8* bljCheatChoices[] = {
++    optsBLJCheatStr[0],
++    optsBLJCheatStr[1],
++    optsBLJCheatStr[2],
++    optsBLJCheatStr[3],
++    optsBLJCheatStr[4],
++    optsBLJCheatStr[5],
++    optsBLJCheatStr[6],
++    optsBLJCheatStr[7],
++    optsBLJCheatStr[8],
++    optsBLJCheatStr[9],
++    optsBLJCheatStr[10],
++    optsBLJCheatStr[11],
++    optsBLJCheatStr[12],
++};
++
++static const u8 optsCheatsStr2[][64] = {
++    "TEXT_OPT_COIN",
++    "TEXT_OPT_HOVER",
++    "TEXT_OPT_MOON",
++    "TEXT_OPT_RUN",
++    "TEXT_OPT_NDB",
++    "TEXT_OPT_JUMP",
++    "TEXT_OPT_SPDDPS",
++    "TEXT_OPT_TPF",
++    "TEXT_OPT_JB",
++    "TEXT_OPT_JBC",
++    "TEXT_OPT_QUIKEND",
++    "TEXT_OPT_HURT",
++    "TEXT_OPT_CANN",
++    "TEXT_OPT_AWK",
++    "TEXT_OPT_SHELL",
++    "TEXT_OPT_BOB",
++    "TEXT_OPT_SPAMBA",
++    "TEXT_OPT_SWIM",
++    "TEXT_OPT_WING_CAP",
++    "TEXT_OPT_METAL_CAP",
++    "TEXT_OPT_VANISH_CAP",
++    "TEXT_OPT_REMOVE_CAP",
++    "TEXT_OPT_NORMAL_CAP",
++    "TEXT_OPT_BLJ",
++    "TEXT_OPT_PAC",
++    "TEXT_OPT_TRIPLE",
++    "TEXT_OPT_FLY",
++    "TEXT_OPT_NOB",
++    "TEXT_OPT_FLJ",
++    "TEXT_OPT_TS",
++
++};
++
++#endif // CHEATS_MENU_H
+diff --git a/src/game/game_init.c b/src/game/game_init.c
+index c2df4510..710fafb6 100644
+--- a/src/game/game_init.c
++++ b/src/game/game_init.c
+@@ -384,9 +384,6 @@ void adjust_analog_stick(struct Controller *controller) {
+ // if a demo sequence exists, this will run the demo
+ // input list until it is complete. called every frame.
+ void run_demo_inputs(void) {
+-    // eliminate the unused bits.
+-    gControllers[0].controllerData->button &= VALID_BUTTONS;
+-
+     /*
+         Check if a demo inputs list
+         exists and if so, run the
+diff --git a/src/game/interaction.c b/src/game/interaction.c
+index 7a9c5203..ed931b37 100644
+--- a/src/game/interaction.c
++++ b/src/game/interaction.c
+@@ -1,5 +1,6 @@
+ #include <PR/ultratypes.h>
+ 
++#include "pc/cheats.h"
+ #include "area.h"
+ #include "actors/common1.h"
+ #include "audio/external.h"
+@@ -14,6 +15,7 @@
+ #include "interaction.h"
+ #include "level_update.h"
+ #include "mario.h"
++#include "mario_cheats.h"
+ #include "mario_step.h"
+ #include "memory.h"
+ #include "obj_behaviors.h"
+@@ -1777,21 +1779,26 @@ void mario_process_interactions(struct MarioState *m) {
+ }
+ 
+ void check_death_barrier(struct MarioState *m) {
+-    if (m->pos[1] < m->floorHeight + 2048.0f) {
+-        if (level_trigger_warp(m, WARP_OP_WARP_FLOOR) == 20 && !(m->flags & MARIO_UNKNOWN_18)) {
+-            play_sound(SOUND_MARIO_WAAAOOOW, m->marioObj->header.gfx.cameraToObject);
++    while (Cheats.NDB == false) {
++        if (m->pos[1] < m->floorHeight + 2048.0f) {
++            if (level_trigger_warp(m, WARP_OP_WARP_FLOOR) == 20 && !(m->flags & MARIO_UNKNOWN_18)) {
++                play_sound(SOUND_MARIO_WAAAOOOW, m->marioObj->header.gfx.cameraToObject);
++            }
+         }
++        break;
+     }
+ }
+ 
+ void check_lava_boost(struct MarioState *m) {
+-    if (!(m->action & ACT_FLAG_RIDING_SHELL) && m->pos[1] < m->floorHeight + 10.0f) {
+-        if (!(m->flags & MARIO_METAL_CAP)) {
+-            m->hurtCounter += (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18;
+-        }
++    if (!(Cheats.EnableCheats && HAZ_WALK == 1)) {
++        if (!(m->action & ACT_FLAG_RIDING_SHELL) && m->pos[1] < m->floorHeight + 10.0f) {
++            if (!(m->flags & MARIO_METAL_CAP)) {
++                m->hurtCounter += (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18;
++            }
+ 
+-        update_mario_sound_and_camera(m);
+-        drop_and_set_mario_action(m, ACT_LAVA_BOOST, 0);
++            update_mario_sound_and_camera(m);
++            drop_and_set_mario_action(m, ACT_LAVA_BOOST, 0);
++        }
+     }
+ }
+ 
+@@ -1845,6 +1852,9 @@ void mario_handle_special_floors(struct MarioState *m) {
+         if (!(m->action & ACT_FLAG_AIR) && !(m->action & ACT_FLAG_SWIMMING)) {
+             switch (floorType) {
+                 case SURFACE_BURNING:
++                    if (Cheats.EnableCheats && HAZ_WALK == 1) {
++                        break;
++                    }
+                     check_lava_boost(m);
+                     break;
+             }
+diff --git a/src/game/mario.c b/src/game/mario.c
+index 5f8e5114..2b231917 100644
+--- a/src/game/mario.c
++++ b/src/game/mario.c
+@@ -1,5 +1,6 @@
+ #include <PR/ultratypes.h>
+ 
++#include "mario_cheats.h"
+ #include "sm64.h"
+ #include "area.h"
+ #include "audio/data.h"
+@@ -877,7 +878,7 @@ static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actio
+ 
+             //! (BLJ's) This properly handles long jumps from getting forward speed with
+             //  too much velocity, but misses backwards longs allowing high negative speeds.
+-            if ((m->forwardVel *= 1.5f) > 48.0f) {
++            if ((m->forwardVel *= 1.5f) > 48.0f && !(Cheats.EnableCheats && Cheats.FLJ)) {
+                 m->forwardVel = 48.0f;
+             }
+             break;
+@@ -1223,6 +1224,10 @@ void squish_mario_model(struct MarioState *m) {
+                 }
+                 else if (Cheats.TinyMario) {
+                     vec3f_set(m->marioObj->header.gfx.scale, 0.2f, 0.2f, 0.2f);
++                } else if (Cheats.PAC == 3) {
++                    vec3f_set(m->marioObj->header.gfx.scale, 1.5f, 1.5f, 1.5f);
++                } else if (Cheats.PAC == 5) {
++                    vec3f_set(m->marioObj->header.gfx.scale, 1.5f, 1.5f, 1.5f);
+                 }
+                 else {
+                     vec3f_set(m->marioObj->header.gfx.scale, 1.0f, 1.0f, 1.0f);
+@@ -1413,7 +1418,9 @@ void update_mario_inputs(struct MarioState *m) {
+     update_mario_geometry_inputs(m);
+ 
+     debug_print_speed_action_normal(m);
+-    
++
++    cheats_mario_inputs(m);
++
+     /* Moonjump cheat */
+     while (Cheats.MoonJump == true && Cheats.EnableCheats == true && m->controller->buttonDown & L_TRIG ){
+         m->vel[1] = 25;
+@@ -1688,6 +1695,8 @@ void mario_update_hitbox_and_cap_model(struct MarioState *m) {
+     // Short hitbox for crouching/crawling/etc.
+     if (m->action & ACT_FLAG_SHORT_HITBOX) {
+         m->marioObj->hitboxHeight = 100.0f;
++    } else if (Cheats.EnableCheats && Cheats.PAC > 0) {
++        m->marioObj->hitboxHeight = 120.0f;
+     } else {
+         m->marioObj->hitboxHeight = 160.0f;
+     }
+diff --git a/src/game/mario_actions_airborne.c b/src/game/mario_actions_airborne.c
+index 2c9db90b..cabedfa4 100644
+--- a/src/game/mario_actions_airborne.c
++++ b/src/game/mario_actions_airborne.c
+@@ -1,5 +1,7 @@
+ #include <PR/ultratypes.h>
+ 
++#include "mario_cheats.h"
++#include "pc/cheats.h"
+ #include "sm64.h"
+ #include "area.h"
+ #include "audio/data.h"
+@@ -332,8 +334,15 @@ void update_flying(struct MarioState *m) {
+     update_flying_pitch(m);
+     update_flying_yaw(m);
+ 
+-    m->forwardVel -= 2.0f * ((f32) m->faceAngle[0] / 0x4000) + 0.1f;
++    /*Flyer Cheat*/
++    if (Cheats.Fly) {
++        if (m->forwardVel < 30.0f) {
++            m->forwardVel += 2.0f;
++        }
++    }
+     m->forwardVel -= 0.5f * (1.0f - coss(m->angleVel[1]));
++    m->forwardVel -= 2.0f * ((f32) m->faceAngle[0] / 0x4000) + 0.1f;
++
+ 
+     if (m->forwardVel < 0.0f) {
+         m->forwardVel = 0.0f;
+@@ -372,6 +381,8 @@ u32 common_air_action_step(struct MarioState *m, u32 landAction, s32 animation,
+     stepResult = perform_air_step(m, stepArg);
+     switch (stepResult) {
+         case AIR_STEP_NONE:
++            // BLJ anywhere cheat
++            cheats_air_step(m);
+             set_mario_animation(m, animation);
+             break;
+ 
+@@ -909,7 +920,13 @@ s32 act_ground_pound(struct MarioState *m) {
+     if (m->actionState == 0) {
+         if (m->actionTimer < 10) {
+             yOffset = 20 - 2 * m->actionTimer;
+-            if (m->pos[1] + yOffset + 160.0f < m->ceilHeight) {
++            if (Cheats.EnableCheats && Cheats.PAC > 0) {
++                if (m->pos[1] + yOffset + 120.0f < m->ceilHeight) {
++                    m->pos[1] += yOffset;
++                    m->peakHeight = m->pos[1];
++                    vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
++                }
++            } else if (m->pos[1] + yOffset + 160.0f < m->ceilHeight) {
+                 m->pos[1] += yOffset;
+                 m->peakHeight = m->pos[1];
+                 vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
+diff --git a/src/game/mario_actions_automatic.c b/src/game/mario_actions_automatic.c
+index a74f4a18..c9ec20e5 100644
+--- a/src/game/mario_actions_automatic.c
++++ b/src/game/mario_actions_automatic.c
+@@ -1,6 +1,7 @@
+ #include <PR/ultratypes.h>
+ 
+ #include "sm64.h"
++#include "pc/cheats.h"
+ #include "behavior_data.h"
+ #include "mario_actions_automatic.h"
+ #include "audio/external.h"
+@@ -80,7 +81,12 @@ s32 set_pole_position(struct MarioState *m, f32 offsetY) {
+     collided |= f32_find_wall_collision(&m->pos[0], &m->pos[1], &m->pos[2], 30.0f, 24.0f);
+ 
+     ceilHeight = vec3f_find_ceil(m->pos, m->pos[1], &ceil);
+-    if (m->pos[1] > ceilHeight - 160.0f) {
++    if (Cheats.EnableCheats && Cheats.PAC > 0) {
++        if (m->pos[1] > ceilHeight - 120.0f) {
++            m->pos[1] = ceilHeight - 120.0f;
++            marioObj->oMarioPolePos = m->pos[1] - m->usedObj->oPosY;
++        }
++    } else if (m->pos[1] > ceilHeight - 160.0f) {
+         m->pos[1] = ceilHeight - 160.0f;
+         marioObj->oMarioPolePos = m->pos[1] - m->usedObj->oPosY;
+     }
+diff --git a/src/game/mario_actions_cutscene.c b/src/game/mario_actions_cutscene.c
+index 72e76929..5c14f8e5 100644
+--- a/src/game/mario_actions_cutscene.c
++++ b/src/game/mario_actions_cutscene.c
+@@ -551,18 +551,18 @@ s32 act_debug_free_move(struct MarioState *m) {
+     u32 action;
+ 
+     // integer immediates, generates convert instructions for some reason
+-    speed = gPlayer1Controller->buttonDown & B_BUTTON ? 4 : 1;
+-    if (gPlayer1Controller->buttonDown & L_TRIG) {
++    speed = gPlayer1Controller->buttonDown & L_TRIG ? 4 : 1;
++    if (gPlayer1Controller->buttonDown & R_TRIG) {
+         speed = 0.01f;
+     }
+ 
+-    set_mario_animation(m, MARIO_ANIM_A_POSE);
++    set_mario_animation(m, MARIO_ANIM_BREAKDANCE);
+     vec3f_copy(pos, m->pos);
+ 
+-    if (gPlayer1Controller->buttonDown & U_JPAD) {
++    if (gPlayer1Controller->buttonDown & A_BUTTON) {
+         pos[1] += 16.0f * speed;
+     }
+-    if (gPlayer1Controller->buttonDown & D_JPAD) {
++    if (gPlayer1Controller->buttonDown & Z_TRIG) {
+         pos[1] -= 16.0f * speed;
+     }
+ 
+@@ -585,7 +585,7 @@ s32 act_debug_free_move(struct MarioState *m) {
+     vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
+     vec3s_set(m->marioObj->header.gfx.angle, 0, m->faceAngle[1], 0);
+ 
+-    if (gPlayer1Controller->buttonPressed == A_BUTTON) {
++    if (gPlayer1Controller->buttonPressed == B_BUTTON) {
+         if (m->pos[1] <= m->waterLevel - 100) {
+             action = ACT_WATER_IDLE;
+         } else {
+diff --git a/src/game/mario_actions_moving.c b/src/game/mario_actions_moving.c
+index 0ccbccf1..035a88f7 100644
+--- a/src/game/mario_actions_moving.c
++++ b/src/game/mario_actions_moving.c
+@@ -9,6 +9,7 @@
+ #include "area.h"
+ #include "interaction.h"
+ #include "mario_actions_object.h"
++#include "mario_cheats.h"
+ #include "memory.h"
+ #include "behavior_data.h"
+ #include "thread6.h"
+@@ -1866,6 +1867,7 @@ s32 act_long_jump_land(struct MarioState *m) {
+         play_sound_if_no_flag(m, SOUND_MARIO_UH2_2, MARIO_MARIO_SOUND_PLAYED);
+     }
+ 
++    cheats_long_jump(m);
+     common_landing_action(m,
+                           !m->marioObj->oMarioLongJumpIsSlow ? MARIO_ANIM_CROUCH_FROM_FAST_LONGJUMP
+                                                              : MARIO_ANIM_CROUCH_FROM_SLOW_LONGJUMP,
+diff --git a/src/game/mario_actions_submerged.c b/src/game/mario_actions_submerged.c
+index f03e4a93..3626bad0 100644
+--- a/src/game/mario_actions_submerged.c
++++ b/src/game/mario_actions_submerged.c
+@@ -1,5 +1,6 @@
+ #include <PR/ultratypes.h>
+ 
++#include "mario_cheats.h"
+ #include "sm64.h"
+ #include "level_update.h"
+ #include "memory.h"
+@@ -231,6 +232,8 @@ static void update_swimming_speed(struct MarioState *m, f32 decelThreshold) {
+     f32 buoyancy = get_buoyancy(m);
+     f32 maxSpeed = 28.0f;
+ 
++    cheats_swimming_speed(m);
++
+     if (m->action & ACT_FLAG_STATIONARY) {
+         m->forwardVel -= 2.0f;
+     }
+diff --git a/src/game/mario_cheats.c b/src/game/mario_cheats.c
+new file mode 100644
+index 00000000..aafa5ce9
+--- /dev/null
++++ b/src/game/mario_cheats.c
+@@ -0,0 +1,884 @@
++#include <stdlib.h>
++#include <time.h>
++#include <PR/ultratypes.h>
++
++#include "sm64.h"
++#include "area.h"
++#include "actors/common0.h"
++#include "actors/common1.h"
++#include "actors/group0.h"
++#include "actors/group1.h"
++#include "actors/group2.h"
++#include "actors/group4.h"
++#include "actors/group5.h"
++#include "actors/group6.h"
++#include "actors/group7.h"
++#include "actors/group9.h"
++#include "actors/group10.h"
++#include "actors/group11.h"
++#include "actors/group12.h"
++#include "actors/group13.h"
++#include "actors/group14.h"
++#include "actors/group15.h"
++#include "actors/group17.h"
++#include "audio/data.h"
++#include "audio/external.h"
++#include "behavior_actions.h"
++#include "behavior_data.h"
++#include "camera.h"
++#include "engine/behavior_script.h"
++#include "engine/graph_node.h"
++#include "engine/level_script.h"
++#include "engine/math_util.h"
++#include "engine/surface_collision.h"
++#include "game_init.h"
++#include "interaction.h"
++#include "level_table.h"
++#include "level_update.h"
++#include "macros.h"
++#include "main.h"
++#include "mario.h"
++#include "mario_actions_airborne.h"
++#include "mario_actions_automatic.h"
++#include "mario_actions_cutscene.h"
++#include "mario_actions_moving.h"
++#include "mario_actions_object.h"
++#include "mario_actions_stationary.h"
++#include "mario_actions_submerged.h"
++#include "mario_cheats.h"
++#include "mario_misc.h"
++#include "mario_step.h"
++#include "memory.h"
++#include "model_ids.h"
++#include "object_fields.h"
++#include "object_helpers.h"
++#include "object_list_processor.h"
++#include "print.h"
++#include "rendering_graph_node.h"
++#include "save_file.h"
++#include "seq_ids.h"
++#include "sound_init.h"
++#include "debug.h"
++#include "thread6.h"
++#include "pc/configfile.h"
++#include "pc/cheats.h"
++#ifdef R96
++#include "sgi/utils/characters.h"
++#endif // R96
++
++
++#define SwiftSwim 42.0f
++
++/*SwiftSwim Cheat*/
++void cheats_swimming_speed(struct MarioState* m) {
++    while (m->forwardVel < SwiftSwim && Cheats.EnableCheats == true && Cheats.Swim == true) {
++        while (m->controller->buttonDown & A_BUTTON) {
++            m->particleFlags |= PARTICLE_BUBBLE;
++            m->forwardVel += 5.0f;
++            break;
++        }
++        break;
++    }
++}
++
++/*BLJAnywhere Cheat*/
++void cheats_air_step(struct MarioState *m) {
++    if (Cheats.BLJAnywhere > 0 && Cheats.EnableCheats == TRUE && m->action == ACT_LONG_JUMP
++        && m->forwardVel < 1.0f && m->pos[1] - 50.0f < m->floorHeight) {
++        if (Cheats.BLJAnywhere < 7) {
++            if (m->controller->buttonPressed & A_BUTTON) {
++                m->forwardVel -= (Cheats.BLJAnywhere - 1) * 2.5f;
++                m->vel[1] = -50.0f;
++            }
++        } else if (m->controller->buttonDown & A_BUTTON) {
++            m->forwardVel -= (Cheats.BLJAnywhere - 7) * 2.5f;
++            m->vel[1] = -50.0f;
++        }
++    }
++}
++
++void cheats_long_jump(struct MarioState *m) {
++    if (Cheats.BLJAnywhere >= 7 && Cheats.EnableCheats == true && m->forwardVel < 1.0f
++        && (m->controller->buttonDown & A_BUTTON)) {
++        set_jumping_action(m, ACT_LONG_JUMP, 0);
++    }
++}
++
++/*Main cheat function*/
++void cheats_mario_inputs(struct MarioState *m) {
++    m->particleFlags = 0;
++    m->collidedObjInteractTypes = m->marioObj->collidedObjInteractTypes;
++    m->flags &= 0xFFFFFF;
++    u32 r;
++
++    while (Cheats.EnableCheats == true) {
++
++        /*Drain JRB?*/
++        f32 watLev;
++        watLev -= 800;
++        if (WAT_CON == 1) {
++            watLev += WAT_LEV * 100;
++        }
++        if (WAT_CON == 1 && gCurrLevelNum == LEVEL_JRB) {
++            gEnvironmentRegions[6] = approach_f32_symmetric(gEnvironmentRegions[6], watLev * 10, 10.0f);
++            gEnvironmentRegions[12] = approach_f32_symmetric(gEnvironmentRegions[12], watLev * 10, 10.0f);
++        }
++
++        /*Coin Magnet*/
++        struct Object* coinMag = cur_obj_nearest_object_with_behavior(bhvYellowCoin);
++        struct Object* coinMagMove = cur_obj_nearest_object_with_behavior(bhvMovingYellowCoin);
++        f32 oDist;
++        f32 oDistMove;
++        if (coinMag != NULL && m->marioObj != NULL) {
++            oDist = dist_between_objects(coinMag, m->marioObj);
++        }
++        if (coinMagMove != NULL && m->marioObj != NULL) {
++            oDistMove = dist_between_objects(coinMagMove, m->marioObj);
++        }
++        while (COIN_MAG == 1 && oDist != 0 && oDist >= 100 && oDist < 1000) {
++            while (oDist >= 10) {
++                coinMag->oPosX = approach_f32_symmetric(coinMag->oPosX, m->pos[0], 28);
++                coinMag->oPosY = approach_f32_symmetric(coinMag->oPosY, m->pos[1], 28);
++                coinMag->oPosZ = approach_f32_symmetric(coinMag->oPosZ, m->pos[2], 28);
++                break;
++            }
++            break;
++        }
++        if (oDist == 0 && oDist > 1000) {
++            obj_mark_for_deletion(coinMag);
++            break;
++        }
++        while (COIN_MAG == 1 && coinMagMove != NULL && oDistMove >= 100 && oDistMove < 1000) {
++            while (oDistMove >= 10) {
++                coinMagMove->oPosX = approach_f32_symmetric(coinMagMove->oPosX, m->pos[0], 28);
++                coinMagMove->oPosY = approach_f32_symmetric(coinMagMove->oPosY, m->pos[1], 28);
++                coinMagMove->oPosZ = approach_f32_symmetric(coinMagMove->oPosZ, m->pos[2], 28);
++                break;
++            }
++            break;
++        }
++        if (oDistMove == 0 && oDistMove > 1000) {
++            obj_mark_for_deletion(coinMagMove);
++            break;
++        }
++
++        /*Swim Anywhere*/
++        if (SWIM_ANY == 1) {
++            set_submerged_cam_preset_and_spawn_bubbles(m);
++            m->waterLevel = m->pos[1] + 300;
++        }
++
++        /*No Hold Heavy*/
++        if (NO_HEAVY == 1) {
++            while ((m->action & ACT_GROUP_MASK) == ACT_GROUP_MOVING) {
++                if (m->action == ACT_HOLD_HEAVY_WALKING) {
++                    set_mario_action(m, ACT_HOLD_WALKING, 0);
++                    break;
++                }
++                break;
++            }
++        }
++
++        /*CHAOS Mode*/
++        if (CHAOS_MODE == 1) {
++            srand(time(NULL));
++            r = rand();
++
++            switch ((rand() % 30)) {
++                case 0:
++                    if (Cheats.Run <= 3) {
++                        Cheats.Run += 1;
++                    } else if (Cheats.Run >= 4) {
++                        Cheats.Run = 0;
++                    }
++                    break;
++                case 1:
++                    if (Cheats.HugeMario == true) {
++                        Cheats.HugeMario = false;
++                    } else {
++                        Cheats.HugeMario = true;
++                    }
++                    break;
++                case 2:
++                    if (Cheats.TinyMario == true) {
++                        Cheats.TinyMario = false;
++                    } else {
++                        Cheats.TinyMario = true;
++                    }
++                    break;
++                case 3:
++                    if (Cheats.Moon == true) {
++                        Cheats.Moon = false;
++                    } else {
++                        Cheats.Moon = true;
++                    }
++                    break;
++                case 4:
++                    if (Cheats.Jump == true) {
++                        Cheats.Jump = false;
++                    } else {
++                        Cheats.Jump = true;
++                    }
++                    break;
++                case 5:
++                    spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_AMP, bhvHomingAmp);
++                    break;
++                case 6:
++                    if (Cheats.Triple == true) {
++                        Cheats.Triple = false;
++                    } else {
++                        Cheats.Triple = true;
++                    }
++                    break;
++                case 7:
++                    obj_spawn_yellow_coins(m->marioObj, 1);
++                    break;
++                case 8:
++                    if (Cheats.PAC <= 6) {
++                        Cheats.PAC += 1;
++                    } else if (Cheats.PAC >= 7) {
++                        Cheats.PAC = 0;
++                    }
++                    break;
++                case 9:
++                    hurt_and_set_mario_action(m, ACT_FORWARD_AIR_KB, 0, 0);
++                    break;
++                case 10:
++                    cur_obj_shake_screen(SHAKE_POS_SMALL);
++                    break;
++                case 11:
++                    m->forwardVel = (m->forwardVel + 5.0f);
++                    break;
++                case 12:
++                    m->vel[1] -= 5;
++                    break;
++                case 13:
++                    // Empty Slot
++                    break;
++                case 14:
++                    // Empty Slot
++                    break;
++                case 15:
++                    // Empty Slot
++                    break;
++                case 16:
++                case 17:
++                case 18:
++                case 19:
++                case 20:
++                case 21:
++                case 22:
++                case 23:
++                case 24:
++                case 25:
++                case 26:
++                case 27:
++                case 28:
++                case 29:
++                case 30:
++                    print_text(240, 92, " ");
++                    break;
++            }
++        }
++
++        /*Time Stop Cheat*/
++        if (Cheats.TimeStop) {
++            enable_time_stop();
++        } else if (!Cheats.TimeSlow) {
++            gTimeStopState &= ~(TIME_STOP_ENABLED);
++        }
++        /*Slow Mode*/
++        while (Cheats.TimeSlow) {
++            enable_time_stop();
++            break;
++        }
++        if (m->controller->buttonDown & TIME_BUTTON) {
++            Cheats.TimeSlow = true;
++        } else {
++            if (Cheats.TimeStop) {
++                enable_time_stop();
++            } else
++            if (gTimeStopState &= ~(TIME_STOP_MARIO_AND_DOORS)) {
++                gTimeStopState &= ~(TIME_STOP_ENABLED);
++            }
++        }
++
++
++        /*FLYER Cheat*/
++        if (Cheats.Fly) {
++            if (m->action == ACT_FLYING) {
++                if (m->controller->buttonDown & A_BUTTON) {
++                    m->particleFlags |= PARTICLE_SPARKLES;
++                }
++            }
++        }
++
++        /*Coin Spawner*/
++        switch (Cheats.Coin) {
++            case 0:
++                break;
++            case 1:
++                if (m->controller->buttonDown & B_BUTTON) {
++                    obj_spawn_yellow_coins(m->marioObj, 1);
++                    break;
++                }
++                break;
++            case 2:
++                if (m->controller->buttonDown & B_BUTTON) {
++                    spawn_object(m->marioObj, MODEL_BLUE_COIN, bhvBlueCoinJumping);
++                    break;
++                }
++                break;
++            case 3:
++                if (m->controller->buttonDown & B_BUTTON) {
++                    spawn_object_relative(0, 0, 70, 150, m->marioObj, MODEL_RED_COIN, bhvRedCoin);
++                    break;
++                }
++                break;
++        }
++
++        /*All Jumps Triple Cheat*/
++        while (Cheats.Triple && (m->action & ACT_GROUP_MASK) != ACT_GROUP_SUBMERGED) {
++            // While Triple Jump Cheat is true and Mario's is not underwater
++            if (m->controller->buttonPressed & A_BUTTON && m->action != ACT_TRIPLE_JUMP) {
++                // If A is pressed and not already triple jumping
++                set_mario_action(m, ACT_TRIPLE_JUMP, 0);
++                // Break out of the while
++                break;
++            }
++            // Break out of the while
++            break;
++        }
++
++        /*Hover Cheat*/
++        if (Cheats.Hover) {
++            set_mario_action(m, ACT_DEBUG_FREE_MOVE, 0);
++            Cheats.Hover = false;
++        }
++
++        /*Moon Gravity*/
++        while (Cheats.Moon) {
++            while ((m->action & ACT_GROUP_MASK) == ACT_GROUP_AIRBORNE) {
++                if (m->action != ACT_FREEFALL && m->action != ACT_LONG_JUMP) {
++                    m->vel[1] += 2;
++                    break;
++                } else {
++                    m->vel[1] += 1;
++                    break;
++                }
++                break;
++            }
++            break;
++        }
++        /*Jump Modifier*/
++        while (Cheats.Jump) {
++            while ((m->action & ACT_GROUP_MASK) == ACT_GROUP_AIRBORNE) {
++                if (m->action != ACT_FREEFALL) {
++                    m->vel[1] += 1;
++                    break;
++                }
++                if (m->action &= ACT_FREEFALL) {
++                    m->vel[1] -= 5;
++                    break;
++                }
++                break;
++            }
++            break;
++        }
++
++        /*Run Modifier Cheat*/
++        switch (Cheats.Run) {
++            case 0:
++                break;
++            case 1:
++                if (m->action == ACT_WALKING && m->forwardVel >= 0) {
++                    m->forwardVel = (m->forwardVel - 0.5f);
++                }
++                break;
++            case 2:
++                if (m->action == ACT_WALKING && m->forwardVel >= 0) {
++                    m->forwardVel = (m->forwardVel - 0.7f);
++                }
++                break;
++            case 3:
++                if (m->action == ACT_WALKING && m->forwardVel >= 0) {
++                    m->forwardVel = (m->forwardVel * 1.2f);
++                }
++                break;
++            case 4:
++                if (m->action == ACT_WALKING && m->forwardVel >= 0) {
++                    m->forwardVel = (m->forwardVel * 1.8f);
++                }
++                break;
++        }
++        /*Play As Cheat*/
++        switch(Cheats.PAC) {
++            /*Model Choices*/
++            case 0:
++#ifdef R96
++                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_PLAYER];
++                if (isLuigi() == 1) {
++                    gMarioState->animation = &Data_LuigiAnims;
++                } else {
++                    gMarioState->animation = &D_80339D10;
++                }
++                break;
++#else
++                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO]; //Use MODEL_PLAYER
++                m->animation = &D_80339D10; //Only Mario's animations
++                break;
++#endif // R96
++            case 1:
++                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BLACK_BOBOMB];
++                m->marioObj->header.gfx.unk38.curAnim = bobomb_seg8_anims_0802396C[0];
++                break;
++            case 2:
++                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BOBOMB_BUDDY];
++                m->marioObj->header.gfx.unk38.curAnim = bobomb_seg8_anims_0802396C[0];
++                break;
++            case 3:
++                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_GOOMBA];
++                m->marioObj->header.gfx.unk38.curAnim = goomba_seg8_anims_0801DA4C[0];
++                break;
++            case 4:
++                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_KOOPA_SHELL];
++                m->marioObj->header.gfx.unk38.curAnim = amp_seg8_anims_08004034[0];
++                break;
++            case 5:
++                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_CHUCKYA];
++                m->marioObj->header.gfx.unk38.curAnim = chuckya_seg8_anims_0800C070[0];
++                break; //Forgot this in v7
++            case 6:
++                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_FLYGUY];
++                m->marioObj->header.gfx.unk38.curAnim = flyguy_seg8_anims_08011A64[0];
++                break;
++            case 7:
++                switch (gCurrLevelNum) {
++                    case LEVEL_CASTLE_GROUNDS:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_YOSHI];
++                        m->marioObj->header.gfx.unk38.curAnim = yoshi_seg5_anims_05024100[0];
++                        break;
++                    case LEVEL_BOB:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_KOOPA_WITH_SHELL];
++                        m->marioObj->header.gfx.unk38.curAnim = koopa_seg6_anims_06011364[0];
++                        m->marioObj->header.gfx.unk38.animFrame += 1;
++                        break;
++                    case LEVEL_BBH:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MAD_PIANO];
++                        m->marioObj->header.gfx.unk38.curAnim = mad_piano_seg5_anims_05009B14[0];
++                        break;
++                    case LEVEL_WF:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_WHOMP];
++                        m->marioObj->header.gfx.unk38.curAnim = whomp_seg6_anims_06020A04[0];
++                        break;
++                    case LEVEL_JRB:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_CLAM_SHELL];
++                        m->marioObj->header.gfx.unk38.curAnim = clam_shell_seg5_anims_05001744[0];
++                        break;
++                    case LEVEL_CCM:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_PENGUIN];
++                        m->marioObj->header.gfx.unk38.curAnim = penguin_seg5_anims_05008B74[0];
++                        break;
++                    case LEVEL_PSS:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_WOODEN_SIGNPOST];
++                        break;
++                    case LEVEL_HMC:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_HMC_ROLLING_ROCK];
++                        break;
++                    case LEVEL_LLL:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BULLY];
++                        m->marioObj->header.gfx.unk38.curAnim = bully_seg5_anims_0500470C[0];
++                        break;
++                    case LEVEL_SSL:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_KLEPTO];
++                        m->marioObj->header.gfx.unk38.curAnim = klepto_seg5_anims_05008CFC[0];
++                        break;
++                    case LEVEL_DDD:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_SUSHI];
++                        m->marioObj->header.gfx.unk38.curAnim = sushi_seg5_anims_0500AE54[0];
++                        break;
++                    case LEVEL_SL:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_SPINDRIFT];
++                        m->marioObj->header.gfx.unk38.curAnim = spindrift_seg5_anims_05002D68[0];
++                        break;
++                    case LEVEL_WDW:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_SKEETER];
++                        m->marioObj->header.gfx.unk38.curAnim = skeeter_seg6_anims_06007DE0[0];
++                        break;
++                    case LEVEL_TTM:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_UKIKI];
++                        m->marioObj->header.gfx.unk38.curAnim = ukiki_seg5_anims_05015784[0];
++                        break;
++                    case LEVEL_THI:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_SPINY];
++                        m->marioObj->header.gfx.unk38.curAnim = spiny_seg5_anims_05016EAC[0];
++                        break;
++                    case LEVEL_TTC:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_THWOMP];
++                        break;
++                    case LEVEL_RR:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_ENEMY_LAKITU];
++                        m->marioObj->header.gfx.unk38.curAnim = lakitu_enemy_seg5_anims_050144D4[0];
++                        break;
++                    case LEVEL_SA:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MANTA_RAY];
++                        m->marioObj->header.gfx.unk38.curAnim = manta_seg5_anims_05008EB4[0];
++                        break;
++                    case LEVEL_COTMC:
++                        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_SNUFIT];
++                        break;
++                }
++            }
++        while (Cheats.PAC > 0) {
++            /*stops softlock when dying as a Play As Character*/
++            if (m->action == ACT_STANDING_DEATH) {
++                level_trigger_warp(m, WARP_OP_DEATH);
++                m->numLives += 1;
++                update_mario_health(m);
++                break;
++            }
++            /*Instead of making a custom hitbox for each character,
++            I neutralized the only consistent problem, doors*/
++            while (m->collidedObjInteractTypes & INTERACT_DOOR) {
++                obj_mark_for_deletion(m->usedObj);
++                spawn_object(gCurrentObject, MODEL_SMOKE, bhvBobombBullyDeathSmoke);
++                obj_scale(gCurrentObject, gCurrentObject->oTimer / 4.f + 1.0f);
++                gCurrentObject->oOpacity -= 14;
++                gCurrentObject->oAnimState++;
++                play_sound(SOUND_GENERAL2_BOBOMB_EXPLOSION, m->marioObj->header.gfx.cameraToObject);
++                m->particleFlags |= PARTICLE_TRIANGLE;
++                obj_set_pos(m->marioObj, 0, 0, 100);
++                break;
++            }
++            break;
++        }
++
++
++        /*Speed Display*/
++        if (Cheats.SPD == true) {
++            print_text_fmt_int(210, 72, "SPD %d", m->forwardVel);
++        }
++
++        /*T Pose Float? Actually it's just twirling + MoonJump*/
++        while (Cheats.TPF == true) {
++            if (m->controller->buttonDown & A_BUTTON) {
++                m->vel[1] = 25;
++                set_mario_action(m, ACT_TWIRLING, 0);
++            }
++            break;
++        }
++
++        /*QuickEnding cheat*/
++        while (Cheats.QuikEnd == true) {
++            if (m->numStars == 120) {
++                level_trigger_warp(m, WARP_OP_CREDITS_START);
++                Cheats.QuikEnd = false;
++                save_file_do_save(gCurrSaveFileNum - 1);
++            }
++            break;
++        }
++
++        /*AutoWallKick cheat*/
++        if (Cheats.AutoWK == true && m->action == ACT_AIR_HIT_WALL) {
++            m->vel[1] = 52.0f;
++            m->faceAngle[1] += 0x8000;
++            set_mario_action(m, ACT_WALL_KICK_AIR, 0);
++            m->wallKickTimer = 0;
++            set_mario_animation(m, MARIO_ANIM_START_WALLKICK);
++        }
++
++        /*HurtMario cheat*/
++        while (Cheats.Hurt > 0 && m->controller->buttonDown & L_TRIG
++               && m->controller->buttonPressed & A_BUTTON) {
++            if (Cheats.Hurt == 1) {
++                act_burning_ground(m);
++            }
++            if (Cheats.Hurt == 2) {
++                m->flags |= MARIO_METAL_SHOCK;
++                drop_and_set_mario_action(m, ACT_SHOCKED, 0);
++            }
++            if (Cheats.Hurt == 3) {
++                hurt_and_set_mario_action(m, ACT_GROUND_BONK, 0, 1);
++                play_sound(SOUND_MARIO_OOOF, m->marioObj->header.gfx.cameraToObject);
++                queue_rumble_data(5, 80);
++            }
++            break;
++        }
++
++        /*CannonAnywhere cheat*/
++        if (Cheats.Cann == true && m->controller->buttonDown & L_TRIG
++            && m->controller->buttonPressed & U_CBUTTONS) {
++            spawn_object_relative(1, 0, 200, 0, gCurrentObject, MODEL_NONE, bhvCannon);
++        }
++
++        /*InstantDeath cheat*/
++        if (m->controller->buttonDown & L_TRIG && m->controller->buttonDown & A_BUTTON
++            && m->controller->buttonPressed & B_BUTTON && m->controller->buttonDown & Z_TRIG) {
++            level_trigger_warp(m, WARP_OP_DEATH);
++            break;
++        }
++
++        /*CAP Cheats, this whole thing needs to be refactored, but
++        I've only been adding to JAGSTAX's original patch*/
++        if (Cheats.EnableCheats) {
++            if (Cheats.WingCap) {
++                m->flags |= MARIO_WING_CAP;
++                if ((m->action & ACT_GROUP_MASK) == (!(ACT_GROUP_AIRBORNE) && !(ACT_GROUP_SUBMERGED))) {
++                    set_mario_action(m, ACT_PUTTING_ON_CAP, 0);
++                }
++                Cheats.WingCap = false;
++            }
++
++            if (Cheats.MetalCap) {
++                m->flags |= MARIO_METAL_CAP;
++                if ((m->action & ACT_GROUP_MASK) == (!(ACT_GROUP_AIRBORNE) && !(ACT_GROUP_SUBMERGED))) {
++                    set_mario_action(m, ACT_PUTTING_ON_CAP, 0);
++                }
++                Cheats.MetalCap = false;
++            }
++
++            if (Cheats.VanishCap) {
++                m->flags |= MARIO_VANISH_CAP;
++                if ((m->action & ACT_GROUP_MASK) == (!(ACT_GROUP_AIRBORNE) && !(ACT_GROUP_SUBMERGED))) {
++                    set_mario_action(m, ACT_PUTTING_ON_CAP, 0);
++                }
++                Cheats.VanishCap = false;
++            }
++
++            if (Cheats.RemoveCap) {
++                m->flags &= ~MARIO_CAP_ON_HEAD;
++                m->flags |= MARIO_CAP_IN_HAND;
++                if ((m->action & ACT_GROUP_MASK) == (!(ACT_GROUP_AIRBORNE) && !(ACT_GROUP_SUBMERGED))) {
++                    set_mario_action(m, ACT_SHIVERING, 0);
++                }
++                Cheats.RemoveCap = false;
++            }
++
++            if (Cheats.NormalCap) {
++                m->flags &= ~MARIO_CAP_ON_HEAD;
++                m->flags &= ~(MARIO_WING_CAP | MARIO_METAL_CAP | MARIO_VANISH_CAP);
++                if ((m->action & ACT_GROUP_MASK) == (!(ACT_GROUP_AIRBORNE) && !(ACT_GROUP_SUBMERGED))) {
++                    m->flags |= MARIO_CAP_IN_HAND;
++                    set_mario_action(m, ACT_PUTTING_ON_CAP, 0);
++                } else {
++                    m->flags &= ~MARIO_CAP_IN_HAND;
++                    m->flags |= MARIO_CAP_ON_HEAD;
++                }
++                Cheats.NormalCap = false;
++            }
++        }
++
++        /* GetShell cheat */
++        while (Cheats.GetShell == true && m->controller->buttonDown & L_TRIG
++               && m->controller->buttonPressed & R_TRIG) {
++            if (m->action & ACT_FLAG_RIDING_SHELL) {
++                break;
++            }
++
++            /*This check should be added when creating a spawn cheat to prevent spamming*/
++            struct Object *obj = (struct Object *) gObjectLists[OBJ_LIST_LEVEL].next;
++            struct Object *first = (struct Object *) &gObjectLists[OBJ_LIST_LEVEL];
++            while (obj != NULL && obj != first) {
++                if (obj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_KOOPA_SHELL]) {
++                    obj_mark_for_deletion(obj);
++                    break;
++                }
++                obj = (struct Object *) obj->header.next;
++            }
++
++            if ((m->action & ACT_GROUP_MASK) == ACT_GROUP_SUBMERGED) {
++                spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_KOOPA_SHELL,
++                                      bhvKoopaShellUnderwater);
++                break;
++            } else {
++                spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_KOOPA_SHELL, bhvKoopaShell);
++                break;
++            }
++        }
++
++        /* GetBobomb cheat */
++        while (Cheats.GetBob == true && m->controller->buttonDown & L_TRIG
++               && m->controller->buttonPressed & B_BUTTON) {
++            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_BLACK_BOBOMB, bhvBobomb);
++            break;
++        }
++
++        /* SpawnCommon0 aka Spamba cheat*/
++        switch (Cheats.Spamba) {
++            case 0:
++                break;
++            case 1:
++                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
++                    spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_AMP, bhvHomingAmp);
++                    break;
++                }
++                break;
++            case 2:
++                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
++                    spawn_object_relative(0, 0, 0, 150, gCurrentObject, MODEL_BLUE_COIN_SWITCH,
++                                          bhvBlueCoinSwitch);
++                    break;
++                }
++                break;
++            case 3:
++                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
++                    spawn_object_relative(0, 0, 300, 300, gCurrentObject, MODEL_BOWLING_BALL,
++                                          bhvPitBowlingBall);
++                    break;
++                }
++                break;
++            case 4:
++                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
++                    spawn_object_relative(0, 0, 0, 200, gCurrentObject, MODEL_BREAKABLE_BOX,
++                                          bhvBreakableBox);
++                    break;
++                }
++                break;
++            case 5:
++                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
++                    spawn_object_relative(0, 0, 50, 100, gCurrentObject, MODEL_BREAKABLE_BOX_SMALL,
++                                          bhvBreakableBoxSmall);
++                    break;
++                }
++                break;
++            case 6:
++                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
++                    spawn_object_relative(0, 0, 10, 300, gCurrentObject, MODEL_BREAKABLE_BOX_SMALL,
++                                          bhvJumpingBox);
++                    break;
++                }
++                break;
++            case 7:
++                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
++                    spawn_object_relative(0, 0, -10, 100, gCurrentObject, MODEL_CHECKERBOARD_PLATFORM,
++                                          bhvCheckerboardPlatformSub);
++                    break;
++                }
++                break;
++            case 8:
++                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
++                    spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_CHUCKYA, bhvChuckya);
++                    break;
++                }
++                break;
++            case 9:
++                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
++                    spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_FLYGUY, bhvFlyGuy);
++                    break;
++                }
++                break;
++            case 10:
++                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
++                    spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_NONE,
++                                          bhvGoombaTripletSpawner);
++                    break;
++                }
++                break;
++            case 11:
++                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
++                    spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_HEART,
++                                          bhvRecoveryHeart);
++                    break;
++                }
++                break;
++            case 12:
++                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
++                    spawn_object_relative(0, 0, 0, 200, gCurrentObject, MODEL_METAL_BOX,
++                                          bhvPushableMetalBox);
++                    break;
++                }
++                break;
++            case 13:
++                if (m->controller->buttonDown & L_TRIG && m->controller->buttonPressed & Z_TRIG) {
++                    spawn_object_relative(0, 0, 50, 50, gCurrentObject, MODEL_PURPLE_SWITCH,
++                                          bhvPurpleSwitchHiddenBoxes);
++                    break;
++                }
++                break;
++        }
++
++        /*Jukebox*/
++        if (Cheats.JBC) {
++            /*JBC is the bool, acting like the on/off*/
++            switch(Cheats.JB) {
++                case 0:
++                    play_cap_music(SEQ_EVENT_CUTSCENE_INTRO);
++                    Cheats.JBC = false;
++                    break;
++                case 1:
++                    play_cap_music(SEQ_LEVEL_GRASS);
++                    Cheats.JBC = false;
++                    break;
++                case 2:
++                    play_cap_music(SEQ_LEVEL_INSIDE_CASTLE);
++                    Cheats.JBC = false;
++                    break;
++                case 3:
++                    play_cap_music(SEQ_LEVEL_WATER);
++                    Cheats.JBC = false;
++                    break;
++                case 4:
++                    play_cap_music(SEQ_LEVEL_HOT);
++                    Cheats.JBC = false;
++                    break;
++                case 5:
++                    play_cap_music(SEQ_LEVEL_BOSS_KOOPA);
++                    Cheats.JBC = false;
++                    break;
++                case 6:
++                    play_cap_music(SEQ_LEVEL_SNOW);
++                    Cheats.JBC = false;
++                    break;
++                case 7:
++                    play_cap_music(SEQ_LEVEL_SLIDE);
++                    Cheats.JBC = false;
++                    break;
++                case 8:
++                    play_cap_music(SEQ_LEVEL_SPOOKY);
++                    Cheats.JBC = false;
++                    break;
++                case 9:
++                    play_cap_music(SEQ_LEVEL_UNDERGROUND);
++                    Cheats.JBC = false;
++                    break;
++                case 10:
++                    play_cap_music(SEQ_LEVEL_KOOPA_ROAD);
++                    Cheats.JBC = false;
++                    break;
++                case 11:
++                    play_cap_music(SEQ_LEVEL_BOSS_KOOPA_FINAL);
++                    Cheats.JBC = false;
++                    break;
++                case 12:
++                    play_cap_music(SEQ_MENU_TITLE_SCREEN);
++                    Cheats.JBC = false;
++                    break;
++                case 13:
++                    play_cap_music(SEQ_MENU_FILE_SELECT);
++                    Cheats.JBC = false;
++                    break;
++                case 14:
++                    play_cap_music(SEQ_EVENT_POWERUP);
++                    Cheats.JBC = false;
++                    break;
++                case 15:
++                    play_cap_music(SEQ_EVENT_METAL_CAP);
++                    Cheats.JBC = false;
++                    break;
++                case 16:
++                    play_cap_music(SEQ_EVENT_BOSS);
++                    Cheats.JBC = false;
++                    break;
++                case 17:
++                    play_cap_music(SEQ_EVENT_MERRY_GO_ROUND);
++                    Cheats.JBC = false;
++                    break;
++                case 18:
++                    play_cap_music(SEQ_EVENT_CUTSCENE_CREDITS);
++                    Cheats.JBC = false;
++                    break;
++            }
++        }
++        break;
++    }
++}
+\ No newline at end of file
+diff --git a/src/game/mario_cheats.h b/src/game/mario_cheats.h
+new file mode 100644
+index 00000000..a091d3de
+--- /dev/null
++++ b/src/game/mario_cheats.h
+@@ -0,0 +1,40 @@
++#ifndef MARIO_CHEATS_H
++#define MARIO_CHEATS_H
++
++#include <PR/ultratypes.h>
++
++#include "macros.h"
++#include "model_ids.h"
++#include "types.h"
++
++#if defined(MODEL_PLAYER) && defined(MODEL_LUIGIS_CAP)
++#define R96
++#endif
++
++void cheats_set_model(struct MarioState *m);
++void cheats_swimming_speed(struct MarioState *m);
++void cheats_air_step(struct MarioState *m);
++void cheats_long_jump(struct MarioState *m);
++void cheats_mario_inputs(struct MarioState *m);
++
++/* Options */
++#define TIME_BUTTON 0x0080
++
++#include "pc/dynamic_options.h"
++#define __chaos_mode__   dynos_get_value("chaos_mode")
++#define __time_button__ dynos_get_value("time_button")
++#define __no_heavy__ dynos_get_value("no_heavy")
++#define __haz_walk__ dynos_get_value("haz_walk")
++#define __swim_any__ dynos_get_value("swim_any")
++#define __coin_mag__ dynos_get_value("coin_mag")
++#define __wat_con__ dynos_get_value("wat_con")
++#define __wat_lev__ dynos_get_value("wat_lev")
++#define CHAOS_MODE (__chaos_mode__ == 1)
++#define NO_HEAVY (__no_heavy__ == 1)
++#define HAZ_WALK (__haz_walk__ == 1)
++#define SWIM_ANY (__swim_any__ == 1)
++#define COIN_MAG (__coin_mag__ == 1)
++#define WAT_CON (__wat_con__ == 1)
++#define WAT_LEV (__wat_lev__)
++
++#endif // MARIO_CHEATS_H
+diff --git a/src/game/mario_misc.c b/src/game/mario_misc.c
+index e6354e89..bc5a9820 100644
+--- a/src/game/mario_misc.c
++++ b/src/game/mario_misc.c
+@@ -1,6 +1,7 @@
+ #include <PR/ultratypes.h>
+ 
+ #include "sm64.h"
++#include "pc/cheats.h"
+ #include "area.h"
+ #include "audio/external.h"
+ #include "behavior_actions.h"
+@@ -232,7 +233,11 @@ void bhv_unlock_door_star_init(void) {
+     gCurrentObject->oUnlockDoorStarTimer = 0;
+     gCurrentObject->oUnlockDoorStarYawVel = 0x1000;
+     gCurrentObject->oPosX += 30.0f * sins(gMarioState->faceAngle[1] - 0x4000);
+-    gCurrentObject->oPosY += 160.0f;
++    if (Cheats.EnableCheats && Cheats.PAC > 0) {
++        gCurrentObject->oPosY += 120.0f;
++    } else {
++        gCurrentObject->oPosY += 160.0f;
++    }
+     gCurrentObject->oPosZ += 30.0f * coss(gMarioState->faceAngle[1] - 0x4000);
+     gCurrentObject->oMoveAngleYaw = 0x7800;
+     obj_scale(gCurrentObject, 0.5f);
+diff --git a/src/game/mario_step.c b/src/game/mario_step.c
+index ba8315ca..85c06be2 100644
+--- a/src/game/mario_step.c
++++ b/src/game/mario_step.c
+@@ -1,5 +1,7 @@
+ #include <ultra64.h>
+ 
++#include "pc/cheats.h"
++#include "mario_cheats.h"
+ #include "sm64.h"
+ #include "engine/math_util.h"
+ #include "engine/surface_collision.h"
+@@ -105,6 +107,9 @@ void mario_bonk_reflection(struct MarioState *m, u32 negateSpeed) {
+ }
+ 
+ u32 mario_update_quicksand(struct MarioState *m, f32 sinkingSpeed) {
++    if (Cheats.EnableCheats && HAZ_WALK == 1) {
++        m->quicksandDepth = 0.0f;
++    } else
+     if (m->action & ACT_FLAG_RIDING_SHELL) {
+         m->quicksandDepth = 0.0f;
+     } else {
+diff --git a/src/game/options_menu.c b/src/game/options_menu.c
+index e2ce325d..7b0b968d 100644
+--- a/src/game/options_menu.c
++++ b/src/game/options_menu.c
+@@ -1,5 +1,5 @@
+ #ifdef EXT_OPTIONS_MENU
+-
++#ifdef DYNOS_INL
+ #include "sm64.h"
+ #include "engine/math_util.h"
+ #include "audio/external.h"
+@@ -13,6 +13,7 @@
+ #endif
+ #include "game/mario_misc.h"
+ #include "game/game_init.h"
++#include "game/cheats_menu.h"
+ #include "game/ingame_menu.h"
+ #include "game/options_menu.h"
+ #include "pc/pc_main.h"
+@@ -223,6 +224,33 @@ static void optvideo_apply(UNUSED struct Option *self, s32 arg) {
+     if (!arg) configWindow.settings_changed = true;
+ }
+ 
++
++static void setCap_Wing(UNUSED struct Option *self, s32 arg) {
++    if (!arg) Cheats.WingCap = true;
++}
++static void setCap_Metal(UNUSED struct Option *self, s32 arg) {
++    if (!arg) Cheats.MetalCap = true;
++}
++static void setCap_Vanish(UNUSED struct Option *self, s32 arg) {
++    if (!arg) Cheats.VanishCap = true;
++}
++static void setCap_Remove(UNUSED struct Option *self, s32 arg) {
++    if (!arg) Cheats.RemoveCap = true;
++}
++static void setCap_Normal(UNUSED struct Option *self, s32 arg) {
++    Cheats.WingCap = false;
++    Cheats.MetalCap = false;
++    Cheats.VanishCap = false;
++    Cheats.RemoveCap = false;
++    if (!arg) Cheats.NormalCap = true;
++}
++static void setJBC(UNUSED struct Option *self, s32 arg) {
++    if (!arg)
++        Cheats.JBC = true;
++}
++
++
++
+ /* submenu option lists */
+ 
+ #ifdef BETTERCAMERA
+@@ -282,15 +310,45 @@ static struct Option optsAudio[] = {
+ };
+ 
+ static struct Option optsCheats[] = {
+-    DEF_OPT_TOGGLE( optsCheatsStr[0], &Cheats.EnableCheats ),
+-    DEF_OPT_TOGGLE( optsCheatsStr[1], &Cheats.MoonJump ),
+-    DEF_OPT_TOGGLE( optsCheatsStr[2], &Cheats.GodMode ),
+-    DEF_OPT_TOGGLE( optsCheatsStr[3], &Cheats.InfiniteLives ),
+-    DEF_OPT_TOGGLE( optsCheatsStr[4], &Cheats.SuperSpeed ),
+-    DEF_OPT_TOGGLE( optsCheatsStr[5], &Cheats.Responsive ),
+-    DEF_OPT_TOGGLE( optsCheatsStr[6], &Cheats.ExitAnywhere ),
+-    DEF_OPT_TOGGLE( optsCheatsStr[7], &Cheats.HugeMario ),
+-    DEF_OPT_TOGGLE( optsCheatsStr[8], &Cheats.TinyMario ),
++    DEF_OPT_TOGGLE(optsCheatsStr[0], &Cheats.EnableCheats),
++    DEF_OPT_TOGGLE(optsCheatsStr[1], &Cheats.MoonJump),
++    DEF_OPT_TOGGLE(optsCheatsStr[2], &Cheats.GodMode),
++    DEF_OPT_TOGGLE(optsCheatsStr[3], &Cheats.InfiniteLives),
++    DEF_OPT_TOGGLE(optsCheatsStr[4], &Cheats.SuperSpeed),
++    DEF_OPT_TOGGLE(optsCheatsStr[5], &Cheats.Responsive),
++    DEF_OPT_TOGGLE(optsCheatsStr[6], &Cheats.ExitAnywhere),
++    DEF_OPT_TOGGLE(optsCheatsStr[7], &Cheats.HugeMario),
++    DEF_OPT_TOGGLE(optsCheatsStr[8], &Cheats.TinyMario),
++    DEF_OPT_CHOICE(optsCheatsStr2[0], &Cheats.Coin, CoinChoices),
++    DEF_OPT_TOGGLE(optsCheatsStr2[1], &Cheats.Hover),
++    DEF_OPT_TOGGLE(optsCheatsStr2[2], &Cheats.Moon),
++    DEF_OPT_CHOICE(optsCheatsStr2[3], &Cheats.Run, SpeedChoices),
++    DEF_OPT_TOGGLE(optsCheatsStr2[4], &Cheats.NDB),
++    DEF_OPT_TOGGLE(optsCheatsStr2[5], &Cheats.Jump),
++    DEF_OPT_TOGGLE(optsCheatsStr2[6], &Cheats.SPD),
++    DEF_OPT_TOGGLE(optsCheatsStr2[7], &Cheats.TPF),
++    DEF_OPT_CHOICE(optsCheatsStr2[8], &Cheats.JB, SeqChoices),
++    DEF_OPT_BUTTON(optsCheatsStr2[9], setJBC),
++    DEF_OPT_TOGGLE(optsCheatsStr2[10], &Cheats.QuikEnd),
++    DEF_OPT_CHOICE(optsCheatsStr2[11], &Cheats.Hurt, HurtCheatChoices),
++    DEF_OPT_TOGGLE(optsCheatsStr2[12], &Cheats.Cann),
++    DEF_OPT_TOGGLE(optsCheatsStr2[13], &Cheats.AutoWK),
++    DEF_OPT_TOGGLE(optsCheatsStr2[14], &Cheats.GetShell),
++    DEF_OPT_TOGGLE(optsCheatsStr2[15], &Cheats.GetBob),
++    DEF_OPT_CHOICE(optsCheatsStr2[16], &Cheats.Spamba, SpamCheatChoices),
++    DEF_OPT_TOGGLE(optsCheatsStr2[17], &Cheats.Swim),
++    DEF_OPT_BUTTON(optsCheatsStr2[18], setCap_Wing),
++    DEF_OPT_BUTTON(optsCheatsStr2[19], setCap_Metal),
++    DEF_OPT_BUTTON(optsCheatsStr2[20], setCap_Vanish),
++    DEF_OPT_BUTTON(optsCheatsStr2[21], setCap_Remove),
++    DEF_OPT_BUTTON(optsCheatsStr2[22], setCap_Normal),
++    DEF_OPT_CHOICE(optsCheatsStr2[23], &Cheats.BLJAnywhere, bljCheatChoices),
++    DEF_OPT_CHOICE(optsCheatsStr2[24], &Cheats.PAC, PlayAsCheatChoices),
++    DEF_OPT_TOGGLE(optsCheatsStr2[25], &Cheats.Triple),
++    DEF_OPT_TOGGLE(optsCheatsStr2[26], &Cheats.Fly),
++    DEF_OPT_TOGGLE(optsCheatsStr2[27], &Cheats.NoBounds),
++    DEF_OPT_TOGGLE(optsCheatsStr2[28], &Cheats.FLJ),
++    DEF_OPT_TOGGLE(optsCheatsStr2[29], &Cheats.TimeStop),
+ 
+ };
+ 
+@@ -652,5 +710,5 @@ void optmenu_check_buttons(void) {
+         optmenu_option_timer = 0;
+     }
+ }
+-
++#endif
+ #endif // EXT_OPTIONS_MENU
+diff --git a/src/pc/cheats.h b/src/pc/cheats.h
+index eaf71ab4..42c13432 100644
+--- a/src/pc/cheats.h
++++ b/src/pc/cheats.h
+@@ -13,6 +13,37 @@ struct CheatList {
+     bool         ExitAnywhere;
+     bool         HugeMario;
+     bool         TinyMario;
++    unsigned int Coin;
++    bool         Hover;
++    bool         Moon;
++    unsigned int Run;
++    bool         NDB;
++    bool         Jump;
++    bool         SPD;
++    bool         TPF;
++    unsigned int JB;
++    bool         JBC;
++    bool         QuikEnd;
++    unsigned int Hurt;
++    bool         Cann;
++    bool         AutoWK;
++    bool         GetShell;
++    bool         GetBob;
++    unsigned int Spamba;
++    bool         Swim;
++    bool         WingCap;
++    bool         MetalCap;
++    bool         VanishCap;
++    bool         RemoveCap;
++    bool         NormalCap;
++    unsigned int BLJAnywhere;
++    unsigned int PAC;
++    bool         Triple;
++    bool         Fly;
++    bool         NoBounds;
++    bool         FLJ;
++    bool         TimeStop;
++    bool         TimeSlow;
+ };
+ 
+ extern struct CheatList Cheats;
+diff --git a/src/pc/configfile.c b/src/pc/configfile.c
+index 47111600..461d46e7 100644
+--- a/src/pc/configfile.c
++++ b/src/pc/configfile.c
+@@ -7,6 +7,7 @@
+ #include <ctype.h>
+ 
+ #include "platform.h"
++#include "cheats.h"
+ #include "configfile.h"
+ #include "cliopts.h"
+ #include "gfx/gfx_screen_config.h"
+@@ -138,6 +139,31 @@ static const struct ConfigOption options[] = {
+     {.name = "bettercam_degrade",    .type = CONFIG_TYPE_UINT, .uintValue = &configCameraDegrade},
+     #endif
+     {.name = "skip_intro",           .type = CONFIG_TYPE_BOOL, .boolValue = &configSkipIntro},
++    {.name = "enable_cheats",        .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.EnableCheats },
++    {.name = "moonjump",             .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.MoonJump },
++    {.name = "invincible",           .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.GodMode },
++    {.name = "infintie_lives",       .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.InfiniteLives },
++    {.name = "super_speed",          .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.SuperSpeed },
++    {.name = "controls",             .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.Responsive },
++    {.name = "exit_anywhere",        .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.ExitAnywhere },
++    {.name = "huge_mario",           .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.HugeMario },
++    {.name = "tiny_mario",           .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.TinyMario },
++    {.name = "coin",                 .type = CONFIG_TYPE_UINT, .uintValue = &Cheats.Coin },
++    {.name = "hover_mode",           .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.Hover },
++    {.name = "moon_gravity",         .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.Moon },
++    {.name = "run_speed",            .type = CONFIG_TYPE_UINT, .uintValue = &Cheats.Run },
++    {.name = "no_death_barrier",     .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.NDB },
++    {.name = "jumps_higher",         .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.Jump },
++    {.name = "speed_display",        .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.SPD },
++    {.name = "t_pose_float",         .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.TPF },
++    {.name = "cannon_anywhere",      .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.Cann },
++    {.name = "auto_wk",              .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.AutoWK },
++    {.name = "get_shell",            .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.GetShell },
++    {.name = "get_bobomb",           .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.GetBob },
++    {.name = "swift_swim",           .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.Swim },
++    {.name = "blj_anywhere",         .type = CONFIG_TYPE_UINT, .uintValue = &Cheats.BLJAnywhere },
++    {.name = "play_as",              .type = CONFIG_TYPE_UINT, .uintValue = &Cheats.PAC },
++    {.name = "flyer",                .type = CONFIG_TYPE_BOOL, .boolValue = &Cheats.Fly },
+     #ifdef DISCORDRPC
+     {.name = "discordrpc_enable",    .type = CONFIG_TYPE_BOOL, .boolValue = &configDiscordRPC},
+     #endif 
+diff --git a/src/pc/dynamic_options.c b/src/pc/dynamic_options.c
+new file mode 100644
+index 00000000..a47514bd
+--- /dev/null
++++ b/src/pc/dynamic_options.c
+@@ -0,0 +1,1637 @@
++#include <stdio.h>
++#include <dirent.h>
++#include <SDL2/SDL.h>
++#include "controller/controller_keyboard.h"
++#include "controller/controller_sdl.h"
++#include "game/object_list_processor.h"
++#include "game/spawn_object.h"
++#include "game/sound_init.h"
++#include "engine/level_script.h"
++#include "fs/fs.h"
++#include "levels.h"
++#include "utils.h"
++#include "configfile.h"
++#include "gfx_dimensions.h"
++#ifdef RENDER96_2_0
++#include "text/text-loader.h"
++#include "text/txtconv.h"
++#endif
++
++static void *make_copy(const void *p, int s) {
++    void *q = calloc(s, 1);
++    memcpy(q, p, s);
++    return q;
++}
++
++//
++// String utilities
++//
++
++static const char *string_to_configname(const char *str) {
++    if (str == NULL || strcmp(str, "NULL") == 0 || strcmp(str, "null") == 0) {
++        return NULL;
++    }
++    char *dstr = calloc(strlen(str) + 1, sizeof(char));
++    char *pstr = dstr;
++    for (; *str != 0; str++, pstr++) {
++        if ((*str >= '0' && *str <= '9') || (*str >= 'A' && *str <= 'Z') || (*str >= 'a' && *str <= 'z')) {
++            *pstr = *str;
++        } else {
++            *pstr = '_';
++        }
++    }
++    *pstr = 0;
++    return dstr;
++}
++
++static int string_to_int(const char *str) {
++    int x = 0;
++    if (strlen(str) > 2 && str[0] == '0' && str[1] == 'x') {
++        sscanf(str + 2, "%X", &x);
++    } else {
++        sscanf(str, "%d", &x);
++    }
++    return x;
++}
++
++//
++// Action list
++//
++
++typedef bool (*DynosActionFunction)(const char *);
++struct DynosAction {
++    const char *str;
++    DynosActionFunction action;
++};
++
++// "Construct On First Use" aka COFU
++static DA *dynos_get_action_list() {
++    static DA sDynosActions = da_type(struct DynosAction);
++    return &sDynosActions;
++}
++
++static DynosActionFunction dynos_get_action(const char *funcName) {
++    DA *dynosActions = dynos_get_action_list();
++    for (int i = 0; i != dynosActions->count; ++i) {
++        if (strcmp(da_getp(*dynosActions, i, struct DynosAction)->str, funcName) == 0) {
++            return da_getp(*dynosActions, i, struct DynosAction)->action;
++        }
++    }
++    return NULL;
++}
++
++void dynos_add_action(const char *funcName, bool (*funcPtr)(const char *), bool overwrite) {
++    DA *dynosActions = dynos_get_action_list();
++    for (int i = 0; i != dynosActions->count; ++i) {
++        if (strcmp(da_getp(*dynosActions, i, struct DynosAction)->str, funcName) == 0) {
++            if (overwrite) da_getp(*dynosActions, i, struct DynosAction)->action = funcPtr;
++            return;
++        }
++    }
++    struct DynosAction dynosAction = { make_copy(funcName, strlen(funcName) + 1), funcPtr };
++    da_add(*dynosActions, dynosAction);
++}
++
++//
++// Utils
++//
++
++static bool dynos_is_txt_file(const char *filename, unsigned int length) {
++    return
++        length >= 4 &&
++        filename[length - 4] == '.' &&
++        filename[length - 3] == 't' &&
++        filename[length - 2] == 'x' &&
++        filename[length - 1] == 't';
++}
++
++//
++// Tokenizer
++//
++
++#define DYNOS_STR_TOKENS_MAX_LENGTH 64
++#define DYNOS_STR_TOKENS_MAX_COUNT  128
++#define DYNOS_LINE_MAX_LENGTH       (DYNOS_STR_TOKENS_MAX_LENGTH * DYNOS_STR_TOKENS_MAX_COUNT)
++
++struct StrTokens {
++    char tokens[DYNOS_STR_TOKENS_MAX_COUNT][DYNOS_STR_TOKENS_MAX_LENGTH];
++    unsigned int count;
++};
++
++static struct StrTokens dynos_split_string(const char *str) {
++    struct StrTokens strtk = { .count = 0 };
++    bool treatSpacesAsChar = false;
++    for (int l = 0;; str++) {
++        char c = *str;
++        if (c == 0 || (c == ' ' && !treatSpacesAsChar) || c == '\t' || c == '\r' || c == '\n' || c == '#') {
++            if (l > 0) {
++                strtk.tokens[strtk.count][l] = 0;
++                strtk.count++;
++                if (strtk.count == DYNOS_STR_TOKENS_MAX_COUNT) {
++                    break;
++                }
++                l = 0;
++            }
++            if (c == 0 || c == '#') {
++                break;
++            }
++        } else if (c == '\"') {
++            treatSpacesAsChar = !treatSpacesAsChar;
++        } else if (l < (DYNOS_STR_TOKENS_MAX_LENGTH - 1)) {
++            strtk.tokens[strtk.count][l] = c;
++            l++;
++        }
++    }
++    return strtk;
++}
++
++//
++// Types and data
++//
++
++enum DynosOptType {
++    DOPT_TOGGLE,
++    DOPT_CHOICE,
++    DOPT_SCROLL,
++    DOPT_BIND,
++    DOPT_BUTTON,
++    DOPT_SUBMENU,
++
++    // These ones are used by the Warp to Level built-in submenu
++    DOPT_CHOICELEVEL,
++    DOPT_CHOICESTAR,
++};
++
++struct DynosOption {
++    const char *name;
++    const char *configName; // Name used in sm64config.txt
++    const unsigned char *label;
++    const unsigned char *label2; // Full caps label, displayed with colored font
++    struct DynosOption *prev;
++    struct DynosOption *next;
++    struct DynosOption *parent;
++    bool dynos; // true from create, false from convert
++
++    enum DynosOptType type;
++    union {
++
++        // TOGGLE
++        struct Toggle {
++            bool *ptog;
++        } toggle;
++
++        // CHOICE
++        struct Choice {
++            const unsigned char **choices;
++            int count;
++            int *pindex;
++        } choice;
++
++        // SCROLL
++        struct Scroll {
++            int min;
++            int max;
++            int step;
++            int *pvalue;
++        } scroll;
++
++        // BIND
++        struct Bind {
++            unsigned int mask;
++            unsigned int *pbinds;
++            int index;
++        } bind;
++
++        // BUTTON
++        struct Button {
++            const char *funcName;
++        } button;
++
++        // SUBMENU
++        struct Submenu {
++            struct DynosOption *child;
++            bool empty;
++        } submenu;
++    };
++};
++
++static struct DynosOption *sPrevOpt = NULL;
++static struct DynosOption *sDynosMenu = NULL;
++static struct DynosOption *sOptionsMenu = NULL;
++static const unsigned char *sDynosTextDynosMenu;
++static const unsigned char *sDynosTextA;
++static const unsigned char *sDynosTextOpenLeft;
++static const unsigned char *sDynosTextCloseLeft;
++#ifndef RENDER96_2_0
++static const unsigned char *sDynosTextOptionsMenu;
++static const unsigned char *sDynosTextDisabled;
++static const unsigned char *sDynosTextEnabled;
++static const unsigned char *sDynosTextNone;
++static const unsigned char *sDynosTextDotDotDot;
++static const unsigned char *sDynosTextOpenRight;
++static const unsigned char *sDynosTextCloseRight;
++#else
++#define sDynosTextOptionsMenu r96str("TEXT_OPT_OPTIONS", false)
++#define sDynosTextDisabled    r96str("TEXT_OPT_DISABLED", true)
++#define sDynosTextEnabled     r96str("TEXT_OPT_ENABLED", true)
++#define sDynosTextNone        r96str("TEXT_OPT_UNBOUND", false)
++#define sDynosTextDotDotDot   r96str("TEXT_OPT_PRESSKEY", false)
++#define sDynosTextOpenRight   r96str("TEXT_OPT_BUTTON1", true)
++#define sDynosTextCloseRight  r96str("TEXT_OPT_BUTTON2", true)
++#endif
++
++//
++// Constructors
++//
++
++static struct DynosOption *dynos_add_option(const char *name, const char *configName, const char *label, const char *label2) {
++    struct DynosOption *opt = calloc(1, sizeof(struct DynosOption));
++    opt->name       = make_copy(name, strlen(name) + 1);
++    opt->configName = string_to_configname(configName);
++    opt->label      = str64h(label);
++    opt->label2     = str64h(label2);
++    opt->dynos      = true;
++    if (sPrevOpt == NULL) { // The very first option
++        opt->prev   = NULL;
++        opt->next   = NULL;
++        opt->parent = NULL;
++        sDynosMenu  = opt;
++    } else {
++    if (sPrevOpt->type == DOPT_SUBMENU && sPrevOpt->submenu.empty) { // First option of a sub-menu
++        opt->prev   = NULL;
++        opt->next   = NULL;
++        opt->parent = sPrevOpt;
++        sPrevOpt->submenu.child = opt;
++        sPrevOpt->submenu.empty = false;
++    } else {
++        opt->prev   = sPrevOpt;
++        opt->next   = NULL;
++        opt->parent = sPrevOpt->parent;
++        sPrevOpt->next = opt;
++    }
++    }
++    sPrevOpt = opt;
++    return opt;
++}
++
++static void dynos_end_submenu() {
++    if (sPrevOpt) {
++        if (sPrevOpt->type == DOPT_SUBMENU && sPrevOpt->submenu.empty) { // ENDMENU command following a SUBMENU command
++            sPrevOpt->submenu.empty = false;
++        } else {
++            sPrevOpt = sPrevOpt->parent;
++        }
++    }
++}
++
++static void dynos_create_submenu(const char *name, const char *label, const char *label2) {
++    struct DynosOption *opt = dynos_add_option(name, NULL, label, label2);
++    opt->type               = DOPT_SUBMENU;
++    opt->submenu.child      = NULL;
++    opt->submenu.empty      = true;
++}
++
++static void dynos_create_toggle(const char *name, const char *configName, const char *label, int initValue) {
++    struct DynosOption *opt = dynos_add_option(name, configName, label, label);
++    opt->type               = DOPT_TOGGLE;
++    opt->toggle.ptog        = calloc(1, sizeof(bool));
++    *opt->toggle.ptog       = (unsigned char) initValue;
++}
++
++static void dynos_create_scroll(const char *name, const char *configName, const char *label, int min, int max, int step, int initValue) {
++    struct DynosOption *opt = dynos_add_option(name, configName, label, label);
++    opt->type               = DOPT_SCROLL;
++    opt->scroll.min         = min;
++    opt->scroll.max         = max;
++    opt->scroll.step        = step;
++    opt->scroll.pvalue      = calloc(1, sizeof(int));
++    *opt->scroll.pvalue     = initValue;
++}
++
++static void dynos_create_choice(const char *name, const char *configName, const char *label, const char **choices, int count, int initValue) {
++    struct DynosOption *opt = dynos_add_option(name, configName, label, label);
++    opt->type               = DOPT_CHOICE;
++    opt->choice.choices     = calloc(count, sizeof(const unsigned char *));
++    for (int i = 0; i != count; ++i) {
++    opt->choice.choices[i]  = str64h(choices[i]);
++    }
++    opt->choice.count       = count;
++    opt->choice.pindex      = calloc(1, sizeof(int));
++    *opt->choice.pindex     = initValue;
++}
++
++static void dynos_create_button(const char *name, const char *label, const char *funcName) {
++    struct DynosOption *opt = dynos_add_option(name, NULL, label, label);
++    opt->type               = DOPT_BUTTON;
++    opt->button.funcName    = make_copy(funcName, strlen(funcName) + 1);
++}
++
++static void dynos_create_bind(const char *name, const char *configName, const char *label, unsigned int mask, unsigned int *binds) {
++    struct DynosOption *opt = dynos_add_option(name, configName, label, label);
++    opt->type               = DOPT_BIND;
++    opt->bind.mask          = mask;
++    opt->bind.pbinds        = calloc(MAX_BINDS, sizeof(unsigned int));
++    for (int i = 0; i != MAX_BINDS; ++i) {
++    opt->bind.pbinds[i]     = binds[i];
++    }
++    opt->bind.index         = 0;
++}
++
++static void dynos_read_file(const char *folder, const char *filename) {
++
++    // Open file
++    char fullname[SYS_MAX_PATH];
++    snprintf(fullname, SYS_MAX_PATH, "%s/%s", folder, filename);
++    FILE *f = fopen(fullname, "rt");
++    if (f == NULL) {
++        return;
++    }
++
++    // Read file and create options
++    char buffer[DYNOS_LINE_MAX_LENGTH];
++    while (fgets(buffer, DYNOS_LINE_MAX_LENGTH, f) != NULL) {
++        struct StrTokens strtk = dynos_split_string(buffer);
++
++        // Empty line
++        if (strtk.count == 0) {
++            continue;
++        }
++
++        // SUBMENU [Name] [Label]
++        if (strcmp(strtk.tokens[0], "SUBMENU") == 0 && strtk.count >= 4) {
++            dynos_create_submenu(strtk.tokens[1], strtk.tokens[2], strtk.tokens[3]);
++            continue;
++        }
++
++        // TOGGLE  [Name] [Label] [ConfigName] [InitialValue]
++        if (strcmp(strtk.tokens[0], "TOGGLE") == 0 && strtk.count >= 5) {
++            dynos_create_toggle(strtk.tokens[1], strtk.tokens[3], strtk.tokens[2], string_to_int(strtk.tokens[4]));
++            continue;
++        }
++
++        // SCROLL  [Name] [Label] [ConfigName] [InitialValue] [Min] [Max] [Step]
++        if (strcmp(strtk.tokens[0], "SCROLL") == 0 && strtk.count >= 8) {
++            dynos_create_scroll(strtk.tokens[1], strtk.tokens[3], strtk.tokens[2], string_to_int(strtk.tokens[5]), string_to_int(strtk.tokens[6]), string_to_int(strtk.tokens[7]), string_to_int(strtk.tokens[4]));
++            continue;
++        }
++
++        // CHOICE  [Name] [Label] [ConfigName] [InitialValue] [ChoiceStrings...]
++        if (strcmp(strtk.tokens[0], "CHOICE") == 0 && strtk.count >= 6) {
++            const char *choices[DYNOS_STR_TOKENS_MAX_COUNT];
++            for (unsigned int i = 0; i != strtk.count - 5; ++i) {
++                choices[i] = &strtk.tokens[5 + i][0];
++            }
++            dynos_create_choice(strtk.tokens[1], strtk.tokens[3], strtk.tokens[2], choices, strtk.count - 5, string_to_int(strtk.tokens[4]));
++            continue;
++        }
++
++        // BUTTON  [Name] [Label] [FuncName]
++        if (strcmp(strtk.tokens[0], "BUTTON") == 0 && strtk.count >= 4) {
++            dynos_create_button(strtk.tokens[1], strtk.tokens[2], strtk.tokens[3]);
++            continue;
++        }
++
++        // BIND    [Name] [Label] [ConfigName] [Mask] [DefaultValues]
++        if (strcmp(strtk.tokens[0], "BIND") == 0 && strtk.count >= 5 + MAX_BINDS) {
++            unsigned int binds[MAX_BINDS];
++            for (int i = 0; i != MAX_BINDS; ++i) {
++                binds[i] = string_to_int(strtk.tokens[5 + i]);
++            }
++            dynos_create_bind(strtk.tokens[1], strtk.tokens[3], strtk.tokens[2], string_to_int(strtk.tokens[4]), binds);
++            continue;
++        }
++
++        // ENDMENU
++        if (strcmp(strtk.tokens[0], "ENDMENU") == 0) {
++            dynos_end_submenu();
++            continue;
++        }
++    }
++    fclose(f);
++}
++
++static void dynos_load_options() {
++    char optionsFolder[SYS_MAX_PATH];
++    snprintf(optionsFolder, SYS_MAX_PATH, "%s/%s", sys_exe_path(), FS_BASEDIR);
++    DIR *dir = opendir(optionsFolder);
++    sPrevOpt = NULL;
++    if (dir) {
++        struct dirent *ent = NULL;
++        while ((ent = readdir(dir)) != NULL) {
++            if (dynos_is_txt_file(ent->d_name, strlen(ent->d_name))) {
++                dynos_read_file(optionsFolder, ent->d_name);
++            }
++        }
++        closedir(dir);
++    }
++}
++
++//
++// Vanilla options menu
++//
++
++// Not my problem
++#pragma GCC diagnostic push
++#pragma GCC diagnostic ignored "-Wsizeof-pointer-div"
++#pragma GCC diagnostic ignored "-Wdiscarded-qualifiers"
++#pragma GCC diagnostic ignored "-Wpointer-sign"
++#pragma GCC diagnostic ignored "-Wsign-compare"
++#define optmenu_toggle optmenu_toggle_unused
++#define optmenu_draw optmenu_draw_unused
++#define optmenu_draw_prompt optmenu_draw_prompt_unused
++#define optmenu_check_buttons optmenu_check_buttons_unused
++#define optmenu_open optmenu_open_unused
++#define DYNOS_INL
++#include "game/options_menu.c"
++#undef DYNOS_INL
++#undef optmenu_toggle
++#undef optmenu_draw
++#undef optmenu_draw_prompt
++#undef optmenu_check_buttons
++#undef optmenu_open
++#pragma GCC diagnostic pop
++// Now, that's my problem
++
++//
++// Vanilla actions
++//
++
++typedef void (*VanillaActionFunction)(struct Option *, int);
++struct VanillaAction {
++    const char *str;
++    VanillaActionFunction action;
++};
++
++// "Construct On First Use" aka COFU
++static DA *dynos_get_vanilla_action_list() {
++    static DA sVanillaActions = da_type(struct VanillaAction);
++    return &sVanillaActions;
++}
++
++static VanillaActionFunction dynos_get_vanilla_action(const char *name) {
++    DA *vanillaActions = dynos_get_vanilla_action_list();
++    for (int i = 0; i != vanillaActions->count; ++i) {
++        if (strcmp(da_getp(*vanillaActions, i, struct VanillaAction)->str, name) == 0) {
++            return da_getp(*vanillaActions, i, struct VanillaAction)->action;
++        }
++    }
++    return NULL;
++}
++
++static void dynos_add_vanilla_action(const char *name, VanillaActionFunction func) {
++    DA *vanillaActions = dynos_get_vanilla_action_list();
++    for (int i = 0; i != vanillaActions->count; ++i) {
++        if (strcmp(da_getp(*vanillaActions, i, struct VanillaAction)->str, name) == 0) {
++            return;
++        }
++    }
++    struct VanillaAction vanillaAction = { name, func };
++    da_add(*vanillaActions, vanillaAction);
++}
++
++static bool dynos_call_vanilla_action(const char *optName) {
++    VanillaActionFunction func = dynos_get_vanilla_action(optName);
++    if (func) {
++        func(NULL, 0);
++        return true;
++    }
++    return false;
++}
++
++//
++// Convert classic options menu into DynOS menu
++//
++
++static struct DynosOption *dynos_convert_option(const unsigned char *label, const unsigned char *label2) {
++    struct DynosOption *opt = calloc(1, sizeof(struct DynosOption));
++    opt->name        = (const char *) label;
++    opt->configName  = NULL;
++#ifdef RENDER96_2_0
++    opt->label       = label;
++#else
++    opt->label       = str64d(make_copy(label, str64l(label) + 1));
++#endif
++    opt->label2      = label2;
++    opt->dynos       = false;
++    if (sPrevOpt == NULL) { // The very first option
++        opt->prev    = NULL;
++        opt->next    = NULL;
++        opt->parent  = NULL;
++        sOptionsMenu = opt;
++    } else {
++    if (sPrevOpt->type == DOPT_SUBMENU && sPrevOpt->submenu.empty) { // First option of a sub-menu
++        opt->prev    = NULL;
++        opt->next    = NULL;
++        opt->parent  = sPrevOpt;
++        sPrevOpt->submenu.child = opt;
++        sPrevOpt->submenu.empty = false;
++    } else {
++        opt->prev    = sPrevOpt;
++        opt->next    = NULL;
++        opt->parent  = sPrevOpt->parent;
++        sPrevOpt->next = opt;
++    }
++    }
++    sPrevOpt = opt;
++    return opt;
++}
++
++static void dynos_convert_submenu(const unsigned char *label, const unsigned char *label2) {
++    struct DynosOption *opt = dynos_convert_option(label, label2);
++    opt->type               = DOPT_SUBMENU;
++    opt->submenu.child      = NULL;
++    opt->submenu.empty      = true;
++}
++
++static void dynos_convert_toggle(const unsigned char *label, bool *bval) {
++    struct DynosOption *opt = dynos_convert_option(label, label);
++    opt->type               = DOPT_TOGGLE;
++    opt->toggle.ptog        = (bool *) bval;
++}
++
++static void dynos_convert_scroll(const unsigned char *label, int min, int max, int step, unsigned int *uval) {
++    struct DynosOption *opt = dynos_convert_option(label, label);
++    opt->type               = DOPT_SCROLL;
++    opt->scroll.min         = min;
++    opt->scroll.max         = max;
++    opt->scroll.step        = step;
++    opt->scroll.pvalue      = (int *) uval;
++}
++
++static void dynos_convert_choice(const unsigned char *label, const unsigned char **choices, int count, unsigned int *uval) {
++    struct DynosOption *opt = dynos_convert_option(label, label);
++    opt->type               = DOPT_CHOICE;
++    opt->choice.choices     = choices;
++    opt->choice.count       = count;
++    opt->choice.pindex      = (int *) uval;
++}
++
++static void dynos_convert_button(const unsigned char *label, VanillaActionFunction action) {
++    struct DynosOption *opt = dynos_convert_option(label, label);
++    opt->type               = DOPT_BUTTON;
++    opt->button.funcName    = make_copy("dynos_call_vanilla_action", 26);
++    dynos_add_vanilla_action(opt->name, action);
++}
++
++static void dynos_convert_bind(const unsigned char *label, unsigned int *binds) {
++    struct DynosOption *opt = dynos_convert_option(label, label);
++    opt->type               = DOPT_BIND;
++    opt->bind.mask          = 0;
++    opt->bind.pbinds        = binds;
++    opt->bind.index         = 0;
++}
++
++static void dynos_convert_submenu_options(struct SubMenu *submenu) {
++    for (int i = 0; i != submenu->numOpts; ++i) {
++        struct Option *opt = &submenu->opts[i];
++        switch (opt->type) {
++            case OPT_TOGGLE:
++                dynos_convert_toggle(opt->label, opt->bval);
++                break;
++
++            case OPT_CHOICE:
++                dynos_convert_choice(opt->label, opt->choices, opt->numChoices, opt->uval);
++                break;
++
++            case OPT_SCROLL:
++                dynos_convert_scroll(opt->label, opt->scrMin, opt->scrMax, opt->scrStep, opt->uval);
++                break;
++
++            case OPT_SUBMENU:
++                dynos_convert_submenu(opt->label, opt->nextMenu->label);
++                dynos_convert_submenu_options(opt->nextMenu);
++                dynos_end_submenu();
++                break;
++
++            case OPT_BIND:
++                dynos_convert_bind(opt->label, opt->uval);
++                break;
++
++            case OPT_BUTTON:
++                dynos_convert_button(opt->label, opt->actionFn);
++                break;
++
++            default:
++                break;
++        }
++    }
++}
++
++static void dynos_convert_options_menu() {
++    sPrevOpt = NULL;
++    dynos_convert_submenu_options(&menuMain);
++    dynos_add_action("dynos_call_vanilla_action", dynos_call_vanilla_action, true);
++}
++
++//
++// Loop through DynosOptions
++//
++
++typedef bool (*DynosLoopFunc)(struct DynosOption *, void *);
++static struct DynosOption *dynos_loop(struct DynosOption *opt, DynosLoopFunc func, void *data) {
++    while (opt) {
++        if (opt->type == DOPT_SUBMENU) {
++            struct DynosOption *res = dynos_loop(opt->submenu.child, func, data);
++            if (res) {
++                return res;
++            }
++        } else {
++            if (func(opt, data)) {
++                return opt;
++            }
++        }
++        opt = opt->next;
++    }
++    return NULL;
++}
++
++//
++// Controllers
++//
++
++static bool dynos_controller_is_key_down(int i, int k) {
++
++    // Keyboard
++    if (i == 0 && k >= 0 && k < SDL_NUM_SCANCODES) {
++        return SDL_GetKeyboardState(NULL)[k];
++    }
++
++    // Game Controller
++    else if (k >= 0x1000) {
++
++        // Button
++        int b = (k - 0x1000);
++        if (b < SDL_CONTROLLER_BUTTON_MAX) {
++            return SDL_GameControllerGetButton(SDL_GameControllerOpen(i - 1), b);
++        }
++
++        // Axis
++        int a = (k - 0x1000 - SDL_CONTROLLER_BUTTON_MAX);
++        if (a < SDL_CONTROLLER_AXIS_MAX * 2) {
++            int axis = SDL_GameControllerGetAxis(SDL_GameControllerOpen(i - 1), a / 2);
++            if (a & 1) return (axis < SDL_JOYSTICK_AXIS_MIN / 2);
++            else       return (axis > SDL_JOYSTICK_AXIS_MAX / 2);
++        }
++    }
++
++    // Invalid
++    return false;
++}
++
++#define MAX_CONTS 8
++static bool dynos_controller_update(struct DynosOption *opt, void *data) {
++    if (opt->type == DOPT_BIND) {
++        OSContPad *pad = (OSContPad *) data;
++        for (int i = 0; i < MAX_CONTS; ++i)
++        for (int j = 0; j < MAX_BINDS; ++j) {
++            pad->button |= opt->bind.mask * dynos_controller_is_key_down(i, opt->bind.pbinds[j]);
++        }
++    }
++    return false;
++}
++
++#define MAX_GKEYS (SDL_CONTROLLER_BUTTON_MAX + SDL_CONTROLLER_AXIS_MAX * 2)
++static int sBindingState = 0; // 0 = No bind, 1 = Wait for all keys released, 2 = Return first pressed key
++static int dynos_controller_get_key_pressed() {
++
++    // Keyboard
++    for (int k = 0; k < SDL_NUM_SCANCODES; ++k) {
++        if (dynos_controller_is_key_down(0, k)) {
++            if (sBindingState == 1) return VK_INVALID;
++            return k;
++        }
++    }
++
++    // Game Controller
++    for (int i = 1; i < MAX_CONTS; ++i)
++    for (int k = 0; k < MAX_GKEYS; ++k) {
++        if (dynos_controller_is_key_down(i, k + 0x1000)) {
++            if (sBindingState == 1) return VK_INVALID;
++            return k + 0x1000;
++        }
++    }
++
++    // No key
++    sBindingState = 2;
++    return VK_INVALID;
++}
++
++//
++// Config
++//
++
++static const char *sDynosConfigFilename = "DynOSconfig.cfg";
++
++static bool dynos_get_option_config(struct DynosOption *opt, void *data) {
++    unsigned char type = *(unsigned char *) ((void **) data)[0];
++    const char *name = (const char *) ((void **) data)[1];
++    return (opt->configName != NULL && strcmp(opt->configName, name) == 0 && opt->type == type);
++}
++
++static bool dynos_read_config_type_and_name(FILE *f, unsigned char *type, char *name) {
++
++    // Read type
++    if (fread(type, sizeof(unsigned char), 1, f) != 1) {
++        return false;
++    }
++
++    // Read string length
++    unsigned char len = 0;
++    if (fread(&len, sizeof(unsigned char), 1, f) != 1) {
++        return false;
++    }
++
++    // Read config name
++    if (fread(name, sizeof(char), len, f) != len) {
++        return false;
++    }
++    name[len] = 0;
++    return true;
++}
++
++static void dynos_load_config() {
++    char filename[SYS_MAX_PATH];
++    snprintf(filename, SYS_MAX_PATH, "%s/%s", sys_user_path(), sDynosConfigFilename);
++    FILE *f = fopen(filename, "rb");
++    if (f == NULL) return;
++    while (true) {
++        unsigned char type;
++        char name[DYNOS_STR_TOKENS_MAX_LENGTH];
++        if (!dynos_read_config_type_and_name(f, &type, name)) {
++            break;
++        }
++
++        struct DynosOption *opt = dynos_loop(sDynosMenu, dynos_get_option_config, (void **) (void *[]){ &type, name });
++        if (opt != NULL) {
++            switch (opt->type) {
++                case DOPT_TOGGLE:
++                    fread(opt->toggle.ptog, sizeof(bool), 1, f);
++                    break;
++
++                case DOPT_CHOICE:
++                    fread(opt->choice.pindex, sizeof(int), 1, f);
++                    break;
++
++                case DOPT_SCROLL:
++                    fread(opt->scroll.pvalue, sizeof(int), 1, f);
++                    break;
++
++                case DOPT_BIND:
++                    fread(opt->bind.pbinds, sizeof(unsigned int), MAX_BINDS, f);
++                    break;
++
++                default:
++                    break;
++            }
++        }
++    }
++    fclose(f);
++}
++
++static void dynos_write_config_type_and_name(FILE *f, unsigned char type, const char *name) {
++    unsigned char len = (unsigned char) strlen(name);
++    fwrite(&type, sizeof(unsigned char), 1, f);
++    fwrite(&len, sizeof(unsigned char), 1, f);
++    fwrite(name, sizeof(char), len, f);
++}
++
++static bool dynos_save_option_config(struct DynosOption *opt, void *data) {
++    if (opt->configName != NULL) {
++        FILE *f = (FILE *) data;
++        switch (opt->type) {
++            case DOPT_TOGGLE:
++                dynos_write_config_type_and_name(f, DOPT_TOGGLE, opt->configName);
++                fwrite(opt->toggle.ptog, sizeof(bool), 1, f);
++                break;
++
++            case DOPT_CHOICE:
++                dynos_write_config_type_and_name(f, DOPT_CHOICE, opt->configName);
++                fwrite(opt->choice.pindex, sizeof(int), 1, f);
++                break;
++
++            case DOPT_SCROLL:
++                dynos_write_config_type_and_name(f, DOPT_SCROLL, opt->configName);
++                fwrite(opt->scroll.pvalue, sizeof(int), 1, f);
++                break;
++
++            case DOPT_BIND:
++                dynos_write_config_type_and_name(f, DOPT_BIND, opt->configName);
++                fwrite(opt->bind.pbinds, sizeof(unsigned int), MAX_BINDS, f);
++                break;
++
++            default:
++                break;
++        }
++    }
++    return 0;
++}
++
++static void dynos_save_config() {
++    char filename[SYS_MAX_PATH];
++    snprintf(filename, SYS_MAX_PATH, "%s/%s", sys_user_path(), sDynosConfigFilename);
++    FILE *f = fopen(filename, "wb");
++    if (f == NULL) return;
++    dynos_loop(sDynosMenu, dynos_save_option_config, (void *) f);
++    fclose(f);
++}
++
++//
++// Get/Set values
++//
++
++static bool dynos_get(struct DynosOption *opt, void *data) {
++    return (strcmp(opt->name, (const char *) data) == 0);
++}
++
++int dynos_get_value(const char *name) {
++    struct DynosOption *opt = dynos_loop(sDynosMenu, dynos_get, (void *) name);
++    if (opt) {
++        switch (opt->type) {
++            case DOPT_TOGGLE:      return (int) *opt->toggle.ptog;
++            case DOPT_CHOICE:      return *opt->choice.pindex;
++            case DOPT_CHOICELEVEL: return *opt->choice.pindex;
++            case DOPT_CHOICESTAR:  return *opt->choice.pindex;
++            case DOPT_SCROLL:      return *opt->scroll.pvalue;
++            default:               break;
++        }
++    }
++    return 0;
++}
++
++void dynos_set_value(const char *name, int value) {
++    struct DynosOption *opt = dynos_loop(sDynosMenu, dynos_get, (void *) name);
++    if (opt) {
++        switch (opt->type) {
++            case DOPT_TOGGLE:      *opt->toggle.ptog = (bool) value; break;
++            case DOPT_CHOICE:      *opt->choice.pindex = value; break;
++            case DOPT_CHOICELEVEL: *opt->choice.pindex = value; break;
++            case DOPT_CHOICESTAR:  *opt->choice.pindex = value; break;
++            case DOPT_SCROLL:      *opt->scroll.pvalue = value; break;
++            default:               break;
++        }
++    }
++}
++
++//
++// Render
++//
++
++static struct DynosOption *sCurrentMenu = NULL;
++static struct DynosOption *sCurrentOpt = NULL;
++
++static int dynos_get_render_string_length(const unsigned char *str64) {
++    int length = 0;
++    for (; *str64 != DIALOG_CHAR_TERMINATOR; ++str64) {
++        length += str64w(*str64);
++    }
++    return length;
++}
++
++static void dynos_render_string(const unsigned char *str64, int x, int y) {
++    create_dl_translation_matrix(MENU_MTX_PUSH, x, y, 0);
++    for (; *str64 != DIALOG_CHAR_TERMINATOR; ++str64) {
++        if (*str64 != DIALOG_CHAR_SPACE) {
++            if (*str64 == 253) { // underscore
++                create_dl_translation_matrix(MENU_MTX_NOPUSH, -1, -5, 0);
++                void **fontLUT = (void **) segmented_to_virtual(main_font_lut);
++                void *packedTexture = segmented_to_virtual(fontLUT[159]);
++                gDPPipeSync(gDisplayListHead++);
++                gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_16b, 1, VIRTUAL_TO_PHYSICAL(packedTexture));
++                gSPDisplayList(gDisplayListHead++, dl_ia_text_tex_settings);
++                create_dl_translation_matrix(MENU_MTX_NOPUSH, 0, +5, 0);
++            } else {
++                void **fontLUT = (void **) segmented_to_virtual(main_font_lut);
++                void *packedTexture = segmented_to_virtual(fontLUT[*str64]);
++                gDPPipeSync(gDisplayListHead++);
++                gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_16b, 1, VIRTUAL_TO_PHYSICAL(packedTexture));
++                gSPDisplayList(gDisplayListHead++, dl_ia_text_tex_settings);
++            }
++        }
++        create_dl_translation_matrix(MENU_MTX_NOPUSH, str64w(*str64), 0, 0);
++    }
++    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
++}
++
++static void dynos_print_string(const unsigned char *str64, int x, int y, unsigned int rgbaFront, unsigned int rgbaBack, bool alignLeft) {
++    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
++    if ((rgbaBack & 0xFF) != 0) {
++        gDPSetEnvColor(gDisplayListHead++, ((rgbaBack >> 24) & 0xFF), ((rgbaBack >> 16) & 0xFF), ((rgbaBack >> 8) & 0xFF), ((rgbaBack >> 0) & 0xFF));
++        if (alignLeft) {
++            dynos_render_string(str64, GFX_DIMENSIONS_FROM_LEFT_EDGE(x) + 1, y - 1);
++        } else {
++            dynos_render_string(str64, GFX_DIMENSIONS_FROM_RIGHT_EDGE(x + dynos_get_render_string_length(str64) - 1), y - 1);
++        }
++    }
++    if ((rgbaFront & 0xFF) != 0) {
++        gDPSetEnvColor(gDisplayListHead++, ((rgbaFront >> 24) & 0xFF), ((rgbaFront >> 16) & 0xFF), ((rgbaFront >> 8) & 0xFF), ((rgbaFront >> 0) & 0xFF));
++        if (alignLeft) {
++            dynos_render_string(str64, GFX_DIMENSIONS_FROM_LEFT_EDGE(x), y);
++        } else {
++            dynos_render_string(str64, GFX_DIMENSIONS_FROM_RIGHT_EDGE(x + dynos_get_render_string_length(str64)), y);
++        }
++    }
++    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
++    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
++}
++
++static void dynos_print_box(int x, int y, int w, int h, unsigned int rgbaColor, bool alignLeft) {
++    if ((rgbaColor && 0xFF) != 0) {
++        Mtx *matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
++        if (!matrix) return;
++        if (alignLeft) {
++            create_dl_translation_matrix(MENU_MTX_PUSH, GFX_DIMENSIONS_FROM_LEFT_EDGE(x), y + h, 0);
++        } else {
++            create_dl_translation_matrix(MENU_MTX_PUSH, GFX_DIMENSIONS_FROM_RIGHT_EDGE(x + w), y + h, 0);
++        }
++        guScale(matrix, (float) w / 130.f, (float) h / 80.f, 1.f);
++        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(matrix), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
++        gDPSetEnvColor(gDisplayListHead++, ((rgbaColor >> 24) & 0xFF), ((rgbaColor >> 16) & 0xFF), ((rgbaColor >> 8) & 0xFF), ((rgbaColor >> 0) & 0xFF));
++        gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
++        gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
++        gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
++    }
++}
++
++static inline int dynos_get_label2_x(int x, const unsigned char *str) {
++    int len = 0;
++    while (*str != GLOBAR_CHAR_TERMINATOR) ++str, ++len;
++    return x - len * 6; // stride is 12
++}
++
++//
++// Options menu
++//
++
++#ifdef RENDER96_2_0
++static const unsigned char *r96lang(struct DynosOption *opt) {
++    static unsigned char buffer[DYNOS_STR_TOKENS_MAX_LENGTH];
++    unsigned char *s = getTranslatedText(languages[*opt->choice.pindex]->name);
++    memcpy(buffer, s, str64l(s) + 1);
++    free(s);
++    opt->choice.count = languagesAmount;
++    return str64d(buffer);
++}
++
++static const unsigned char *r96str(const char *str64, bool decaps) {
++    static unsigned char buffer[DYNOS_STR_TOKENS_MAX_LENGTH];
++    unsigned char *s = get_key_string((char *) str64);
++    memcpy(buffer, s, str64l(s) + 1);
++    return (decaps ? str64d(buffer) : buffer);
++}
++
++#define get_label(opt)  (opt->dynos ? opt->label : r96str((const char *) opt->label, true))
++#define get_label2(opt) (opt->dynos ? opt->label2 : r96str((const char *) opt->label2, false))
++#define get_choice(opt) (opt->dynos ? opt->choice.choices[*opt->choice.pindex] : (strcmp((const char *) opt->label, (const char *) optsGameStr[0]) == 0 ? r96lang(opt) : r96str((const char *) opt->choice.choices[*opt->choice.pindex], true)))
++#else
++#define get_label(opt)  (opt->label)
++#define get_label2(opt) (opt->label2)
++#define get_choice(opt) (opt->choice.choices[*opt->choice.pindex])
++#endif
++
++static int dynos_get_option_count() {
++    struct DynosOption *opt = sCurrentOpt;
++    while (opt->prev) {
++        opt = opt->prev;
++    }
++    int count = 0;
++    while (opt) {
++        opt = opt->next;
++        count++;
++    }
++    return count;
++}
++
++static int dynos_get_current_option_index() {
++    struct DynosOption *opt = sCurrentOpt;
++    int index = 0;
++    while (opt->prev) {
++        opt = opt->prev;
++        index++;
++    }
++    return index;
++}
++
++#define PREV(opt) (opt == NULL ? NULL : opt->prev)
++#define NEXT(opt) (opt == NULL ? NULL : opt->next)
++static struct DynosOption **dynos_get_options_to_draw() {
++    static struct DynosOption *sOptionList[13];
++    bzero(sOptionList, 13 * sizeof(struct DynosOption *));
++
++    sOptionList[6]  = sCurrentOpt;
++    sOptionList[5]  = PREV(sOptionList[6]);
++    sOptionList[4]  = PREV(sOptionList[5]);
++    sOptionList[3]  = PREV(sOptionList[4]);
++    sOptionList[2]  = PREV(sOptionList[3]);
++    sOptionList[1]  = PREV(sOptionList[2]);
++    sOptionList[0]  = PREV(sOptionList[1]);
++    sOptionList[7]  = NEXT(sOptionList[6]);
++    sOptionList[8]  = NEXT(sOptionList[7]);
++    sOptionList[9]  = NEXT(sOptionList[8]);
++    sOptionList[10] = NEXT(sOptionList[9]);
++    sOptionList[11] = NEXT(sOptionList[10]);
++    sOptionList[12] = NEXT(sOptionList[11]);
++
++    int start = 12, end = 0;
++    for (int i = 0; i != 13; ++i) {
++        if (sOptionList[i] != NULL) {
++            start = MIN(start, i);
++            end = MAX(end, i);
++        }
++    }
++
++    if (end - start < 7) {
++        return &sOptionList[start];
++    }
++    if (end <= 9) {
++        return &sOptionList[end - 6];
++    }
++    if (start >= 3) {
++        return &sOptionList[start];
++    }
++    return &sOptionList[3];
++}
++#undef PREV
++#undef NEXT
++
++#define COLOR_WHITE             0xFFFFFFFF
++#define COLOR_BLACK             0x000000FF
++#define COLOR_GRAY              0xA0A0A0FF
++#define COLOR_DARK_GRAY         0x808080FF
++#define COLOR_SELECT            0x80E0FFFF
++#define COLOR_SELECT_BOX        0x00FFFF20
++#define COLOR_ENABLED           0x20E020FF
++#define COLOR_DISABLED          0xFF2020FF
++#define OFFSET_FROM_LEFT_EDGE   (20.f * sqr(GFX_DIMENSIONS_ASPECT_RATIO))
++#define OFFSET_FROM_RIGHT_EDGE  (20.f * sqr(GFX_DIMENSIONS_ASPECT_RATIO))
++#define SCROLL_BAR_SIZE         ((int) (45.f * GFX_DIMENSIONS_ASPECT_RATIO))
++
++static void dynos_draw_option(struct DynosOption *opt, int y) {
++    if (opt == NULL) {
++        return;
++    }
++
++    // Selected box
++    if (opt == sCurrentOpt) {
++        unsigned char a = (unsigned char) ((coss(gGlobalTimer * 0x800) + 1.f) * 0x20);
++        dynos_print_box(OFFSET_FROM_LEFT_EDGE - 4, y - 2, GFX_DIMENSIONS_FROM_RIGHT_EDGE(OFFSET_FROM_RIGHT_EDGE) - GFX_DIMENSIONS_FROM_LEFT_EDGE(OFFSET_FROM_LEFT_EDGE) + 8, 20, COLOR_SELECT_BOX + a, 1);
++    }
++
++    // Label
++    if (opt == sCurrentOpt) {
++        dynos_print_string(get_label(opt), OFFSET_FROM_LEFT_EDGE, y, COLOR_SELECT, COLOR_BLACK, 1);
++    } else {
++        dynos_print_string(get_label(opt), OFFSET_FROM_LEFT_EDGE, y, COLOR_WHITE, COLOR_BLACK, 1);
++    }
++
++    // Values
++    int w;
++    switch (opt->type) {
++        case DOPT_TOGGLE:
++            if (*opt->toggle.ptog) {
++                dynos_print_string(sDynosTextEnabled, OFFSET_FROM_RIGHT_EDGE, y, COLOR_ENABLED, COLOR_BLACK, 0);
++            } else {
++                dynos_print_string(sDynosTextDisabled, OFFSET_FROM_RIGHT_EDGE, y, COLOR_DISABLED, COLOR_BLACK, 0);
++            }
++            break;
++
++        case DOPT_CHOICE:
++            dynos_print_string(get_choice(opt), OFFSET_FROM_RIGHT_EDGE, y, opt == sCurrentOpt ? COLOR_SELECT : COLOR_WHITE, COLOR_BLACK, 0);
++            break;
++
++        case DOPT_CHOICELEVEL:
++            dynos_print_string(level_get_name(level_get_list(true, true)[*opt->choice.pindex], true, true), OFFSET_FROM_RIGHT_EDGE, y, opt == sCurrentOpt ? COLOR_SELECT : COLOR_WHITE, COLOR_BLACK, 0);
++            break;
++
++        case DOPT_CHOICESTAR:
++            dynos_print_string(level_get_star_name(level_get_list(true, true)[dynos_get_value("dynos_warp_level")], *opt->choice.pindex + 1, true, true), OFFSET_FROM_RIGHT_EDGE, y, opt == sCurrentOpt ? COLOR_SELECT : COLOR_WHITE, COLOR_BLACK, 0);
++            break;
++
++        case DOPT_SCROLL:
++            w = (int) (SCROLL_BAR_SIZE * (float) (*opt->scroll.pvalue - opt->scroll.min) / (float) (opt->scroll.max - opt->scroll.min));
++            dynos_print_string(str64s("%d", *opt->scroll.pvalue), OFFSET_FROM_RIGHT_EDGE, y, opt == sCurrentOpt ? COLOR_SELECT : COLOR_WHITE, COLOR_BLACK, 0);
++            dynos_print_box(OFFSET_FROM_RIGHT_EDGE + 28, y + 4, SCROLL_BAR_SIZE + 2, 8, COLOR_DARK_GRAY, 0);
++            dynos_print_box(OFFSET_FROM_RIGHT_EDGE + 29 + SCROLL_BAR_SIZE - w, y + 5, w, 6, opt == sCurrentOpt ? COLOR_SELECT : COLOR_WHITE, 0);
++            break;
++
++        case DOPT_BIND:
++            for (int i = 0; i != MAX_BINDS; ++i) {
++                unsigned int bind = opt->bind.pbinds[i];
++                if (opt == sCurrentOpt && i == opt->bind.index) {
++                    if (sBindingState != 0) {
++                        dynos_print_string(sDynosTextDotDotDot, OFFSET_FROM_RIGHT_EDGE + (2 - i) * 36, y, COLOR_SELECT, COLOR_BLACK, 0);
++                    } else if (bind == VK_INVALID) {
++                        dynos_print_string(sDynosTextNone, OFFSET_FROM_RIGHT_EDGE + (2 - i) * 36, y, COLOR_SELECT, COLOR_BLACK, 0);
++                    } else {
++                        dynos_print_string(str64s("%04X", bind), OFFSET_FROM_RIGHT_EDGE + (2 - i) * 36, y, COLOR_SELECT, COLOR_BLACK, 0);
++                    }
++                } else {
++                    if (bind == VK_INVALID) {
++                        dynos_print_string(sDynosTextNone, OFFSET_FROM_RIGHT_EDGE + (2 - i) * 36, y, COLOR_GRAY, COLOR_BLACK, 0);
++                    } else {
++                        dynos_print_string(str64s("%04X", bind), OFFSET_FROM_RIGHT_EDGE + (2 - i) * 36, y, COLOR_WHITE, COLOR_BLACK, 0);
++                    }
++                }
++            }
++            break;
++
++        case DOPT_BUTTON:
++            break;
++
++        case DOPT_SUBMENU:
++            if (opt == sCurrentOpt) {
++                dynos_print_string(sDynosTextA, OFFSET_FROM_RIGHT_EDGE, y, COLOR_SELECT, COLOR_BLACK, 0);
++            }
++            break;
++    }
++}
++
++static void dynos_draw_menu() {
++    if (sCurrentMenu == NULL) {
++        return;
++    }
++
++    // Colorful label
++    const unsigned char *label2 = NULL;
++    if (sCurrentOpt->parent) {
++        label2 = get_label2(sCurrentOpt->parent);
++    } else if (sCurrentMenu == sDynosMenu) {
++        label2 = sDynosTextDynosMenu;
++    } else {
++        label2 = sDynosTextOptionsMenu;
++    }
++    gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
++    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
++    print_hud_lut_string(HUD_LUT_GLOBAL, dynos_get_label2_x(SCREEN_WIDTH / 2, label2), 40, label2);
++    gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
++
++    // Display options
++    struct DynosOption **optionsToDraw = dynos_get_options_to_draw();
++    for (int i = 0; i != 7; ++i) {
++        dynos_draw_option(optionsToDraw[i], 156 - 20 * i);
++    }
++
++    // Scroll bar
++    int optCount = dynos_get_option_count();
++    int optIndex = dynos_get_current_option_index();
++    if (optCount > 7) {
++        int h = (int) (134.f * sqrtf(1.f / (optCount - 6)));
++        int y = 37 + (134 - h) * (1.f - MAX(0.f, MIN(1.f, (float)(optIndex - 3) / (float)(optCount - 6))));
++        dynos_print_box(OFFSET_FROM_RIGHT_EDGE - 16, 36, 8, 136, COLOR_DARK_GRAY, 0);
++        dynos_print_box(OFFSET_FROM_RIGHT_EDGE - 15, y, 6, h, COLOR_WHITE, 0);
++    }
++}
++
++//
++// Processing
++//
++
++#define SOUND_DYNOS_SAVED   (SOUND_MENU_MARIO_CASTLE_WARP2  | (0xFF << 8))
++#define SOUND_DYNOS_SELECT  (SOUND_MENU_CHANGE_SELECT       | (0xF8 << 8))
++#define SOUND_DYNOS_OK      (SOUND_MENU_CHANGE_SELECT       | (0xF8 << 8))
++#define SOUND_DYNOS_CANCEL  (SOUND_MENU_CAMERA_BUZZ         | (0xFC << 8))
++
++enum {
++    INPUT_LEFT,
++    INPUT_RIGHT,
++    INPUT_A,
++    INPUT_Z
++};
++
++enum {
++    RESULT_NONE,
++    RESULT_OK,
++    RESULT_CANCEL
++};
++
++static int dynos_opt_process_input(struct DynosOption *opt, int input) {
++    switch (opt->type) {
++        case DOPT_TOGGLE:
++            if (input == INPUT_LEFT) {
++                *opt->toggle.ptog = false;
++                return RESULT_OK;
++            }
++            if (input == INPUT_RIGHT) {
++                *opt->toggle.ptog = true;
++                return RESULT_OK;
++            }
++            if (input == INPUT_A) {
++                *opt->toggle.ptog = !(*opt->toggle.ptog);
++                return RESULT_OK;
++            }
++            break;
++
++        case DOPT_CHOICE:
++        case DOPT_CHOICELEVEL:
++        case DOPT_CHOICESTAR:
++            if (input == INPUT_LEFT) {
++                *opt->choice.pindex = (*opt->choice.pindex + opt->choice.count - 1) % (opt->choice.count);
++                return RESULT_OK;
++            }
++            if (input == INPUT_RIGHT || input == INPUT_A) {
++                *opt->choice.pindex = (*opt->choice.pindex + 1) % (opt->choice.count);
++                return RESULT_OK;
++            }
++            break;
++
++        case DOPT_SCROLL:
++            if (input == INPUT_LEFT) {
++                *opt->scroll.pvalue = MAX(opt->scroll.min, *opt->scroll.pvalue - opt->scroll.step * (gPlayer1Controller->buttonDown & A_BUTTON ? 5 : 1));
++                return RESULT_OK;
++            }
++            if (input == INPUT_RIGHT) {
++                *opt->scroll.pvalue = MIN(opt->scroll.max, *opt->scroll.pvalue + opt->scroll.step * (gPlayer1Controller->buttonDown & A_BUTTON ? 5 : 1));
++                return RESULT_OK;
++            }
++            break;
++
++        case DOPT_BIND:
++            if (input == INPUT_LEFT) {
++                opt->bind.index = MAX(0, opt->bind.index - 1);
++                return RESULT_OK;
++            }
++            if (input == INPUT_RIGHT) {
++                opt->bind.index = MIN(MAX_BINDS - 1, opt->bind.index + 1);
++                return RESULT_OK;
++            }
++            if (input == INPUT_Z) {
++                opt->bind.pbinds[opt->bind.index] = VK_INVALID;
++                return RESULT_OK;
++            }
++            if (input == INPUT_A) {
++                opt->bind.pbinds[opt->bind.index] = VK_INVALID;
++                sBindingState = 1;
++                controller_get_raw_key();
++                return RESULT_OK;
++            }
++            break;
++
++        case DOPT_BUTTON:
++            if (input == INPUT_A && opt->button.funcName != NULL) {
++                DynosActionFunction action = dynos_get_action(opt->button.funcName);
++                if (action != NULL && action(opt->name)) {
++                    return RESULT_OK;
++                }
++                return RESULT_CANCEL;
++            }
++            break;
++
++        case DOPT_SUBMENU:
++            if (input == INPUT_A) {
++                if (opt->submenu.child != NULL) {
++                    sCurrentOpt = opt->submenu.child;
++                    return RESULT_OK;
++                }
++                return RESULT_CANCEL;
++            }
++            break;
++    }
++    return RESULT_NONE;
++}
++
++static void dynos_open(struct DynosOption *menu) {
++    play_sound(SOUND_DYNOS_SELECT, gDefaultSoundArgs);
++    sCurrentMenu = menu;
++    sCurrentOpt = menu;
++}
++
++static void dynos_close() {
++    if (sCurrentMenu != NULL) {
++        play_sound(SOUND_DYNOS_SAVED, gDefaultSoundArgs);
++        controller_reconfigure();
++        configfile_save(configfile_name());
++        dynos_save_config();
++        sCurrentMenu = NULL;
++    }
++}
++
++static void dynos_process_inputs() {
++    static int sStickTimer = 0;
++    static bool sPrevStick = 0;
++
++    // Stick values
++    float stickX = gPlayer1Controller->stickX;
++    float stickY = gPlayer1Controller->stickY;
++    if (absx(stickX) > 60 || absx(stickY) > 60) {
++        if (sStickTimer == 0) {
++            sStickTimer = (sPrevStick ? 2 : 9);
++        } else {
++            stickX = 0;
++            stickY = 0;
++            sStickTimer--;
++        }
++        sPrevStick = true;
++    } else {
++        sStickTimer = 0;
++        sPrevStick = false;
++    }
++
++    // Key binding
++    if (sBindingState != 0) {
++        unsigned int key = (sCurrentOpt->dynos ? (unsigned int) dynos_controller_get_key_pressed() : controller_get_raw_key());
++        if (key != VK_INVALID) {
++            play_sound(SOUND_DYNOS_SELECT, gDefaultSoundArgs);
++            sCurrentOpt->bind.pbinds[sCurrentOpt->bind.index] = key;
++            sBindingState = false;
++        }
++        return;
++    }
++
++    if (sCurrentMenu != NULL) {
++
++        // Up
++        if (stickY > +60) {
++            if (sCurrentOpt->prev != NULL) {
++                sCurrentOpt = sCurrentOpt->prev;
++            } else {
++                while (sCurrentOpt->next) sCurrentOpt = sCurrentOpt->next;
++            }
++            play_sound(SOUND_DYNOS_SELECT, gDefaultSoundArgs);
++            return;
++        }
++
++        // Down
++        if (stickY < -60) {
++            if (sCurrentOpt->next != NULL) {
++                sCurrentOpt = sCurrentOpt->next;
++            } else {
++                while (sCurrentOpt->prev) sCurrentOpt = sCurrentOpt->prev;
++            }
++            play_sound(SOUND_DYNOS_SELECT, gDefaultSoundArgs);
++            return;
++        }
++
++        // Left
++        if (stickX < -60) {
++            switch (dynos_opt_process_input(sCurrentOpt, INPUT_LEFT)) {
++                case RESULT_OK:     play_sound(SOUND_DYNOS_OK, gDefaultSoundArgs); break;
++                case RESULT_CANCEL: play_sound(SOUND_DYNOS_CANCEL, gDefaultSoundArgs); break;
++                case RESULT_NONE:   break;
++            }
++            return;
++        }
++
++        // Right
++        if (stickX > +60) {
++            switch (dynos_opt_process_input(sCurrentOpt, INPUT_RIGHT)) {
++                case RESULT_OK:     play_sound(SOUND_DYNOS_OK, gDefaultSoundArgs); break;
++                case RESULT_CANCEL: play_sound(SOUND_DYNOS_CANCEL, gDefaultSoundArgs); break;
++                case RESULT_NONE:   break;
++            }
++            return;
++        }
++
++        // A
++        if (gPlayer1Controller->buttonPressed & A_BUTTON) {
++            switch (dynos_opt_process_input(sCurrentOpt, INPUT_A)) {
++                case RESULT_OK:     play_sound(SOUND_DYNOS_OK, gDefaultSoundArgs); break;
++                case RESULT_CANCEL: play_sound(SOUND_DYNOS_CANCEL, gDefaultSoundArgs); break;
++                case RESULT_NONE:   break;
++            }
++            return;
++        }
++
++        // B
++        if (gPlayer1Controller->buttonPressed & B_BUTTON) {
++            if (sCurrentOpt->parent != NULL) {
++                sCurrentOpt = sCurrentOpt->parent;
++                play_sound(SOUND_DYNOS_SELECT, gDefaultSoundArgs);
++            } else {
++                dynos_close();
++            }
++            return;
++        }
++
++        // Z
++        if (gPlayer1Controller->buttonPressed & Z_TRIG) {
++            switch (dynos_opt_process_input(sCurrentOpt, INPUT_Z)) {
++                case RESULT_OK:     play_sound(SOUND_DYNOS_OK, gDefaultSoundArgs); break;
++                case RESULT_CANCEL: play_sound(SOUND_DYNOS_CANCEL, gDefaultSoundArgs); break;
++                case RESULT_NONE:
++                    if (sCurrentMenu == sDynosMenu) {
++                        dynos_close();
++                    } else {
++                        dynos_open(sDynosMenu);
++                    } break;
++            }
++            return;
++        }
++
++        // R
++        if (gPlayer1Controller->buttonPressed & R_TRIG) {
++            if (sCurrentMenu == sOptionsMenu) {
++                dynos_close();
++            } else {
++                dynos_open(sOptionsMenu);
++            }
++            return;
++        }
++
++        // Start
++        if (gPlayer1Controller->buttonPressed & START_BUTTON) {
++            dynos_close();
++            return;
++        }
++    } else if (gPlayer1Controller->buttonPressed & R_TRIG) {
++        dynos_open(sOptionsMenu);
++    } else if (gPlayer1Controller->buttonPressed & Z_TRIG) {
++        dynos_open(sDynosMenu);
++    }
++}
++
++#define PROMPT_OFFSET (56.25f * GFX_DIMENSIONS_ASPECT_RATIO)
++static void dynos_draw_prompt() {
++    if (sCurrentMenu == sOptionsMenu) {
++        dynos_print_string(sDynosTextOpenLeft,   PROMPT_OFFSET, 212, COLOR_WHITE, COLOR_BLACK, 1);
++        dynos_print_string(sDynosTextCloseRight, PROMPT_OFFSET, 212, COLOR_WHITE, COLOR_BLACK, 0);
++    } else if (sCurrentMenu == sDynosMenu) {
++        dynos_print_string(sDynosTextCloseLeft,  PROMPT_OFFSET, 212, COLOR_WHITE, COLOR_BLACK, 1);
++        dynos_print_string(sDynosTextOpenRight,  PROMPT_OFFSET, 212, COLOR_WHITE, COLOR_BLACK, 0);
++    } else {
++        dynos_print_string(sDynosTextOpenLeft,   PROMPT_OFFSET, 212, COLOR_WHITE, COLOR_BLACK, 1);
++        dynos_print_string(sDynosTextOpenRight,  PROMPT_OFFSET, 212, COLOR_WHITE, COLOR_BLACK, 0);
++    }
++    dynos_process_inputs();
++#ifdef RENDER96_2_0
++    set_language(languages[configLanguage]);
++#endif
++}
++
++//
++// Init
++//
++
++static void (*controller_read)(OSContPad *);
++static void dynos_controller_read(OSContPad *pad) {
++    controller_read(pad);
++    dynos_loop(sDynosMenu, dynos_controller_update, (void *) pad);
++}
++
++static void dynos_create_warp_to_level_options() {
++    dynos_create_submenu("dynos_warp_submenu", "Warp to Level", "WARP TO LEUEL");
++
++    // Level select
++    {
++    struct DynosOption *opt = dynos_add_option("dynos_warp_level", NULL, "Level Select", "");
++    opt->type               = DOPT_CHOICELEVEL;
++    opt->choice.count       = level_get_count(true);
++    opt->choice.pindex      = calloc(1, sizeof(int));
++    *opt->choice.pindex     = 0;
++    }
++
++    // Star select
++    {
++    struct DynosOption *opt = dynos_add_option("dynos_warp_act", NULL, "Star Select", "");
++    opt->type               = DOPT_CHOICESTAR;
++    opt->choice.count       = 6;
++    opt->choice.pindex      = calloc(1, sizeof(int));
++    *opt->choice.pindex     = 0;
++    }
++
++    dynos_create_button("dynos_warp_to_level", "Warp", "dynos_warp_to_level");
++    dynos_end_submenu();
++}
++
++void dynos_init() {
++
++    // Convert options menu
++    dynos_convert_options_menu();
++
++    // Create DynOS menu
++    dynos_load_options();
++
++    // Warp to level
++    dynos_create_warp_to_level_options();
++
++    // Restart level
++    dynos_create_button("dynos_restart_level", "Restart Level", "dynos_restart_level");
++
++    // Return to main menu
++    dynos_create_button("dynos_return_to_main_menu", "Return to Main Menu", "dynos_return_to_main_menu");
++
++    // Init config
++    dynos_load_config();
++
++    // Init controller
++    controller_read = controller_keyboard.read;
++    controller_keyboard.read = dynos_controller_read;
++
++    // Init text
++    sDynosTextDynosMenu   = str64h("DYNOS MENU");
++    sDynosTextA           = str64h("([A]) >");
++    sDynosTextOpenLeft    = str64h("[Z] DynOS");
++    sDynosTextCloseLeft   = str64h("[Z] Return");
++#ifndef RENDER96_2_0
++    sDynosTextOptionsMenu = str64h("OPTIONS");
++    sDynosTextDisabled    = str64h("Disabled");
++    sDynosTextEnabled     = str64h("Enabled");
++    sDynosTextNone        = str64h("NONE");
++    sDynosTextDotDotDot   = str64h("...");
++    sDynosTextOpenRight   = str64h("[R] Options");
++    sDynosTextCloseRight  = str64h("[R] Return");
++#endif
++}
++
++//
++// Hijack
++//
++
++unsigned char optmenu_open = 0;
++
++void optmenu_toggle(void) {
++    dynos_close();
++}
++
++void optmenu_draw(void) {
++    dynos_draw_menu();
++}
++
++void optmenu_draw_prompt(void) {
++    dynos_draw_prompt();
++    optmenu_open = (sCurrentMenu != NULL);
++}
++
++void optmenu_check_buttons(void) {
++}
++
++//
++// Return to Main Menu
++//
++
++extern char gDialogBoxState;
++extern short gMenuMode;
++void dynos_unpause_game() {
++    level_set_transition(0, 0);
++    play_sound(SOUND_MENU_PAUSE_2, gDefaultSoundArgs);
++    gDialogBoxState = 0;
++    gMenuMode = -1;
++}
++
++bool dynos_return_to_main_menu(UNUSED const char *optName) {
++    optmenu_toggle();
++    dynos_unpause_game();
++    fade_into_special_warp(-2, 0);
++    return true;
++}
++
++//
++// Warp to Level
++//
++
++bool dynos_perform_warp(enum LevelNum levelNum, int actNum) {
++    enum CourseNum courseNum = level_get_course(levelNum);
++    if (courseNum == COURSE_NONE) {
++        return false;
++    }
++
++    // Free everything from the current level
++    optmenu_toggle();
++    dynos_unpause_game();
++    set_sound_disabled(FALSE);
++    play_shell_music();
++    stop_shell_music();
++    stop_cap_music();
++    clear_objects();
++    clear_area_graph_nodes();
++    clear_areas();
++    main_pool_pop_state();
++
++    // Reset Mario's state
++    gMarioState->healCounter = 0;
++    gMarioState->hurtCounter = 0;
++    gMarioState->numCoins = 0;
++    gMarioState->input = 0;
++    gMarioState->controller->buttonPressed = 0;
++    gHudDisplay.coins = 0;
++
++    // Load the new level
++    gCurrLevelNum = levelNum;
++    gCurrCourseNum = courseNum;
++    gCurrActNum = (courseNum <= COURSE_STAGES_MAX ? actNum : 0);
++    gDialogCourseActNum = gCurrActNum;
++    gCurrAreaIndex = 1;
++    level_script_execute((struct LevelCommand *) level_get_script(levelNum));
++    sWarpDest.type = 2;
++    sWarpDest.levelNum = gCurrLevelNum;
++    sWarpDest.areaIdx = 1;
++    sWarpDest.nodeId = 0x0A;
++    sWarpDest.arg = 0;
++    gSavedCourseNum = gCurrCourseNum;
++    return true;
++}
++
++bool dynos_warp_to_level(UNUSED const char *optName) {
++    enum LevelNum levelNum = level_get_list(true, true)[dynos_get_value("dynos_warp_level")];
++    return dynos_perform_warp(levelNum, dynos_get_value("dynos_warp_act") + 1);
++}
++
++//
++// Restart Level
++//
++
++bool dynos_restart_level(UNUSED const char *optName) {
++    enum LevelNum levelNum = (enum LevelNum) gCurrLevelNum;
++    if (levelNum == LEVEL_BOWSER_1) levelNum = LEVEL_BITDW;
++    if (levelNum == LEVEL_BOWSER_2) levelNum = LEVEL_BITFS;
++    if (levelNum == LEVEL_BOWSER_3) levelNum = LEVEL_BITS;
++    return dynos_perform_warp(levelNum, gCurrActNum);
++}
+diff --git a/src/pc/dynamic_options.h b/src/pc/dynamic_options.h
+new file mode 100644
+index 00000000..d1b4cf84
+--- /dev/null
++++ b/src/pc/dynamic_options.h
+@@ -0,0 +1,33 @@
++#ifndef DYNAMIC_OPTIONS_H
++#define DYNAMIC_OPTIONS_H
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++#include <stdbool.h>
++int  dynos_get_value(const char *name);
++void dynos_set_value(const char *name, int value);
++void dynos_add_action(const char *funcName, bool (*funcPtr)(const char *), bool overwrite);
++
++#ifdef __cplusplus
++}
++#endif
++
++// Warning: This is C++ code, use this macro inside a .cpp file
++// The action signature is "bool (*) (const char *)"
++// The input is the button name (not label)
++// The output is the result of the action
++#define DYNOS_DEFINE_ACTION(func) \
++extern "C" { extern bool func(const char *); } \
++class DynosAction_##func { \
++public: \
++	inline DynosAction_##func() { \
++		dynos_add_action(#func, func, false); \
++	} \
++private: \
++	static DynosAction_##func sDynosAction_##func; \
++}; \
++DynosAction_##func DynosAction_##func::sDynosAction_##func;
++
++#endif // DYNAMIC_OPTIONS_H
+\ No newline at end of file
+diff --git a/src/pc/dynamic_options_cpp.cpp b/src/pc/dynamic_options_cpp.cpp
+new file mode 100644
+index 00000000..f0d609db
+--- /dev/null
++++ b/src/pc/dynamic_options_cpp.cpp
+@@ -0,0 +1,17 @@
++#include "dynamic_options.h"
++
++//
++// DynOS Init
++//
++
++extern "C" { extern void dynos_init(void); }
++class DynosInitialization { public: DynosInitialization() { dynos_init(); } };
++static DynosInitialization sDynosInitialization;
++
++//
++// DynOS Actions
++//
++
++DYNOS_DEFINE_ACTION(dynos_return_to_main_menu);
++DYNOS_DEFINE_ACTION(dynos_warp_to_level);
++DYNOS_DEFINE_ACTION(dynos_restart_level);
+diff --git a/src/pc/levels.c b/src/pc/levels.c
+new file mode 100644
+index 00000000..cdb772c5
+--- /dev/null
++++ b/src/pc/levels.c
+@@ -0,0 +1,240 @@
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include "utils.h"
++#include "levels.h"
++#include "game/segment2.h"
++#ifdef RENDER96_2_0
++#include "text/text-loader.h"
++#endif
++
++#define STUB_LEVEL(_0, _1, _2, _3, _4, _5, _6, _7, _8)
++#define DEFINE_LEVEL(_0, _1, _2, _name, _4, _5, _6, _7, _8, _9, _10) extern const LevelScript level_##_name##_entry[];
++#include "levels/level_defines.h"
++#undef DEFINE_LEVEL
++#undef STUB_LEVEL
++
++//
++// Level, Course, Script
++//
++
++struct LevelCourseScript {
++    enum LevelNum level;
++    enum CourseNum course;
++    const LevelScript *script;
++};
++
++#define STUB_LEVEL(_0, _1, _2, _3, _4, _5, _6, _7, _8)
++#define DEFINE_LEVEL(_0, _level, _course, _name, _4, _5, _6, _7, _8, _9, _10) { _level, _course, level_##_name##_entry },
++static const struct LevelCourseScript sLevelCourseScript[] = {
++#include "levels/level_defines.h"
++};
++static const int sLevelCourseScriptCount = sizeof(sLevelCourseScript) / sizeof(sLevelCourseScript[0]);
++#undef DEFINE_LEVEL
++#undef STUB_LEVEL
++
++static const u8 sEmpty[]        = { 255 };
++static const u8 sCastle[]       = { 12, 36, 54, 55, 47, 40, 255 };
++static const u8 sBowser1[]      = { 11, 50, 58, 54, 40, 53, 158, 1, 255 };
++static const u8 sBowser2[]      = { 11, 50, 58, 54, 40, 53, 158, 2, 255 };
++static const u8 sBowser3[]      = { 11, 50, 58, 54, 40, 53, 158, 3, 255 };
++static const u8 s100CoinsStar[] = { 1, 0, 0, 158, 12, 50, 44, 49, 54, 158, 28, 55, 36, 53, 255 };
++
++//
++// Accessors
++//
++
++static enum CourseNum get_course(enum LevelNum levelNum) {
++    for (int i = 0; i != sLevelCourseScriptCount; ++i) {
++        if (sLevelCourseScript[i].level == levelNum) {
++            return sLevelCourseScript[i].course;
++        }
++    }
++    return COURSE_NONE;
++}
++
++static const LevelScript *get_script(enum LevelNum levelNum) {
++    for (int i = 0; i != sLevelCourseScriptCount; ++i) {
++        if (sLevelCourseScript[i].level == levelNum) {
++            return sLevelCourseScript[i].script;
++        }
++    }
++    return NULL;
++}
++
++static void set_level_name(u8 *buffer, enum LevelNum levelNum) {
++    if (levelNum == LEVEL_BOWSER_1)   { memcpy(buffer, sBowser1, str64l(sBowser1)); return; }
++    if (levelNum == LEVEL_BOWSER_2)   { memcpy(buffer, sBowser2, str64l(sBowser2)); return; }
++    if (levelNum == LEVEL_BOWSER_3)   { memcpy(buffer, sBowser3, str64l(sBowser3)); return; }
++
++    enum CourseNum courseNum = get_course(levelNum);
++    if (courseNum < COURSE_BOB)       { memcpy(buffer, sCastle,  str64l(sCastle));  return; }
++    if (courseNum >= COURSE_CAKE_END) { memcpy(buffer, sCastle,  str64l(sCastle));  return; }
++
++    const u8 *courseName = ((const u8 **) seg2_course_name_table)[courseNum - COURSE_BOB] + 3;
++    memcpy(buffer, courseName, str64l(courseName));
++}
++
++static void set_act_name(u8 *buffer, enum LevelNum levelNum, int starNum) {
++    enum CourseNum courseNum = get_course(levelNum);
++    if (courseNum > COURSE_STAGES_MAX) { memcpy(buffer, sEmpty,        str64l(sEmpty));        return; }
++    if (starNum == 7)                  { memcpy(buffer, s100CoinsStar, str64l(s100CoinsStar)); return; }
++
++    const u8 *actName = ((const u8 **) seg2_act_name_table)[(courseNum - COURSE_BOB) * 6 + starNum - 1];
++    memcpy(buffer, actName, str64l(actName));
++}
++
++static void prefix_number(u8 *buffer, int num) {
++    memmove(buffer + 5, buffer, str64l(buffer));
++    buffer[0] = ((num / 10) == 0 ? 158 : (num / 10));
++    buffer[1] = (num % 10);
++    buffer[2] = 158;
++    buffer[3] = 159;
++    buffer[4] = 158;
++}
++
++//
++// Data
++//
++
++static int sLevelCount[2]                = { 0, 0 };
++static enum LevelNum *sLevelList[2][2]   = { { NULL, NULL }, { NULL, NULL } };
++static enum CourseNum *sLevelCourses     = NULL;
++static const LevelScript **sLevelScripts = NULL;
++
++// Runs only once
++static void level_init_data() {
++    static bool inited = false;
++    if (!inited) {
++
++        // Level count
++        sLevelCount[0] = sLevelCourseScriptCount;
++
++        // Level count (no Castle)
++        sLevelCount[1] = 0;
++        for (int i = 0; i != sLevelCount[0]; ++i) {
++            if (sLevelCourseScript[i].course >= COURSE_BOB &&
++                sLevelCourseScript[i].course < COURSE_CAKE_END) {
++                sLevelCount[1]++;
++            }
++        }
++
++        // Lists allocation
++        sLevelList[0][0] = calloc(sLevelCount[0], sizeof(enum LevelNum));
++        sLevelList[0][1] = calloc(sLevelCount[0], sizeof(enum LevelNum));
++        sLevelList[1][0] = calloc(sLevelCount[1], sizeof(enum LevelNum));
++        sLevelList[1][1] = calloc(sLevelCount[1], sizeof(enum LevelNum));
++        sLevelCourses    = calloc(LEVEL_COUNT, sizeof(enum CourseNum));
++        sLevelScripts    = calloc(LEVEL_COUNT, sizeof(const LevelScript *));
++
++        // Level list
++        for (int i = 0; i != sLevelCount[0]; ++i) {
++            sLevelList[0][0][i] = sLevelCourseScript[i].level;
++        }
++
++        // Level list ordered by course id
++        for (int i = 0, k = 0; i < COURSE_END; ++i) {
++            for (int j = 0; j < sLevelCount[0]; ++j) {
++                if (sLevelCourseScript[j].course == (enum CourseNum) i) {
++                    sLevelList[0][1][k++] = sLevelCourseScript[j].level;
++                }
++            }
++        }
++
++        // Level list (no Castle)
++        for (int i = 0, k = 0; i != sLevelCount[0]; ++i) {
++            if (sLevelCourseScript[i].course >= COURSE_BOB &&
++                sLevelCourseScript[i].course < COURSE_CAKE_END) {
++                sLevelList[1][0][k++] = sLevelCourseScript[i].level;
++            }
++        }
++
++        // Level list ordered by course id (no Castle)
++        for (int i = COURSE_BOB, k = 0; i < COURSE_CAKE_END; ++i) {
++            for (int j = 0; j < sLevelCount[0]; ++j) {
++                if (sLevelCourseScript[j].course == (enum CourseNum) i) {
++                    sLevelList[1][1][k++] = sLevelCourseScript[j].level;
++                }
++            }
++        }
++
++        // Level courses
++        for (int i = 0; i != LEVEL_COUNT; ++i) {
++            sLevelCourses[i] = get_course((enum LevelNum) i);
++        }
++
++        // Level scripts
++        for (int i = 0; i != LEVEL_COUNT; ++i) {
++            sLevelScripts[i] = get_script((enum LevelNum) i);
++        }
++
++        // Done
++        inited = true;
++    }
++}
++
++//
++// Getters
++//
++
++int level_get_count(bool noCastle) {
++    level_init_data();
++    return sLevelCount[noCastle];
++}
++
++const enum LevelNum *level_get_list(bool noCastle, bool ordered) {
++    level_init_data();
++    return sLevelList[noCastle][ordered];
++}
++
++enum CourseNum level_get_course(enum LevelNum levelNum) {
++    level_init_data();
++    return sLevelCourses[levelNum];
++}
++
++const LevelScript *level_get_script(enum LevelNum levelNum) {
++    level_init_data();
++    return sLevelScripts[levelNum];
++}
++
++const u8 *level_get_name(enum LevelNum levelNum, bool decaps, bool addCourseNumber) {
++    level_init_data();
++    static u8 buffer[256];
++    memset(buffer, 0xFF, 256);
++
++    // Level name
++    set_level_name(buffer, levelNum);
++
++    // Decaps
++    if (decaps) str64d(buffer);
++
++    // Course number
++    if (addCourseNumber) {
++        enum CourseNum courseNum = get_course(levelNum);
++        if (courseNum >= COURSE_BOB && courseNum <= COURSE_STAGES_MAX)
++            prefix_number(buffer, courseNum);
++    }
++
++    return buffer;
++}
++
++const u8 *level_get_star_name(enum LevelNum levelNum, int starNum, bool decaps, bool addStarNumber) {
++    level_init_data();
++    static u8 buffer[256];
++    memset(buffer, 0xFF, 256);
++
++    // Star name
++    set_act_name(buffer, levelNum, starNum);
++
++    // Decaps
++    if (decaps) str64d(buffer);
++
++    // Star number
++    if (addStarNumber) {
++        enum CourseNum courseNum = get_course(levelNum);
++        if (courseNum >= COURSE_BOB && courseNum <= COURSE_STAGES_MAX)
++            prefix_number(buffer, starNum);
++    }
++
++    return buffer;
++}
+diff --git a/src/pc/levels.h b/src/pc/levels.h
+new file mode 100644
+index 00000000..82415fd8
+--- /dev/null
++++ b/src/pc/levels.h
+@@ -0,0 +1,21 @@
++#ifndef LEVELS_H
++#define LEVELS_H
++
++/*
++This file helps to provide useful info about the game's levels,
++such as level count, level list, courses, scripts and names.
++*/
++
++#include <stdbool.h>
++#include "types.h"
++#include "level_table.h"
++#include "course_table.h"
++
++int level_get_count(bool noCastle);
++const enum LevelNum *level_get_list(bool noCastle, bool ordered);
++enum CourseNum level_get_course(enum LevelNum levelNum);
++const LevelScript *level_get_script(enum LevelNum levelNum);
++const u8 *level_get_name(enum LevelNum levelNum, bool decaps, bool addCourseNumber);
++const u8 *level_get_star_name(enum LevelNum levelNum, int starNum, bool decaps, bool addStarNumber);
++
++#endif // LEVELS_H
+\ No newline at end of file
+diff --git a/src/pc/utils.c b/src/pc/utils.c
+new file mode 100644
+index 00000000..edbdd1d6
+--- /dev/null
++++ b/src/pc/utils.c
+@@ -0,0 +1,214 @@
++#include "utils.h"
++#include "game/object_list_processor.h"
++#include "game/object_helpers.h"
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <stdarg.h>
++
++//
++// C dynamic array, vector-like struct
++//
++
++static void __dynamic_array_realloc(struct __DynamicArray *da, int newcapacity) {
++    if (newcapacity > da->capacity) {
++        void *newbuffer = calloc(newcapacity, da->itemsize);
++        if (da->buffer) {
++            memcpy(newbuffer, da->buffer, da->count * da->itemsize);
++            free(da->buffer);
++        }
++        da->buffer = newbuffer;
++        da->capacity = newcapacity;
++    }
++}
++
++void __dynamic_array_init(struct __DynamicArray *da, int itemsize) {
++    da->buffer   = NULL;
++    da->count    = 0;
++    da->capacity = 0;
++    da->itemsize = itemsize;
++}
++
++void __dynamic_array_add(struct __DynamicArray *da, void *item) {
++    __dynamic_array_realloc(da, da->count + 1);
++    memcpy((void *) ((size_t) da->buffer + (size_t) da->count * (size_t) da->itemsize), item, (size_t) da->itemsize);
++    da->count++;
++}
++
++void __dynamic_array_rem(struct __DynamicArray *da, int index) {
++    if (index == -1) {
++        da->count = 0;
++    } else if (index >= da->count - 1) {
++        da->count--;
++    } else {
++        memmove((void *) ((size_t) da->buffer + (size_t) (index + 0) * (size_t) da->itemsize),
++                (void *) ((size_t) da->buffer + (size_t) (index + 1) * (size_t) da->itemsize),
++                                    (size_t) (da->count - index - 1) * (size_t) da->itemsize);
++        da->count--;
++    }
++}
++
++void __dynamic_array_clr(struct __DynamicArray *da) {
++    if (da->buffer) {
++        free(da->buffer);
++    }
++    da->buffer   = NULL;
++    da->count    = 0;
++    da->capacity = 0;
++}
++
++void *__dynamic_array_get(struct __DynamicArray *da, int index) {
++    return (void *) ((size_t) da->buffer + (size_t) index * (size_t) da->itemsize);
++}
++
++void __dynamic_array_set(struct __DynamicArray *da, int index, void *item) {
++    memcpy((void *) ((size_t) da->buffer + (size_t) index * (size_t) da->itemsize), item, (size_t) da->itemsize);
++}
++
++int __dynamic_array_find(struct __DynamicArray *da, void *item) {
++    void *curr = da->buffer;
++    void *end = (void *) ((size_t) da->buffer + (size_t) da->count * (size_t) da->itemsize);
++    for (int i = 0; curr != end; ++i) {
++        if (memcmp(curr, item, (size_t) da->itemsize) == 0) {
++            return i;
++        }
++        curr = (void *) ((size_t) curr + (size_t) da->itemsize);
++    }
++    return -1;
++}
++
++int __dynamic_array_find_eq(struct __DynamicArray *da, void *item, bool (*eqfunc)(void *, void *)) {
++    void *curr = da->buffer;
++    void *end = (void *) ((size_t) da->buffer + (size_t) da->count * (size_t) da->itemsize);
++    for (int i = 0; curr != end; ++i) {
++        if (eqfunc(curr, item)) {
++            return i;
++        }
++        curr = (void *) ((size_t) curr + (size_t) da->itemsize);
++    }
++    return -1;
++}
++
++//
++// C String to SM64 String conversion
++//
++
++static const struct { const char *str; unsigned char c64; int w; } sSm64CharMap[] = {
++    { "0",   0x00, 7 }, { "1",  0x01,  7 }, { "2",   0x02, 7 }, { "3",   0x03, 7 }, { "4",   0x04,  7 }, { "5",   0x05,  7 },
++    { "6",   0x06, 7 }, { "7",  0x07,  7 }, { "8",   0x08, 7 }, { "9",   0x09, 7 }, { "A",   0x0A,  6 }, { "B",   0x0B,  6 },
++    { "C",   0x0C, 6 }, { "D",  0x0D,  6 }, { "E",   0x0E, 6 }, { "F",   0x0F, 6 }, { "G",   0x10,  6 }, { "H",   0x11,  6 },
++    { "I",   0x12, 5 }, { "J",  0x13,  6 }, { "K",   0x14, 6 }, { "L",   0x15, 5 }, { "M",   0x16,  8 }, { "N",   0x17,  8 },
++    { "O",   0x18, 6 }, { "P",  0x19,  6 }, { "Q",   0x1A, 6 }, { "R",   0x1B, 6 }, { "S",   0x1C,  6 }, { "T",   0x1D,  5 },
++    { "U",   0x1E, 6 }, { "V",  0x1F,  6 }, { "W",   0x20, 8 }, { "X",   0x21, 7 }, { "Y",   0x22,  6 }, { "Z",   0x23,  6 },
++    { "a",   0x24, 6 }, { "b",  0x25,  5 }, { "c",   0x26, 5 }, { "d",   0x27, 6 }, { "e",   0x28,  5 }, { "f",   0x29,  5 },
++    { "g",   0x2A, 6 }, { "h",  0x2B,  5 }, { "i",   0x2C, 4 }, { "j",   0x2D, 5 }, { "k",   0x2E,  5 }, { "l",   0x2F,  3 },
++    { "m",   0x30, 7 }, { "n",  0x31,  5 }, { "o",   0x32, 5 }, { "p",   0x33, 5 }, { "q",   0x34,  6 }, { "r",   0x35,  5 },
++    { "s",   0x36, 5 }, { "t",  0x37,  5 }, { "u",   0x38, 5 }, { "v",   0x39, 5 }, { "w",   0x3A,  7 }, { "x",   0x3B,  7 },
++    { "y",   0x3C, 5 }, { "z",  0x3D,  5 }, { "\'",  0x3E, 4 }, { ".",   0x3F, 4 }, { "^",   0x50,  8 }, { "|",   0x51,  8 },
++    { "<",   0x52, 8 }, { ">",  0x53,  8 }, { "[A]", 0x54, 7 }, { "[B]", 0x55, 7 }, { "[C]", 0x56,  6 }, { "[Z]", 0x57,  7 },
++    { "[R]", 0x58, 7 }, { ",",  0x6F,  4 }, { " ",   0x9E, 5 }, { "-",   0x9F, 6 }, { "/",   0xD0, 10 }, { "[%]", 0xE0,  7 },
++    { "(",   0xE1, 5 }, { ")(", 0xE2, 10 }, { ")",   0xE3, 5 }, { "+",   0xE4, 9 }, { "&",   0xE5,  8 }, { ":",   0xE6,  4 },
++    { "!",   0xF2, 5 }, { "%",  0xF3,  7 }, { "?",   0xF4, 7 }, { "~",   0xF7, 8 }, { "$",   0xF9,  8 }, { "@",   0xFA, 10 },
++    { "*",   0xFB, 6 }, { "¤",  0xFD, 10 }, { "\n",  0xFE, 0 }, { "\0",  0xFF, 0 },
++};
++static const int sSm64CharCount = sizeof(sSm64CharMap) / sizeof(sSm64CharMap[0]);
++
++static const char *__sm64_add_char(unsigned char *str64, const char *str, int *i) {
++    for (int k = 0; k != sSm64CharCount; ++k) {
++        if (strstr(str, sSm64CharMap[k].str) == str) {
++            str64[(*i)++] = sSm64CharMap[k].c64;
++            return str + strlen(sSm64CharMap[k].str);
++        }
++    }
++    return str + 1;
++}
++
++#define STRING_MAX_LENGTH   2048
++unsigned char *__sm64_string(bool heapAlloc, const char *fmt, ...) {
++
++    // Format
++    char buffer[STRING_MAX_LENGTH];
++    va_list arg;
++    va_start(arg, fmt);
++    vsnprintf(buffer, STRING_MAX_LENGTH, fmt, arg);
++    va_end(arg);
++
++    // Allocation
++    static unsigned char sStringBuffer[8][STRING_MAX_LENGTH];
++    static unsigned int sStringBufferIndex = 0;
++    unsigned char *str64;
++    if (heapAlloc) {
++        str64 = calloc(STRING_MAX_LENGTH, sizeof(unsigned char));
++    } else {
++        str64 = sStringBuffer[sStringBufferIndex];
++        sStringBufferIndex = (sStringBufferIndex + 1) % 8;
++    }
++
++    // Conversion
++    memset(str64, 0xFF, STRING_MAX_LENGTH);
++    const char *str = &buffer[0];
++    for (int i = 0; *str != 0 && i < STRING_MAX_LENGTH - 1;) {
++        str = __sm64_add_char(str64, str, &i);
++    }
++    return str64;
++}
++
++unsigned char *__sm64_string_decapitalize(unsigned char *str64) {
++    bool wasSpace = true;
++    for (unsigned char *p = str64; *p != 255; p++) {
++        if (*p >= 10 && *p <= 35) {
++            if (wasSpace) wasSpace = false;
++            else *p += 26;
++        } else if (*p >= 63) {
++            wasSpace = true;
++        }
++    }
++    return str64;
++}
++
++int __sm64_strlen(const unsigned char *str64) {
++    int len = 0;
++    for (; str64 && *str64 != 255; str64++, len++);
++    return len;
++}
++
++int __sm64_cwidth(unsigned char c64) {
++    for (int k = 0; k != sSm64CharCount; ++k) {
++        if (sSm64CharMap[k].c64 == c64) {
++            return sSm64CharMap[k].w;
++        }
++    }
++    return 0;
++}
++
++//
++// Dynamic Object Graph Node allocation
++//
++
++#define ALLOC_SIZE 0x10000
++static DA sLoadedGraphNodes = da_type(void *);
++
++void *get_graph_node_from_geo(const void *geoLayout) {
++    int i = da_find(sLoadedGraphNodes, geoLayout);
++    if (i != -1) {
++        return da_get(sLoadedGraphNodes, i + 1, void *);
++    }
++
++    struct AllocOnlyPool *pool = calloc(1, ALLOC_SIZE);
++    pool->totalSpace = ALLOC_SIZE;
++    pool->usedSpace  = 0;
++    pool->startPtr   = (u8 *) pool + sizeof(struct AllocOnlyPool);
++    pool->freePtr    = (u8 *) pool + sizeof(struct AllocOnlyPool);
++    void *graphNode  = process_geo_layout(pool, (void *) geoLayout);
++    if (graphNode) {
++        da_add(sLoadedGraphNodes, geoLayout);
++        da_add(sLoadedGraphNodes, graphNode);
++    }
++    return graphNode;
++}
++
++void *obj_spawn_with_geo(void *parent, const void *geoLayout, const void *behavior) {
++    struct Object *obj = spawn_object(parent, 0, behavior);
++    obj->header.gfx.sharedChild = (struct GraphNode *) get_graph_node_from_geo(geoLayout);
++    return obj;
++}
+diff --git a/src/pc/utils.h b/src/pc/utils.h
+new file mode 100644
+index 00000000..0d8ecfab
+--- /dev/null
++++ b/src/pc/utils.h
+@@ -0,0 +1,52 @@
++#ifndef PC_UTILS_H
++#define PC_UTILS_H
++
++#include <stdbool.h>
++
++/* C dynamic array, vector-like struct */
++struct __DynamicArray {
++    void *buffer;
++    int count;
++    int capacity;
++    int itemsize;
++};
++void  __dynamic_array_init(struct __DynamicArray *da, int itemsize);
++void  __dynamic_array_add(struct __DynamicArray *da, void *item);
++void  __dynamic_array_rem(struct __DynamicArray *da, int index);
++void  __dynamic_array_clr(struct __DynamicArray *da);
++void *__dynamic_array_get(struct __DynamicArray *da, int index);
++void  __dynamic_array_set(struct __DynamicArray *da, int index, void *item);
++int   __dynamic_array_find(struct __DynamicArray *da, void *item);
++int   __dynamic_array_find_eq(struct __DynamicArray *da, void *item, bool (*eqfunc)(void *, void *));
++
++#define DA                              struct __DynamicArray
++#define da_type(type)                   { NULL, 0, 0, sizeof(type) }
++#define da_init(da, type)               __dynamic_array_init(&(da), sizeof(type))
++#define da_add(da, item)                __dynamic_array_add(&(da), (void *) &(item))
++#define da_rem(da, index)               __dynamic_array_rem(&(da), (index))
++#define da_rem_all(da)                  __dynamic_array_rem(&(da), -1)
++#define da_clr(da)                      __dynamic_array_clr(&(da))
++#define da_get(da, index, type)         (*((type *) __dynamic_array_get(&(da), (index))))
++#define da_getp(da, index, type)        ((type *) __dynamic_array_get(&(da), (index)))
++#define da_set(da, index, item)         __dynamic_array_set(&(da), (index), (void *) &(item))
++#define da_item(ptr, type)              (*((type *) ptr))
++#define da_find(da, item)               __dynamic_array_find(&(da), (void *) &(item))
++#define da_find_eq(da, item, eqfunc)    __dynamic_array_find_eq(&(da), (void *) &(item), eqfunc)
++
++/* String conversion */
++unsigned char *__sm64_string(bool heapAlloc, const char *fmt, ...);
++unsigned char *__sm64_string_decapitalize(unsigned char *str64);
++int __sm64_strlen(const unsigned char *str64);
++int __sm64_cwidth(unsigned char c64);
++
++#define str64s(...)    __sm64_string(false, __VA_ARGS__)  /* String allocated on stack (circular buffer of static strings) */
++#define str64h(...)    __sm64_string(true,  __VA_ARGS__)  /* String allocated on heap */
++#define str64l(str64)  __sm64_strlen(str64)               /* String length */
++#define str64d(str64)  __sm64_string_decapitalize(str64)  /* String decapitalization (does not alloc a new string, return the modified string) */
++#define str64w(c64)    __sm64_cwidth(c64)                 /* SM64 Char width */
++
++/* Dynamically allocated graph nodes */
++void *get_graph_node_from_geo(const void *geoLayout);
++void *obj_spawn_with_geo(void *parent, const void *geoLayout, const void *behavior);
++
++#endif
+\ No newline at end of file
+diff --git a/texts/AM_us.json b/texts/AM_us.json
+index 871a4780..3ba8f8af 100644
+--- a/texts/AM_us.json
++++ b/texts/AM_us.json
+@@ -3346,7 +3346,104 @@
+         "TEXT_OPT_CHEAT8": "Huge Mario",
+         "TEXT_OPT_CHEAT9": "Tiny Mario",
+         "TEXT_OPT_GAME": "GAME",
+-        "TEXT_OPT_LANGUAGE": "Current Language"
++        "TEXT_OPT_LANGUAGE": "Current Language",
++        "TEXT_OPT_COIN": "COIN CHEATS (HOLD B)",
++        "TEXT_OPT_HOVER": "HOVER MODE",
++        "TEXT_OPT_MOON": "MOON GRAVITY",
++        "TEXT_OPT_RUN": "RUN SPEED",
++        "TEXT_OPT_NDB": "NO DEATH BARRIER",
++        "TEXT_OPT_JUMP": "ALL JUMPS HIGHER",
++        "TEXT_OPT_SPDDPS": "SPEED DISPLAY",
++        "TEXT_OPT_TPF": "T POSE FLOAT",
++        "TEXT_OPT_JB": "SONG LIST",
++        "TEXT_OPT_JBC": "PLAY SONG",
++        "TEXT_OPT_QUIKEND": "QUICK ENDING",
++        "TEXT_OPT_HURT": "HURT MARIO L + A",
++        "TEXT_OPT_CANN": "CANNON ANYWHERE L + C Up",
++        "TEXT_OPT_AWK": "AUTOWALLKICK",
++        "TEXT_OPT_SHELL": "GET SHELL L + R",
++        "TEXT_OPT_BOB": "GET BOBOMB L + R",
++        "TEXT_OPT_SPAMBA": "SPAMBA L + Z",
++        "TEXT_OPT_SWIM": "QUICK SWIM",
++        "TEXT_OPT_WING_CAP": "GET WING CAP",
++        "TEXT_OPT_METAL_CAP": "GET METAL CAP",
++        "TEXT_OPT_VANISH_CAP": "GET VANISH CAP",
++        "TEXT_OPT_REMOVE_CAP": "REMOVE CAP",
++        "TEXT_OPT_NORMAL_CAP": "RESET CAP",
++        "TEXT_OPT_BLJ": "BLJ ANYWHERE",
++        "TEXT_OPT_PAC": "PLAY AS",
++        "TEXT_OPT_TRIPLE": "ALL JUMPS TRIPLE",
++        "TEXT_OPT_FLY": "FLYER",
++        "TEXT_OPT_NOB": "NO BOUNDS",
++        "TEXT_OPT_FLJ": "FORWARD LONG JUMP",
++        "TEXT_OPT_TS": "TIME STOP",
++        "TEXT_OPT_COIN1": "OFF",
++        "TEXT_OPT_COIN2": "COIN",
++        "TEXT_OPT_COIN3": "BLUE COIN",
++        "TEXT_OPT_COIN4": "RED COIN",
++        "TEXT_OPT_SS1": "NORMAL",
++        "TEXT_OPT_SS2": "SLOW",
++        "TEXT_OPT_SS3": "SLOWER",
++        "TEXT_OPT_SS4": "FAST",
++        "TEXT_OPT_SS5": "FASTER",
++        "TEXT_OPT_PA1": "DISABLED",
++        "TEXT_OPT_PA2": "BLACK BOBOMB",
++        "TEXT_OPT_PA3": "PINK BOBOMB",
++        "TEXT_OPT_PA4": "GOOMBA",
++        "TEXT_OPT_PA5": "KOOPA SHELL",
++        "TEXT_OPT_PA6": "CHUCKYA",
++        "TEXT_OPT_PA7": "FLYGUY",
++        "TEXT_OPT_PA8": "PER LEVEL",
++        "TEXT_OPT_SEQ1": "INTRO",
++        "TEXT_OPT_SEQ2": "GRASS",
++        "TEXT_OPT_SEQ3": "CASTLE",
++        "TEXT_OPT_SEQ4": "WATER",
++        "TEXT_OPT_SEQ5": "HOT",
++        "TEXT_OPT_SEQ6": "BOWSER",
++        "TEXT_OPT_SEQ7": "SNOW",
++        "TEXT_OPT_SEQ8": "SLIDE",
++        "TEXT_OPT_SEQ9": "SPOOKY",
++        "TEXT_OPT_SEQ10": "UNDERGROUND",
++        "TEXT_OPT_SEQ11": "KOOPA ROAD",
++        "TEXT_OPT_SEQ12": "FINAL BOWSER",
++        "TEXT_OPT_SEQ13": "TITLE",
++        "TEXT_OPT_SEQ14": "FILE SELECT",
++        "TEXT_OPT_SEQ15": "POWERUP",
++        "TEXT_OPT_SEQ16": "METAL CAP",
++        "TEXT_OPT_SEQ17": "BOSS",
++        "TEXT_OPT_SEQ18": "MERRYGOROUND",
++        "TEXT_OPT_SEQ19": "CREDITS",
++        "TEXT_OPT_HURTCHT1": "DISABLED",
++        "TEXT_OPT_HURTCHT2": "BURN",
++        "TEXT_OPT_HURTCHT3": "SHOCK",
++        "TEXT_OPT_HURTCHT4": "ONE HP",
++        "TEXT_OPT_SPAMCHT1": "DISABLED",
++        "TEXT_OPT_SPAMCHT2": "AMP",
++        "TEXT_OPT_SPAMCHT3": "BLUE COIN SWITCH",
++        "TEXT_OPT_SPAMCHT4": "BOWLING BALL",
++        "TEXT_OPT_SPAMCHT5": "BREAKABLE BOX",
++        "TEXT_OPT_SPAMCHT6": "BREAKABLE BOX SMALL",
++        "TEXT_OPT_SPAMCHT7": "JUMPING BOX",
++        "TEXT_OPT_SPAMCHT8": "CHECKERBOARD PLATFORM",
++        "TEXT_OPT_SPAMCHT9": "CHUCKYA",
++        "TEXT_OPT_SPAMCHT10": "FLYGUY",
++        "TEXT_OPT_SPAMCHT11": "GOOMBAS",
++        "TEXT_OPT_SPAMCHT12": "HEART",
++        "TEXT_OPT_SPAMCHT13": "METAL BOX",
++        "TEXT_OPT_SPAMCHT14": "PURPLE SWITCH",
++        "TEXT_OPT_BLJCHT1": "DISABLED",
++        "TEXT_OPT_BLJCHT2": "ENABLED",
++        "TEXT_OPT_BLJCHT3": "ENABLED - BOOST: 1",
++        "TEXT_OPT_BLJCHT4": "ENABLED - BOOST: 2",
++        "TEXT_OPT_BLJCHT5": "ENABLED - BOOST: 3",
++        "TEXT_OPT_BLJCHT6": "ENABLED - BOOST: 4",
++        "TEXT_OPT_BLJCHT7": "ENABLED - BOOST: 5",
++        "TEXT_OPT_BLJCHT8": "RAPID FIRE",
++        "TEXT_OPT_BLJCHT9": "RAPID FIRE - BOOST: 1",
++        "TEXT_OPT_BLJCHT10": "RAPID FIRE - BOOST: 2",
++        "TEXT_OPT_BLJCHT11": "RAPID FIRE - BOOST: 3",
++        "TEXT_OPT_BLJCHT12": "RAPID FIRE - BOOST: 4",
++        "TEXT_OPT_BLJCHT13": "RAPID FIRE - BOOST: 5"
+     },
+     "strings": {
+         "TEXT_ZERO": "0",
+diff --git a/texts/ES_es.json b/texts/ES_es.json
+index eff2f962..73bf7895 100644
+--- a/texts/ES_es.json
++++ b/texts/ES_es.json
+@@ -3532,7 +3532,104 @@
+         "TEXT_OPT_CHEAT8": "Mario gigante",
+         "TEXT_OPT_CHEAT9": "Mario enano",
+         "TEXT_OPT_GAME": "JUEGO",
+-        "TEXT_OPT_LANGUAGE": "Idioma actual"
++        "TEXT_OPT_LANGUAGE": "Idioma actual",
++        "TEXT_OPT_COIN": "MONEDAS (MANTENER B)",
++        "TEXT_OPT_HOVER": "FLOTAR",
++        "TEXT_OPT_MOON": "GRAVEDAD LUNAR",
++        "TEXT_OPT_RUN": "VELOCIDAD DE MOVIMIENTO",
++        "TEXT_OPT_NDB": "SIN BARRERAS DE MUERTE",
++        "TEXT_OPT_JUMP": "TODOS LOS SALTOS MAS ALTOS",
++        "TEXT_OPT_SPDDPS": "VELOCIMETRO",
++        "TEXT_OPT_TPF": "FLOTAR EN POSE T",
++        "TEXT_OPT_JB": "LISTA DE CANCIONES",
++        "TEXT_OPT_JBC": "REPRODUCIR CANCION",
++        "TEXT_OPT_QUIKEND": "FINAL RAPIDO",
++        "TEXT_OPT_HURT": "DAÑAR A MARIO L + A",
++        "TEXT_OPT_CANN": "CAÑON DONDE SEA L + C UP",
++        "TEXT_OPT_AWK": "SALTO DE PARED AUTOMATICO",
++        "TEXT_OPT_SHELL": "OBTENER CAPARAZON L + R",
++        "TEXT_OPT_BOB": "OBTENER BOBOMB L + B",
++        "TEXT_OPT_SPAMBA": "SPAMBA L + Z",
++        "TEXT_OPT_SWIM": "NADADO RAPIDO",
++        "TEXT_OPT_WING_CAP": "OBTENER GORRA ALADA",
++        "TEXT_OPT_METAL_CAP": "OBTENER GORRA METALICA",
++        "TEXT_OPT_VANISH_CAP": "OBTENER GORRA INVISIBLE",
++        "TEXT_OPT_REMOVE_CAP": "REMOVER GORRA",
++        "TEXT_OPT_NORMAL_CAP": "REINICIAR GORRA",
++        "TEXT_OPT_BLJ": "BLJ DONDE SEA",
++        "TEXT_OPT_PAC": "JUGAR COMO",
++        "TEXT_OPT_TRIPLE": "TODOS LOS SALTOS SON TRIPLE",
++        "TEXT_OPT_FLY": "VOLADOR",
++        "TEXT_OPT_NOB": "SIN BORDES",
++        "TEXT_OPT_FLJ": "FORWARD LONG JUMP",
++        "TEXT_OPT_TS": "FRENAR EL TIEMPO",
++        "TEXT_OPT_COIN1": "APAGADO",
++        "TEXT_OPT_COIN2": "MONEDA",
++        "TEXT_OPT_COIN3": "MONEDA AZUL",
++        "TEXT_OPT_COIN4": "MONEDA ROJA",
++        "TEXT_OPT_SS1": "NORMAL",
++        "TEXT_OPT_SS2": "LENTO",
++        "TEXT_OPT_SS3": "MAS LENTO",
++        "TEXT_OPT_SS4": "RAPIDO",
++        "TEXT_OPT_SS5": "MAS RAPIDO",
++        "TEXT_OPT_PA1": "DESACTIVADO",
++        "TEXT_OPT_PA2": "BOBOMB NEGRA",
++        "TEXT_OPT_PA3": "BOBOMB ROSA",
++        "TEXT_OPT_PA4": "GOOMBA",
++        "TEXT_OPT_PA5": "CAPARAZON",
++        "TEXT_OPT_PA6": "CHUCKYA",
++        "TEXT_OPT_PA7": "FLYGUY",
++        "TEXT_OPT_PA8": "POR NIVEL",
++        "TEXT_OPT_SEQ1": "INTRO",
++        "TEXT_OPT_SEQ2": "BOB OMB BATTLEFIELD",
++        "TEXT_OPT_SEQ3": "CASTILLO",
++        "TEXT_OPT_SEQ4": "DIRE DIRE DOCKS",
++        "TEXT_OPT_SEQ5": "LETHAL LAVA LAND",
++        "TEXT_OPT_SEQ6": "BATALLA CON BOWSER",
++        "TEXT_OPT_SEQ7": "COOL COOL MOUNTAIN",
++        "TEXT_OPT_SEQ8": "SLIDE",
++        "TEXT_OPT_SEQ9": "BIG BOO'S HAUNT",
++        "TEXT_OPT_SEQ10": "WET DRY WORLD",
++        "TEXT_OPT_SEQ11": "KOOPA ROAD",
++        "TEXT_OPT_SEQ12": "BOWSER FINAL",
++        "TEXT_OPT_SEQ13": "TITULOS",
++        "TEXT_OPT_SEQ14": "PARTIDAS GUARDADAS",
++        "TEXT_OPT_SEQ15": "GORRA ALADA",
++        "TEXT_OPT_SEQ16": "GORRA METALICA",
++        "TEXT_OPT_SEQ17": "JEFE",
++        "TEXT_OPT_SEQ18": "CARRUSEL",
++        "TEXT_OPT_SEQ19": "CREDITOS",
++        "TEXT_OPT_HURTCHT1": "DESACTIVADO",
++        "TEXT_OPT_HURTCHT2": "QUEMAR",
++        "TEXT_OPT_HURTCHT3": "SHOCK",
++        "TEXT_OPT_HURTCHT4": "1 HP",
++        "TEXT_OPT_SPAMCHT1": "DESACTIVADO",
++        "TEXT_OPT_SPAMCHT2": "AMP",
++        "TEXT_OPT_SPAMCHT3": "SWITCH DE MONEDA AZUL",
++        "TEXT_OPT_SPAMCHT4": "BOLA DE BOLOS",
++        "TEXT_OPT_SPAMCHT5": "CAJA ROMPIBLE",
++        "TEXT_OPT_SPAMCHT6": "MINI CAJA ROMPIBLE",
++        "TEXT_OPT_SPAMCHT7": "CAJA SALTARINA",
++        "TEXT_OPT_SPAMCHT8": "PLATAFORMA A CUADROS",
++        "TEXT_OPT_SPAMCHT9": "CHUCKYA",
++        "TEXT_OPT_SPAMCHT10": "FLYGUY",
++        "TEXT_OPT_SPAMCHT11": "GOOMBAS",
++        "TEXT_OPT_SPAMCHT12": "CORAZON",
++        "TEXT_OPT_SPAMCHT13": "CAJA DE METAL",
++        "TEXT_OPT_SPAMCHT14": "SWITCH PURPURA",
++        "TEXT_OPT_BLJCHT1": "DESACTIVADO",
++        "TEXT_OPT_BLJCHT2": "ACTIVADO",
++        "TEXT_OPT_BLJCHT3": "ACTIVADO - BOOST: 1",
++        "TEXT_OPT_BLJCHT4": "ACTIVADO - BOOST: 2",
++        "TEXT_OPT_BLJCHT5": "ACTIVADO - BOOST: 3",
++        "TEXT_OPT_BLJCHT6": "ACTIVADO - BOOST: 4",
++        "TEXT_OPT_BLJCHT7": "ACTIVADO - BOOST: 5",
++        "TEXT_OPT_BLJCHT8": "FUEGO RAPIDO",
++        "TEXT_OPT_BLJCHT9": "FUEGO RAPIDO - BOOST: 1",
++        "TEXT_OPT_BLJCHT10": "FUEGO RAPIDO - BOOST: 2",
++        "TEXT_OPT_BLJCHT11": "FUEGO RAPIDO - BOOST: 3",
++        "TEXT_OPT_BLJCHT12": "FUEGO RAPIDO - BOOST: 4",
++        "TEXT_OPT_BLJCHT13": "FUEGO RAPIDO - BOOST: 5"
+     },
+     "strings": {
+         "TEXT_ZERO": "0",
+diff --git a/texts/ES_la.json b/texts/ES_la.json
+index 83a65f99..f2463906 100644
+--- a/texts/ES_la.json
++++ b/texts/ES_la.json
+@@ -3393,7 +3393,104 @@
+         "TEXT_OPT_CHEAT8": "Mario Gigante",
+         "TEXT_OPT_CHEAT9": "Mario Peque{00241}o",
+         "TEXT_OPT_GAME": "JUEGO",
+-        "TEXT_OPT_LANGUAGE": "Idioma actual"
++        "TEXT_OPT_LANGUAGE": "Idioma actual",
++        "TEXT_OPT_COIN": "MONEDAS (MANTENER B)",
++        "TEXT_OPT_HOVER": "FLOTAR",
++        "TEXT_OPT_MOON": "GRAVEDAD LUNAR",
++        "TEXT_OPT_RUN": "VELOCIDAD DE MOVIMIENTO",
++        "TEXT_OPT_NDB": "SIN BARRERAS DE MUERTE",
++        "TEXT_OPT_JUMP": "TODOS LOS SALTOS MAS ALTOS",
++        "TEXT_OPT_SPDDPS": "VELOCIMETRO",
++        "TEXT_OPT_TPF": "FLOTAR EN POSE T",
++        "TEXT_OPT_JB": "LISTA DE CANCIONES",
++        "TEXT_OPT_JBC": "REPRODUCIR CANCION",
++        "TEXT_OPT_QUIKEND": "FINAL RAPIDO",
++        "TEXT_OPT_HURT": "DAÑAR A MARIO L + A",
++        "TEXT_OPT_CANN": "CAÑON DONDE SEA L + C UP",
++        "TEXT_OPT_AWK": "SALTO DE PARED AUTOMATICO",
++        "TEXT_OPT_SHELL": "OBTENER CAPARAZON L + R",
++        "TEXT_OPT_BOB": "OBTENER BOBOMB L + B",
++        "TEXT_OPT_SPAMBA": "SPAMBA L + Z",
++        "TEXT_OPT_SWIM": "NADADO RAPIDO",
++        "TEXT_OPT_WING_CAP": "OBTENER GORRA ALADA",
++        "TEXT_OPT_METAL_CAP": "OBTENER GORRA METALICA",
++        "TEXT_OPT_VANISH_CAP": "OBTENER GORRA INVISIBLE",
++        "TEXT_OPT_REMOVE_CAP": "REMOVER GORRA",
++        "TEXT_OPT_NORMAL_CAP": "REINICIAR GORRA",
++        "TEXT_OPT_BLJ": "BLJ DONDE SEA",
++        "TEXT_OPT_PAC": "JUGAR COMO",
++        "TEXT_OPT_TRIPLE": "TODOS LOS SALTOS SON TRIPLE",
++        "TEXT_OPT_FLY": "VOLADOR",
++        "TEXT_OPT_NOB": "SIN BORDES",
++        "TEXT_OPT_FLJ": "FORWARD LONG JUMP",
++        "TEXT_OPT_TS": "FRENAR EL TIEMPO",
++        "TEXT_OPT_COIN1": "APAGADO",
++        "TEXT_OPT_COIN2": "MONEDA",
++        "TEXT_OPT_COIN3": "MONEDA AZUL",
++        "TEXT_OPT_COIN4": "MONEDA ROJA",
++        "TEXT_OPT_SS1": "NORMAL",
++        "TEXT_OPT_SS2": "LENTO",
++        "TEXT_OPT_SS3": "MAS LENTO",
++        "TEXT_OPT_SS4": "RAPIDO",
++        "TEXT_OPT_SS5": "MAS RAPIDO",
++        "TEXT_OPT_PA1": "DESACTIVADO",
++        "TEXT_OPT_PA2": "BOBOMB NEGRA",
++        "TEXT_OPT_PA3": "BOBOMB ROSA",
++        "TEXT_OPT_PA4": "GOOMBA",
++        "TEXT_OPT_PA5": "CAPARAZON",
++        "TEXT_OPT_PA6": "CHUCKYA",
++        "TEXT_OPT_PA7": "FLYGUY",
++        "TEXT_OPT_PA8": "POR NIVEL",
++        "TEXT_OPT_SEQ1": "INTRO",
++        "TEXT_OPT_SEQ2": "BOB OMB BATTLEFIELD",
++        "TEXT_OPT_SEQ3": "CASTILLO",
++        "TEXT_OPT_SEQ4": "DIRE DIRE DOCKS",
++        "TEXT_OPT_SEQ5": "LETHAL LAVA LAND",
++        "TEXT_OPT_SEQ6": "BATALLA CON BOWSER",
++        "TEXT_OPT_SEQ7": "COOL COOL MOUNTAIN",
++        "TEXT_OPT_SEQ8": "SLIDE",
++        "TEXT_OPT_SEQ9": "BIG BOO'S HAUNT",
++        "TEXT_OPT_SEQ10": "WET DRY WORLD",
++        "TEXT_OPT_SEQ11": "KOOPA ROAD",
++        "TEXT_OPT_SEQ12": "BOWSER FINAL",
++        "TEXT_OPT_SEQ13": "TITULOS",
++        "TEXT_OPT_SEQ14": "PARTIDAS GUARDADAS",
++        "TEXT_OPT_SEQ15": "GORRA ALADA",
++        "TEXT_OPT_SEQ16": "GORRA METALICA",
++        "TEXT_OPT_SEQ17": "JEFE",
++        "TEXT_OPT_SEQ18": "CARRUSEL",
++        "TEXT_OPT_SEQ19": "CREDITOS",
++        "TEXT_OPT_HURTCHT1": "DESACTIVADO",
++        "TEXT_OPT_HURTCHT2": "QUEMAR",
++        "TEXT_OPT_HURTCHT3": "SHOCK",
++        "TEXT_OPT_HURTCHT4": "1 HP",
++        "TEXT_OPT_SPAMCHT1": "DESACTIVADO",
++        "TEXT_OPT_SPAMCHT2": "AMP",
++        "TEXT_OPT_SPAMCHT3": "SWITCH DE MONEDA AZUL",
++        "TEXT_OPT_SPAMCHT4": "BOLA DE BOLOS",
++        "TEXT_OPT_SPAMCHT5": "CAJA ROMPIBLE",
++        "TEXT_OPT_SPAMCHT6": "MINI CAJA ROMPIBLE",
++        "TEXT_OPT_SPAMCHT7": "CAJA SALTARINA",
++        "TEXT_OPT_SPAMCHT8": "PLATAFORMA A CUADROS",
++        "TEXT_OPT_SPAMCHT9": "CHUCKYA",
++        "TEXT_OPT_SPAMCHT10": "FLYGUY",
++        "TEXT_OPT_SPAMCHT11": "GOOMBAS",
++        "TEXT_OPT_SPAMCHT12": "CORAZON",
++        "TEXT_OPT_SPAMCHT13": "CAJA DE METAL",
++        "TEXT_OPT_SPAMCHT14": "SWITCH PURPURA",
++        "TEXT_OPT_BLJCHT1": "DESACTIVADO",
++        "TEXT_OPT_BLJCHT2": "ACTIVADO",
++        "TEXT_OPT_BLJCHT3": "ACTIVADO - BOOST: 1",
++        "TEXT_OPT_BLJCHT4": "ACTIVADO - BOOST: 2",
++        "TEXT_OPT_BLJCHT5": "ACTIVADO - BOOST: 3",
++        "TEXT_OPT_BLJCHT6": "ACTIVADO - BOOST: 4",
++        "TEXT_OPT_BLJCHT7": "ACTIVADO - BOOST: 5",
++        "TEXT_OPT_BLJCHT8": "FUEGO RAPIDO",
++        "TEXT_OPT_BLJCHT9": "FUEGO RAPIDO - BOOST: 1",
++        "TEXT_OPT_BLJCHT10": "FUEGO RAPIDO - BOOST: 2",
++        "TEXT_OPT_BLJCHT11": "FUEGO RAPIDO - BOOST: 3",
++        "TEXT_OPT_BLJCHT12": "FUEGO RAPIDO - BOOST: 4",
++        "TEXT_OPT_BLJCHT13": "FUEGO RAPIDO - BOOST: 5"
+     },
+     "strings": {
+         "TEXT_ZERO": "0",
+diff --git a/texts/PL_pl.json b/texts/PL_pl.json
+index 75435fa2..ed277c53 100644
+--- a/texts/PL_pl.json
++++ b/texts/PL_pl.json
+@@ -3388,7 +3388,104 @@
+         "TEXT_OPT_CHEAT8": "Huge Mario",
+         "TEXT_OPT_CHEAT9": "Tiny Mario",
+         "TEXT_OPT_GAME": "GRA",
+-        "TEXT_OPT_LANGUAGE": "Jezyk"
++        "TEXT_OPT_LANGUAGE": "Jezyk",
++        "TEXT_OPT_COIN": "KODY MONETOWE (TRZYMAJ B)",
++        "TEXT_OPT_HOVER": "TRYB UNOSZENIA",
++        "TEXT_OPT_MOON": "GRAWITACJA KSIezYCA",
++        "TEXT_OPT_RUN": "SZYBKOsc BIEGU",
++        "TEXT_OPT_NDB": "BRAK BARIERY sMIERCI",
++        "TEXT_OPT_JUMP": "WSZYSTKIE SKOKI WYzSZE",
++        "TEXT_OPT_SPDDPS": "WYsWIETLACZ SZYBKOsCI",
++        "TEXT_OPT_TPF": "UNOSZENIE W T POSE",
++        "TEXT_OPT_JB": "LISTA PIOSENEK",
++        "TEXT_OPT_JBC": "ZAGRAJ PIOSENKe",
++        "TEXT_OPT_QUIKEND": "SZYBKIE ZAKOnCZENIE",
++        "TEXT_OPT_HURT": "ZRAn MARIO",
++        "TEXT_OPT_CANN": "ARMATA GDZIEKOLWIEK",
++        "TEXT_OPT_AWK": "AUTO ODBIJANIE OD sCIAN",
++        "TEXT_OPT_SHELL": "ZDOBaDz SKORUPe",
++        "TEXT_OPT_BOB": "ZDOBaDz BOBOMBe",
++        "TEXT_OPT_SPAMBA": "SPAMBA",
++        "TEXT_OPT_SWIM": "SZYBKIE PlYWANIE",
++        "TEXT_OPT_WING_CAP": "ZDOBaDz SKRZYDLATa CZAPKe",
++        "TEXT_OPT_METAL_CAP": "ZDOBaDz METALOWa CZAPKe",
++        "TEXT_OPT_VANISH_CAP": "ZDOBaDz NIEWIDZIALNa CZAPKe",
++        "TEXT_OPT_REMOVE_CAP": "ZDEJMIJ CZAPKe",
++        "TEXT_OPT_NORMAL_CAP": "ZRESETUJ CZAPKe",
++        "TEXT_OPT_BLJ": "BLJ GDZIEKOLWIEK",
++        "TEXT_OPT_PAC": "GRAJ JAKO",
++        "TEXT_OPT_TRIPLE": "WSZYSTKIE SKOKI POTRoJNE",
++        "TEXT_OPT_FLY": "LATACZ",
++        "TEXT_OPT_NOB": "BEZ GRANIC",
++        "TEXT_OPT_FLJ": "DALEKI SKOK DO PRZODU",
++        "TEXT_OPT_TS": "ZATRZYMANIE CZASU",
++        "TEXT_OPT_COIN1": "WYlaCZONY",
++        "TEXT_OPT_COIN2": "MONETA",
++        "TEXT_OPT_COIN3": "NIEBIESKA MONETA",
++        "TEXT_OPT_COIN4": "CZERWONA MONETA",
++        "TEXT_OPT_SS1": "NORMALNIE",
++        "TEXT_OPT_SS2": "WOLNO",
++        "TEXT_OPT_SS3": "WOLNIEJ",
++        "TEXT_OPT_SS4": "SZYBKO",
++        "TEXT_OPT_SS5": "SZYBCIEJ",
++        "TEXT_OPT_PA1": "WYlaCZONY",
++        "TEXT_OPT_PA2": "CZARNA BOBOMBA",
++        "TEXT_OPT_PA3": "RozOWA BOBOMBA",
++        "TEXT_OPT_PA4": "GOOMBA",
++        "TEXT_OPT_PA5": "SKORUPA KOOPY",
++        "TEXT_OPT_PA6": "CHUCKYA",
++        "TEXT_OPT_PA7": "FLYGUY",
++        "TEXT_OPT_PA8": "CO ETAP",
++        "TEXT_OPT_SEQ1": "WSTeP",
++        "TEXT_OPT_SEQ2": "TRAWA",
++        "TEXT_OPT_SEQ3": "ZAMEK",
++        "TEXT_OPT_SEQ4": "WODA",
++        "TEXT_OPT_SEQ5": "GORaCE",
++        "TEXT_OPT_SEQ6": "BOWSER",
++        "TEXT_OPT_SEQ7": "sNIEG",
++        "TEXT_OPT_SEQ8": "ZJEzDzALNIA",
++        "TEXT_OPT_SEQ9": "STRASZNE",
++        "TEXT_OPT_SEQ10": "PODZIEMIA",
++        "TEXT_OPT_SEQ11": "sCIEzKA KOOPY",
++        "TEXT_OPT_SEQ12": "OSTATECZNY BOWSER",
++        "TEXT_OPT_SEQ13": "EKRAN TYTUlOWY",
++        "TEXT_OPT_SEQ14": "WYBoR PLIKoW",
++        "TEXT_OPT_SEQ15": "WZMOCNIENIE",
++        "TEXT_OPT_SEQ16": "METALOWA CZAPKA",
++        "TEXT_OPT_SEQ17": "BOSS",
++        "TEXT_OPT_SEQ18": "KARUZELA",
++        "TEXT_OPT_SEQ19": "NAPISY",
++        "TEXT_OPT_HURTCHT1": "WYlaCZONY",
++        "TEXT_OPT_HURTCHT2": "PODPALENIE",
++        "TEXT_OPT_HURTCHT3": "ELEKTROWSTRZaS",
++        "TEXT_OPT_HURTCHT4": "JEDEN PUNKT zYCIA",
++        "TEXT_OPT_SPAMCHT1": "WYlaCZONY",
++        "TEXT_OPT_SPAMCHT2": "AMP",
++        "TEXT_OPT_SPAMCHT3": "PRZElaCZNIK NIEBIESKICH MONET",
++        "TEXT_OPT_SPAMCHT4": "KULA DO KReGLI",
++        "TEXT_OPT_SPAMCHT5": "ZNISZCZALNE PUDlO",
++        "TEXT_OPT_SPAMCHT6": "ZNISZCZALNE PUDlO MAlE",
++        "TEXT_OPT_SPAMCHT7": "SKACZaCE PUDlO",
++        "TEXT_OPT_SPAMCHT8": "PLATFORMA Z SZACHOWNICa",
++        "TEXT_OPT_SPAMCHT9": "CHUCKYA",
++        "TEXT_OPT_SPAMCHT10": "FLYGUY",
++        "TEXT_OPT_SPAMCHT11": "GOOMBY",
++        "TEXT_OPT_SPAMCHT12": "SERCE",
++        "TEXT_OPT_SPAMCHT13": "METALOWE PUDlO",
++        "TEXT_OPT_SPAMCHT14": "FIOLETOWY PRZElaCZNIK",
++        "TEXT_OPT_BLJCHT1": "WYlaCZONY",
++        "TEXT_OPT_BLJCHT2": "WlaCZONY",
++        "TEXT_OPT_BLJCHT3": "WlaCZONY - PReDKOsc: 1",
++        "TEXT_OPT_BLJCHT4": "WlaCZONY - PReDKOsc: 2",
++        "TEXT_OPT_BLJCHT5": "WlaCZONY - PReDKOsc: 3",
++        "TEXT_OPT_BLJCHT6": "WlaCZONY - PReDKOsc: 4",
++        "TEXT_OPT_BLJCHT7": "WlaCZONY - PReDKOsc: 5",
++        "TEXT_OPT_BLJCHT8": "NACISKAJ A",
++        "TEXT_OPT_BLJCHT9": "NACISKAJ A - PReDKOsc: 1",
++        "TEXT_OPT_BLJCHT10": "NACISKAJ A - PReDKOsc: 2",
++        "TEXT_OPT_BLJCHT11": "NACISKAJ A - PReDKOsc: 3",
++        "TEXT_OPT_BLJCHT12": "NACISKAJ A - PReDKOsc: 4",
++        "TEXT_OPT_BLJCHT13": "NACISKAJ A - PReDKOsc: 5"
+     },
+     "strings": {
+         "TEXT_ZERO": "0",
+diff --git a/texts/PT_br.json b/texts/PT_br.json
+index 48ac695a..dd899e24 100644
+--- a/texts/PT_br.json
++++ b/texts/PT_br.json
+@@ -3346,7 +3346,104 @@
+         "TEXT_OPT_CHEAT8": "Huge Mario",
+         "TEXT_OPT_CHEAT9": "Tiny Mario",
+         "TEXT_OPT_GAME": "JOGO",
+-        "TEXT_OPT_LANGUAGE": "Idioma atual"
++        "TEXT_OPT_LANGUAGE": "Idioma atual",
++        "TEXT_OPT_COIN": "COIN CHEATS (HOLD B)",
++        "TEXT_OPT_HOVER": "HOVER MODE",
++        "TEXT_OPT_MOON": "MOON GRAVITY",
++        "TEXT_OPT_RUN": "RUN SPEED",
++        "TEXT_OPT_NDB": "NO DEATH BARRIER",
++        "TEXT_OPT_JUMP": "ALL JUMPS HIGHER",
++        "TEXT_OPT_SPDDPS": "SPEED DISPLAY",
++        "TEXT_OPT_TPF": "T POSE FLOAT",
++        "TEXT_OPT_JB": "SONG LIST",
++        "TEXT_OPT_JBC": "PLAY SONG",
++        "TEXT_OPT_QUIKEND": "QUICK ENDING",
++        "TEXT_OPT_HURT": "HURT MARIO L + A",
++        "TEXT_OPT_CANN": "CANNON ANYWHERE L + C UP",
++        "TEXT_OPT_AWK": "AUTOWALLKICK",
++        "TEXT_OPT_SHELL": "GET SHELL L + R",
++        "TEXT_OPT_BOB": "GET BOBOMB L + B",
++        "TEXT_OPT_SPAMBA": "SPAMBA L + Z",
++        "TEXT_OPT_SWIM": "QUICK SWIM",
++        "TEXT_OPT_WING_CAP": "GET WING CAP",
++        "TEXT_OPT_METAL_CAP": "GET METAL CAP",
++        "TEXT_OPT_VANISH_CAP": "GET VANISH CAP",
++        "TEXT_OPT_REMOVE_CAP": "REMOVE CAP",
++        "TEXT_OPT_NORMAL_CAP": "RESET CAP",
++        "TEXT_OPT_BLJ": "BLJ ANYWHERE",
++        "TEXT_OPT_PAC": "PLAY AS",
++        "TEXT_OPT_TRIPLE": "ALL JUMPS TRIPLE",
++        "TEXT_OPT_FLY": "FLYER",
++        "TEXT_OPT_NOB": "NO BOUNDS",
++        "TEXT_OPT_FLJ": "FORWARD LONG JUMP",
++        "TEXT_OPT_TS": "TIME STOP",
++        "TEXT_OPT_COIN1": "OFF",
++        "TEXT_OPT_COIN2": "COIN",
++        "TEXT_OPT_COIN3": "BLUE COIN",
++        "TEXT_OPT_COIN4": "RED COIN",
++        "TEXT_OPT_SS1": "NORMAL",
++        "TEXT_OPT_SS2": "SLOW",
++        "TEXT_OPT_SS3": "SLOWER",
++        "TEXT_OPT_SS4": "FAST",
++        "TEXT_OPT_SS5": "FASTER",
++        "TEXT_OPT_PA1": "DISABLED",
++        "TEXT_OPT_PA2": "BLACK BOBOMB",
++        "TEXT_OPT_PA3": "PINK BOBOMB",
++        "TEXT_OPT_PA4": "GOOMBA",
++        "TEXT_OPT_PA5": "KAPPA SHELL",
++        "TEXT_OPT_PA6": "CHUCKYA",
++        "TEXT_OPT_PA7": "FLYGUY",
++        "TEXT_OPT_PA8": "PER LEVEL",
++        "TEXT_OPT_SEQ1": "INTRO",
++        "TEXT_OPT_SEQ2": "GRASS",
++        "TEXT_OPT_SEQ3": "CASTLE",
++        "TEXT_OPT_SEQ4": "WATER",
++        "TEXT_OPT_SEQ5": "HOT",
++        "TEXT_OPT_SEQ6": "BOWSER",
++        "TEXT_OPT_SEQ7": "SNOW",
++        "TEXT_OPT_SEQ8": "SLIDE",
++        "TEXT_OPT_SEQ9": "SPOOKY",
++        "TEXT_OPT_SEQ10": "UNDERGROUND",
++        "TEXT_OPT_SEQ11": "KOOPA ROAD",
++        "TEXT_OPT_SEQ12": "FINAL BOWSER",
++        "TEXT_OPT_SEQ13": "TITLE",
++        "TEXT_OPT_SEQ14": "FILE SELECT",
++        "TEXT_OPT_SEQ15": "POWERUP",
++        "TEXT_OPT_SEQ16": "METAL CAP",
++        "TEXT_OPT_SEQ17": "BOSS",
++        "TEXT_OPT_SEQ18": "MERRYGOROUND",
++        "TEXT_OPT_SEQ19": "CREDITS",
++        "TEXT_OPT_HURTCHT1": "DISABLED",
++        "TEXT_OPT_HURTCHT2": "BURN",
++        "TEXT_OPT_HURTCHT3": "SHOCK",
++        "TEXT_OPT_HURTCHT4": "ONE HP",
++        "TEXT_OPT_SPAMCHT1": "DISABLED",
++        "TEXT_OPT_SPAMCHT2": "AMP",
++        "TEXT_OPT_SPAMCHT3": "BLUE COIN SWITCH",
++        "TEXT_OPT_SPAMCHT4": "BOWLING BALL",
++        "TEXT_OPT_SPAMCHT5": "BREAKABLE BOX",
++        "TEXT_OPT_SPAMCHT6": "BREAKABLE BOX SMALL",
++        "TEXT_OPT_SPAMCHT7": "JUMPING BOX",
++        "TEXT_OPT_SPAMCHT8": "CHECKERBOARD PLATFORM",
++        "TEXT_OPT_SPAMCHT9": "CHUCKYA",
++        "TEXT_OPT_SPAMCHT10": "FLYGUY",
++        "TEXT_OPT_SPAMCHT11": "GOOMBAS",
++        "TEXT_OPT_SPAMCHT12": "HEART",
++        "TEXT_OPT_SPAMCHT13": "METAL BOX",
++        "TEXT_OPT_SPAMCHT14": "PURPLE SWITCH",
++        "TEXT_OPT_BLJCHT1": "DISABLED",
++        "TEXT_OPT_BLJCHT2": "ENABLED",
++        "TEXT_OPT_BLJCHT3": "ENABLED - BOOST: 1",
++        "TEXT_OPT_BLJCHT4": "ENABLED - BOOST: 2",
++        "TEXT_OPT_BLJCHT5": "ENABLED - BOOST: 3",
++        "TEXT_OPT_BLJCHT6": "ENABLED - BOOST: 4",
++        "TEXT_OPT_BLJCHT7": "ENABLED - BOOST: 5",
++        "TEXT_OPT_BLJCHT8": "RAPID FIRE",
++        "TEXT_OPT_BLJCHT9": "RAPID FIRE - BOOST: 1",
++        "TEXT_OPT_BLJCHT10": "RAPID FIRE - BOOST: 2",
++        "TEXT_OPT_BLJCHT11": "RAPID FIRE - BOOST: 3",
++        "TEXT_OPT_BLJCHT12": "RAPID FIRE - BOOST: 4",
++        "TEXT_OPT_BLJCHT13": "RAPID FIRE - BOOST: 5"
+     },
+     "strings": {
+         "TEXT_ZERO": "0",
