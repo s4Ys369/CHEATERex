@@ -1,3 +1,34 @@
+// Hello to all that use it! 
+// If this does not work for you, that means you may already have additional cheats installed.
+// To allow this to work in conjunction with others you need to change all 10's to 11, or something that is not used by other cheats.
+// Enjoy!
+// Issue? DM Evanbowl#9157
+diff --git a/include/text_options_strings.h.in b/include/text_options_strings.h.in
+index 141d354..356be76 100644
+--- a/include/text_options_strings.h.in
++++ b/include/text_options_strings.h.in
+@@ -83,7 +83,10 @@
+ #define TEXT_OPT_CHEAT7    _("EXIT COURSE AT ANY TIME")
+ #define TEXT_OPT_CHEAT8    _("HUGE MARIO")
+ #define TEXT_OPT_CHEAT9    _("TINY MARIO")
++#define TEXT_OPT_CHEAT10    _("RED COIN SOUND")
+ 
++#define TEXT_OPT_RedCoinSound1    _("NTSC-U")
++#define TEXT_OPT_RedCoinSound2    _("NTSC-J")
+ #else // VERSION
+ 
+ // Markers
+@@ -146,7 +149,10 @@
+ #define TEXT_OPT_CHEAT7    _("Exit course at any time")
+ #define TEXT_OPT_CHEAT8    _("Huge Mario")
+ #define TEXT_OPT_CHEAT9    _("Tiny Mario")
++#define TEXT_OPT_CHEAT10    _("Red Coin Sound")
+ 
++#define TEXT_OPT_RedCoinSound1    _("NTSC-U")
++#define TEXT_OPT_RedCoinSound2    _("NTSC-J")
+ #endif // VERSION
+ 
+ #endif // TEXT_OPTIONS_STRINGS_H
 diff --git a/sound/sequences/00_sound_player.s b/sound/sequences/00_sound_player.s
 index e1297da..1f16fdf 100644
 --- a/sound/sequences/00_sound_player.s
@@ -65,3 +96,59 @@ index 1e5c858..c8e82fb 100644
          coin_collected();
          // Despawn the coin.
          o->oInteractStatus = 0;
+diff --git a/src/game/options_menu.c b/src/game/options_menu.c
+index e004749..98d09db 100644
+--- a/src/game/options_menu.c
++++ b/src/game/options_menu.c
+@@ -101,6 +101,7 @@ static const u8 optsCheatsStr[][64] = {
+     { TEXT_OPT_CHEAT7 },
+     { TEXT_OPT_CHEAT8 },
+     { TEXT_OPT_CHEAT9 },
++    { TEXT_OPT_CHEAT10 },
+ };
+ 
+ static const u8 bindStr[][32] = {
+@@ -124,6 +125,11 @@ static const u8 bindStr[][32] = {
+     { TEXT_OPT_RUMBLE }
+ };
+ 
++static const u8 optsRedCoinSoundStr[][32] = {
++    { TEXT_OPT_RedCoinSound1 },
++    { TEXT_OPT_RedCoinSound2 },
++};
++
+ static const u8 *filterChoices[] = {
+     optsVideoStr[2],
+     optsVideoStr[3],
+@@ -135,6 +141,10 @@ static const u8 *vsyncChoices[] = {
+     toggleStr[1],
+     optsVideoStr[6],
+ };
++static const u8 *redCoinSoundChoices[] = {
++    optsRedCoinSoundStr[0],
++    optsRedCoinSoundStr[1],
++};
+ 
+ enum OptType {
+     OPT_INVALID = 0,
+@@ -277,7 +287,7 @@ static struct Option optsCheats[] = {
+     DEF_OPT_TOGGLE( optsCheatsStr[6], &Cheats.ExitAnywhere ),
+     DEF_OPT_TOGGLE( optsCheatsStr[7], &Cheats.HugeMario ),
+     DEF_OPT_TOGGLE( optsCheatsStr[8], &Cheats.TinyMario ),
+-
++    DEF_OPT_CHOICE( optsCheatsStr[9], &Cheats.RedCoinSound, redCoinSoundChoices),
+ };
+ 
+ /* submenu definitions */
+diff --git a/src/pc/cheats.h b/src/pc/cheats.h
+index eaf71ab..0970eef 100644
+--- a/src/pc/cheats.h
++++ b/src/pc/cheats.h
+@@ -13,6 +13,7 @@ struct CheatList {
+     bool         ExitAnywhere;
+     bool         HugeMario;
+     bool         TinyMario;
++    bool         RedCoinSound;
+ };
+ 
+ extern struct CheatList Cheats;

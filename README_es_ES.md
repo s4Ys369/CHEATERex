@@ -70,6 +70,7 @@ Ejecuta `./extract_assets.py --clean && make clean` o `make distclean` para elim
  * "Bugfixes" por JAGSTAX
  * "DynOS" por PeachyPeach
     -"Exit to Main Menu" por Adya incluido
+ * "JP Red Coin Sound" por Evanbowl
  * Y por supuesto, "CHEATERv9.5" por $4Y$, yo mismo
 
 ## Como agregar los trucos/mods

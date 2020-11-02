@@ -80,7 +80,8 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
  * Bugfixes by JAGSTAX
  * DynOS by PeachyPeach
     -Exit to Main Menu by Adya
- * And of course, CHEATERv9.5 by $4Y$, me
+ * JP Red Coin Sound Cheat by Evanbowl
+ * And of course, CHEATERv11 by $4Y$, me
 
 ## How to add cheats/mods
  * Use `src/game/mario_cheats.c` for code
