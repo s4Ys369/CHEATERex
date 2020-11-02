@@ -80,7 +80,7 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
  * Bugfixes by JAGSTAX
  * DynOS by PeachyPeach
     -Exit to Main Menu by Adya
- * JP Red Coin Sound Cheat by Evanbowl
+ * JP Red Coin Sound Option by Evanbowl
  * And of course, CHEATERv11 by $4Y$, me
 
 ## How to add cheats/mods

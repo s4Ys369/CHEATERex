@@ -1,0 +1,145 @@
+diff --git a/include/text_options_strings.h.in b/include/text_options_strings.h.in
+index 141d354..57e9dad 100644
+--- a/include/text_options_strings.h.in
++++ b/include/text_options_strings.h.in
+@@ -56,6 +56,9 @@
+ #define TEXT_OPT_THREEPT   _("THREE POINT")
+ #define TEXT_OPT_APPLY     _("APPLY")
+ #define TEXT_OPT_RESETWND  _("RESET WINDOW")
++#define TEXT_OPT_RedCoinSound    _("RED COIN SOUND")
++#define TEXT_OPT_RedCoinSound1    _("NTSC-U")
++#define TEXT_OPT_RedCoinSound2    _("NTSC-J")
+ 
+ #define TEXT_BIND_A        _("A BUTTON")
+ #define TEXT_BIND_B        _("B BUTTON")
+@@ -119,6 +122,9 @@
+ #define TEXT_OPT_THREEPT   _("Three-point")
+ #define TEXT_OPT_APPLY     _("Apply")
+ #define TEXT_OPT_RESETWND  _("Reset Window")
++#define TEXT_OPT_RedCoinSound    _("Red Coin Sound")
++#define TEXT_OPT_RedCoinSound1    _("NTSC-U")
++#define TEXT_OPT_RedCoinSound2    _("NTSC-J")
+ 
+ #define TEXT_BIND_A        _("A Button")
+ #define TEXT_BIND_B        _("B Button")
+diff --git a/sound/sequences/00_sound_player.s b/sound/sequences/00_sound_player.s
+index e1297da..eceea2c 100644
+--- a/sound/sequences/00_sound_player.s
++++ b/sound/sequences/00_sound_player.s
+@@ -4148,7 +4148,11 @@ layer_end
+     chan_setbank 9
+     chan_setinstr 3
+   .else
+-    chan_setinstr 128
++  chan_setbank 9
++  chan_setinstr 3
++  chan_setlayer 0, .layer_1909
++  chan_setlayer 1, .layer_1902
++  chan_setlayer 2, .layer_1907
+   .endif
+   chan_setenvelope .envelope_3378
+   chan_setlayer 0, .layer_1907
+diff --git a/src/game/behaviors/red_coin.inc.c b/src/game/behaviors/red_coin.inc.c
+index 1e5c858..3b8e4b8 100644
+--- a/src/game/behaviors/red_coin.inc.c
++++ b/src/game/behaviors/red_coin.inc.c
+@@ -1,3 +1,4 @@
++#include "pc/cheats.h"
+ /**
+  * This file contains the initialization and behavior for red coins.
+  * Behavior controls audio and the orange number spawned, as well as interacting with
+@@ -57,21 +58,36 @@ void bhv_red_coin_loop(void) {
+             // ...increment the star's counter.
+             o->parentObj->oHiddenStarTriggerCounter++;
+ 
+-            // For JP version, play an identical sound for all coins.
+-#ifdef VERSION_JP
++if (Cheats.RedCoinSound == FALSE) {
++    #ifdef VERSION_JP
++             create_sound_spawner(SOUND_GENERAL_RED_COIN);
++ #endif
++}
++else {
++    #ifdef VERSION_US
+             create_sound_spawner(SOUND_GENERAL_RED_COIN);
+ #endif
+-            // Spawn the orange number counter, as long as it isn't the last coin.
+-            if (o->parentObj->oHiddenStarTriggerCounter != 8) {
+-                spawn_orange_number(o->parentObj->oHiddenStarTriggerCounter, 0, 0, 0);
+-            }
+-
+-            // On all versions but the JP version, each coin collected plays a higher noise.
+-#ifndef VERSION_JP
++}
++             // Spawn the orange number counter, as long as it isn't the last coin.
++             if (o->parentObj->oHiddenStarTriggerCounter != 8) {
++                 spawn_orange_number(o->parentObj->oHiddenStarTriggerCounter, 0, 0, 0);
++             }
++ 
++             // On all versions but the JP version, each coin collected plays a higher noise.
++if (Cheats.RedCoinSound == FALSE) {
++    #ifndef VERSION_JP
++             play_sound(SOUND_MENU_COLLECT_RED_COIN
++                            + (((u8) o->parentObj->oHiddenStarTriggerCounter - 1) << 16),
++                        gDefaultSoundArgs);
++ #endif
++}
++else {
++    #ifndef VERSION_US
+             play_sound(SOUND_MENU_COLLECT_RED_COIN
+                            + (((u8) o->parentObj->oHiddenStarTriggerCounter - 1) << 16),
+                        gDefaultSoundArgs);
+ #endif
++}
+         }
+ 
+         coin_collected();
+diff --git a/src/game/options_menu.c b/src/game/options_menu.c
+index e004749..0e97798 100644
+--- a/src/game/options_menu.c
++++ b/src/game/options_menu.c
+@@ -89,6 +89,7 @@ static const u8 optsAudioStr[][32] = {
+     { TEXT_OPT_MUSVOLUME },
+     { TEXT_OPT_SFXVOLUME },
+     { TEXT_OPT_ENVVOLUME },
++    { TEXT_OPT_RedCoinSound },
+ };
+ 
+ static const u8 optsCheatsStr[][64] = {
+@@ -103,6 +104,16 @@ static const u8 optsCheatsStr[][64] = {
+     { TEXT_OPT_CHEAT9 },
+ };
+ 
++static const u8 optsRedCoinSoundStr[][32] = {
++    { TEXT_OPT_RedCoinSound1 },
++    { TEXT_OPT_RedCoinSound2 },
++};
++
++static const u8 *redCoinSoundChoices[] = {
++    optsRedCoinSoundStr[0],
++    optsRedCoinSoundStr[1],
++};
++ 
+ static const u8 bindStr[][32] = {
+     { TEXT_OPT_UNBOUND },
+     { TEXT_OPT_PRESSKEY },
+@@ -265,6 +276,7 @@ static struct Option optsAudio[] = {
+     DEF_OPT_SCROLL( optsAudioStr[1], &configMusicVolume, 0, MAX_VOLUME, 1),
+     DEF_OPT_SCROLL( optsAudioStr[2], &configSfxVolume, 0, MAX_VOLUME, 1),
+     DEF_OPT_SCROLL( optsAudioStr[3], &configEnvVolume, 0, MAX_VOLUME, 1),
++    DEF_OPT_CHOICE( optsAudioStr[4], &Cheats.RedCoinSound, redCoinSoundChoices ),
+ };
+ 
+ static struct Option optsCheats[] = {
+diff --git a/src/pc/cheats.h b/src/pc/cheats.h
+index eaf71ab..0970eef 100644
+--- a/src/pc/cheats.h
++++ b/src/pc/cheats.h
+@@ -13,6 +13,7 @@ struct CheatList {
+     bool         ExitAnywhere;
+     bool         HugeMario;
+     bool         TinyMario;
++    bool         RedCoinSound;
+ };
+ 
+ extern struct CheatList Cheats;
