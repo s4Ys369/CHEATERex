@@ -17,7 +17,14 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
   * Time Stop
   - Just press Y to stop time
   - Can be reserved by CAP cheat or level transition
+  * No Hold Heavy
+  * Swim Anywhere
+  * Walk on Hazards (Lava/Quicksand)
+  * Yellow Coin Magnet
+  * Drain JRB?
   * FLYER
+  * No Bounds
+  - "Disable OOB Walls" by Arceveti and anonim
   * All Jumps Triple
   * Hover Mode
     - B button = Up
