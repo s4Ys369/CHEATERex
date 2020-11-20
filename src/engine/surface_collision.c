@@ -10,6 +10,23 @@
 #include "surface_load.h"
 #include "math_util.h"
 
+#define DEATH_PLANE_HEIGHT -0x2000
+
+static struct Surface sDeathPlane = {
+    .type = SURFACE_DEATH_PLANE,
+    .force = 0,
+    .flags = 0,
+    .room = 0,
+    .lowerY = DEATH_PLANE_HEIGHT - 5,
+    .upperY = DEATH_PLANE_HEIGHT + 5,
+    .vertex1 = { 0, DEATH_PLANE_HEIGHT, 0 },
+    .vertex2 = { LEVEL_BOUNDARY_MAX * 2, DEATH_PLANE_HEIGHT, 0 },
+    .vertex3 = { 0, DEATH_PLANE_HEIGHT, LEVEL_BOUNDARY_MAX * 2 },
+    .normal = { 0.0f, 1.0f, 0.0f },
+    .originOffset = 0,
+    .object = NULL,
+};
+
 /**************************************************
  *                      WALLS                     *
  **************************************************/
@@ -434,7 +451,8 @@ static struct Surface *find_floor_from_list(struct SurfaceNode *surfaceNode, s32
     f32 nx, ny, nz;
     f32 oo;
     f32 height;
-    struct Surface *floor = NULL;
+    struct Surface *floor = &sDeathPlane;
+    *pheight = DEATH_PLANE_HEIGHT;
 
     // Iterate through the list of floors until there are no more floors.
     while (surfaceNode != NULL) {
