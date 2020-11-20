@@ -451,8 +451,11 @@ static struct Surface *find_floor_from_list(struct SurfaceNode *surfaceNode, s32
     f32 nx, ny, nz;
     f32 oo;
     f32 height;
-    struct Surface *floor = &sDeathPlane;
-    *pheight = DEATH_PLANE_HEIGHT;
+    struct Surface *floor = NULL;
+    if (Cheats.EnableCheats && Cheats.NoBounds) {
+        floor = &sDeathPlane;
+        *pheight = DEATH_PLANE_HEIGHT;
+    }
 
     // Iterate through the list of floors until there are no more floors.
     while (surfaceNode != NULL) {
