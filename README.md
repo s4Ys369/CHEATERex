@@ -12,7 +12,7 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
  -Please feel free to translate this into any other languages 
 
 ## Additional Cheats
-  * Instant Death/Level Exit L Trigger + R Trigger + A Button + B Button
+  * Instant Death/Level Exit L Trigger + R Trigger + Z Trigger + A Button + B Button
   * CHAOS Mode
   * Time Stop
   - Just press Y to stop time
@@ -77,6 +77,7 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
 ## New features
  * X, Y, and D PAD added (check `sm64.h` for defines)
  * 60 FPS by Emil
+ * Angry Penguin by GateGuy
  * Captian Toad Castle Stars by Keanine
  * Leave Ending Screen by GateGuy
  * 50 Coin 1UP by Keanine
@@ -88,6 +89,7 @@ Run `./extract_assets.py --clean && make clean` or `make distclean` to remove RO
  * DynOS by PeachyPeach
     -Exit to Main Menu by Adya
  * JP Red Coin Sound Option by Evanbowl
+ * 4x Extended Level Bounds by anonymous_moose and Lazthedude
  * And of course, CHEATERv11 by $4Y$, me
 
 ## How to add cheats/mods
