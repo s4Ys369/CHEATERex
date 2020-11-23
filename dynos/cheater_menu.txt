@@ -26,4 +26,5 @@ SUBMENU "cheater_submenu" "CHEATER" "CHEATER"
 	TOGGLE	"coin_mag"		"Coin Magnet"			"coin_mag"		0
 	TOGGLE	"wat_con"		"Drain JRB?"			"wat_con"		0
 	SCROLL	"wat_lev"		"Water Level"			"wat_lev"		0 1 20 1
+	SCROLL	"spl"			"Spamba Per Level"		"spl"			0 0 7 1
 ENDMENU

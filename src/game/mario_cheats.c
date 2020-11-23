@@ -108,6 +108,893 @@ void cheats_mario_inputs(struct MarioState *m) {
 
     while (Cheats.EnableCheats == true) {
 
+        switch (gCurrLevelNum) {
+            case LEVEL_CASTLE_GROUNDS:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 160, 200, gCurrentObject, MODEL_BIRDS, bhvBird);
+                            break;
+                        }
+                        break;
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case LEVEL_CASTLE_COURTYARD:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_MAD_PIANO,
+                                                  bhvMadPiano);
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 150, gCurrentObject, MODEL_BOO, bhvBoo);
+                            break;
+                        }
+                        break;
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case LEVEL_BITDW:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_BUBBA,
+                                                  bhvBubba);
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 150, gCurrentObject, MODEL_ENEMY_LAKITU,
+                                                  bhvEnemyLakitu);
+                            break;
+                        }
+                        break;
+                    case 3:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 300, 300, gCurrentObject, MODEL_SWOOP,
+                                                  bhvSwoop);
+                            break;
+                        }
+                        break;
+                    case 4:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 200, gCurrentObject, MODEL_SNUFIT,
+                                                  bhvSnufit);
+                            break;
+                        }
+                        break;
+                    case 5:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 10, 200, gCurrentObject, MODEL_DORRIE,
+                                                  bhvDorrie);
+                            break;
+                        }
+                        break;
+                    case 6:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_SCUTTLEBUG,
+                                                  bhvScuttlebug);
+                            break;
+                        }
+                        break;
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case LEVEL_BITFS:
+            case LEVEL_LLL:
+            case LEVEL_WMOTR:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_BULLY,
+                                                  bhvSmallBully);
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 300, 300, gCurrentObject, MODEL_SWOOP,
+                                                  bhvSwoop);
+                            break;
+                        }
+                        break;
+                    case 3:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 200, gCurrentObject, MODEL_SNUFIT,
+                                                  bhvSnufit);
+                            break;
+                        }
+                        break;
+                    case 4:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 10, 200, gCurrentObject, MODEL_DORRIE,
+                                                  bhvDorrie);
+                            break;
+                        }
+                        break;
+                    case 5:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_SCUTTLEBUG,
+                                                  bhvScuttlebug);
+                            break;
+                        }
+                        break;
+                    case 6:
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case LEVEL_BITS:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject,
+                                                  MODEL_KOOPA_WITH_SHELL, bhvKoopa);
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 10, 200, gCurrentObject, MODEL_PIRANHA_PLANT,
+                                                  bhvPiranhaPlant);
+                            break;
+                        }
+                        break;
+                    case 3:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_WHOMP,
+                                                  bhvSmallWhomp);
+                            break;
+                        }
+                        break;
+                    case 4:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 300, gCurrentObject, MODEL_CHAIN_CHOMP,
+                                                  bhvChainChomp);
+                            break;
+                        }
+                        break;
+                    case 5:
+                    case 6:
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case LEVEL_BOWSER_1:
+            case LEVEL_BOWSER_2:
+            case LEVEL_BOWSER_3:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 200, 200, gCurrentObject, MODEL_BOWSER,
+                                                  bhvBowser);
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 200, 200, gCurrentObject,
+                                                  MODEL_BOWSER_BOMB_CHILD_OBJ, bhvBowserBomb);
+                            break;
+                        }
+                        break;
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case LEVEL_BOB:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 10, 300, gCurrentObject, MODEL_KING_BOBOMB,
+                                                  bhvKingBobomb);
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject,
+                                                  MODEL_KOOPA_WITH_SHELL, bhvKoopa);
+                            break;
+                        }
+                        break;
+                    case 3:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 10, 200, gCurrentObject, MODEL_PIRANHA_PLANT,
+                                                  bhvPiranhaPlant);
+                            break;
+                        }
+                        break;
+                    case 4:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_WHOMP,
+                                                  bhvSmallWhomp);
+                            break;
+                        }
+                        break;
+                    case 5:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 300, gCurrentObject, MODEL_CHAIN_CHOMP,
+                                                  bhvChainChomp);
+                            break;
+                        }
+                        break;
+                    case 6:
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case LEVEL_BBH:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_MAD_PIANO,
+                                                  bhvMadPiano);
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 150, gCurrentObject, MODEL_BOO, bhvBoo);
+                            break;
+                        }
+                        break;
+                    case 3:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 300, 300, gCurrentObject, MODEL_SWOOP,
+                                                  bhvSwoop);
+                            break;
+                        }
+                        break;
+                    case 4:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 200, gCurrentObject, MODEL_SNUFIT,
+                                                  bhvSnufit);
+                            break;
+                        }
+                        break;
+                    case 5:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 10, 200, gCurrentObject, MODEL_DORRIE,
+                                                  bhvDorrie);
+                            break;
+                        }
+                        break;
+                    case 6:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_SCUTTLEBUG,
+                                                  bhvScuttlebug);
+                            break;
+                        }
+                        break;
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case LEVEL_WF:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 150, gCurrentObject, MODEL_THWOMP,
+                                                  bhvThwomp);
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 300, 300, gCurrentObject, MODEL_BULLET_BILL,
+                                                  bhvBulletBill);
+                            break;
+                        }
+                        break;
+                    case 3:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 200, gCurrentObject, MODEL_HEAVE_HO,
+                                                  bhvHeaveHo);
+                            break;
+                        }
+                        break;
+                    case 4:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject,
+                                                  MODEL_KOOPA_WITH_SHELL, bhvKoopa);
+                            break;
+                        }
+                        break;
+                    case 5:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 10, 200, gCurrentObject, MODEL_PIRANHA_PLANT,
+                                                  bhvPiranhaPlant);
+                            break;
+                        }
+                        break;
+                    case 6:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_WHOMP,
+                                                  bhvSmallWhomp);
+                            break;
+                        }
+                        break;
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 300, gCurrentObject, MODEL_CHAIN_CHOMP,
+                                                  bhvChainChomp);
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case LEVEL_JRB:
+            case LEVEL_DDD:
+            case LEVEL_SA:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 300, gCurrentObject, MODEL_CLAM_SHELL,
+                                                  bhvClamShell);
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_MANTA_RAY,
+                                                  bhvMantaRay);
+                            break;
+                        }
+                        break;
+                    case 3:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 10, 100, gCurrentObject, MODEL_SUSHI,
+                                                  bhvSushiShark);
+                            break;
+                        }
+                        break;
+                    case 4:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 300, 300, gCurrentObject, MODEL_UNAGI,
+                                                  bhvUnagi);
+                            break;
+                        }
+                        break;
+                    case 5:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_SKEETER,
+                                                  bhvSkeeter);
+                            break;
+                        }
+                        break;
+                    case 6:
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case LEVEL_CCM:
+            case LEVEL_SL:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_SPINDRIFT,
+                                                  bhvSpindrift);
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 150, gCurrentObject, MODEL_BIG_CHILL_BULLY,
+                                                  bhvBigChillBully);
+                            break;
+                        }
+                        break;
+                    case 3:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 200, gCurrentObject, MODEL_MONEYBAG,
+                                                  bhvMoneybag);
+                            break;
+                        }
+                        break;
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case LEVEL_HMC:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 50, 100, gCurrentObject, MODEL_MONTY_MOLE,
+                                                  bhvMontyMole);
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 200, gCurrentObject, MODEL_UKIKI,
+                                                  bhvUkiki);
+                            break;
+                        }
+                        break;
+                    case 3:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 300, 300, gCurrentObject, MODEL_SWOOP,
+                                                  bhvSwoop);
+                            break;
+                        }
+                        break;
+                    case 4:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 200, gCurrentObject, MODEL_SNUFIT,
+                                                  bhvSnufit);
+                            break;
+                        }
+                        break;
+                    case 5:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 10, 200, gCurrentObject, MODEL_DORRIE,
+                                                  bhvDorrie);
+                            break;
+                        }
+                        break;
+                    case 6:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_SCUTTLEBUG,
+                                                  bhvScuttlebug);
+                            break;
+                        }
+                        break;
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case LEVEL_SSL:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 200, gCurrentObject, MODEL_POKEY_HEAD,
+                                                  bhvPokey);
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 300, 300, gCurrentObject, MODEL_KLEPTO,
+                                                  bhvKlepto);
+                            break;
+                        }
+                        break;
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case LEVEL_WDW:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 150, gCurrentObject, MODEL_THWOMP,
+                                                  bhvThwomp);
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 300, 300, gCurrentObject, MODEL_BULLET_BILL,
+                                                  bhvBulletBill);
+                            break;
+                        }
+                        break;
+                    case 3:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 200, gCurrentObject, MODEL_HEAVE_HO,
+                                                  bhvHeaveHo);
+                            break;
+                        }
+                        break;
+                    case 4:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_SKEETER,
+                                                  bhvSkeeter);
+                            break;
+                        }
+                        break;
+                    case 5:
+                    case 6:
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case LEVEL_TTM:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_MONTY_MOLE,
+                                                  bhvMontyMole);
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 200, gCurrentObject, MODEL_UKIKI,
+                                                  bhvUkiki);
+                            break;
+                        }
+                        break;
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case LEVEL_THI:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_BUBBA,
+                                                  bhvBubba);
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 150, gCurrentObject, MODEL_ENEMY_LAKITU,
+                                                  bhvEnemyLakitu);
+                            break;
+                        }
+                        break;
+                    case 3:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject,
+                                                  MODEL_KOOPA_WITH_SHELL, bhvKoopa);
+                            break;
+                        }
+                        break;
+                    case 4:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 10, 200, gCurrentObject, MODEL_PIRANHA_PLANT,
+                                                  bhvPiranhaPlant);
+                            break;
+                        }
+                        break;
+                    case 5:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_WHOMP,
+                                                  bhvSmallWhomp);
+                            break;
+                        }
+                        break;
+                    case 6:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 300, gCurrentObject, MODEL_CHAIN_CHOMP,
+                                                  bhvChainChomp);
+                            break;
+                        }
+                        break;
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case LEVEL_TTC:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 150, gCurrentObject, MODEL_THWOMP,
+                                                  bhvThwomp);
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 300, 300, gCurrentObject, MODEL_BULLET_BILL,
+                                                  bhvBulletBill);
+                            break;
+                        }
+                        break;
+                    case 3:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 200, gCurrentObject, MODEL_HEAVE_HO,
+                                                  bhvHeaveHo);
+                            break;
+                        }
+                        break;
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case LEVEL_RR:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_BUBBA,
+                                                  bhvBubba);
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 150, gCurrentObject, MODEL_ENEMY_LAKITU,
+                                                  bhvEnemyLakitu);
+                            break;
+                        }
+                        break;
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case LEVEL_COTMC:
+                switch (SPL) {
+                    case 0:
+                        break;
+                    case 1:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 300, 300, gCurrentObject, MODEL_SWOOP,
+                                                  bhvSwoop);
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 200, gCurrentObject, MODEL_SNUFIT,
+                                                  bhvSnufit);
+                            break;
+                        }
+                        break;
+                    case 3:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 10, 200, gCurrentObject, MODEL_DORRIE,
+                                                  bhvDorrie);
+                            break;
+                        }
+                        break;
+                    case 4:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_SCUTTLEBUG,
+                                                  bhvScuttlebug);
+                            break;
+                        }
+                        break;
+                    case 5:
+                    case 6:
+                    case 7:
+                        if (m->controller->buttonDown & L_TRIG
+                            && m->controller->buttonPressed & Z_TRIG) {
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            break;
+                        }
+                        break;
+                }
+                break;
+        }
+
         /*Coin Magnet*/
         struct Object *coinMag = cur_obj_nearest_object_with_behavior(bhvYellowCoin);
         struct Object *coinMagMove = cur_obj_nearest_object_with_behavior(bhvMovingYellowCoin);

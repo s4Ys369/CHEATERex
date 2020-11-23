@@ -24,6 +24,7 @@ void cheats_mario_inputs(struct MarioState *m);
 #define __coin_mag__ dynos_get_value("coin_mag")
 #define __wat_con__ dynos_get_value("wat_con")
 #define __wat_lev__ dynos_get_value("wat_lev")
+#define __spl__ dynos_get_value("spl")
 #define CHAOS_MODE (__chaos_mode__ == 1)
 #define NO_HEAVY (__no_heavy__ == 1)
 #define SWIM_ANY (__swim_any__ == 1)
@@ -31,5 +32,6 @@ void cheats_mario_inputs(struct MarioState *m);
 #define COIN_MAG (__coin_mag__ == 1)
 #define WAT_CON (__wat_con__ == 1)
 #define WAT_LEV (__wat_lev__)
+#define SPL (__spl__)
 
 #endif // MARIO_CHEATS_H
