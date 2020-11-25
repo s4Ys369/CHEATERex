@@ -915,6 +915,7 @@ static void dynos_load_config() {
     while (true) {
         unsigned char type;
         char name[DYNOS_STR_TOKENS_MAX_LENGTH];
+        bzero(name, DYNOS_STR_TOKENS_MAX_LENGTH);
         if (!dynos_read_config_type_and_name(f, &type, name)) {
             break;
         }
