@@ -63,6 +63,11 @@
 #include "pc/configfile.h"
 #include "pc/cheats.h"
 
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
+#pragma GCC diagnostic ignored "-Wimplicit-function-declaration"
+#pragma GCC diagnostic ignored "-Wdiscarded-qualifiers"
+
 #define SwiftSwim 42.0f
 
 /*SwiftSwim Cheat*/
@@ -1554,17 +1559,6 @@ void cheats_mario_inputs(struct MarioState *m) {
             if (m->action & ACT_FLAG_RIDING_SHELL) {
                 break;
             }
-
-            /*This check should be added when creating a spawn cheat to prevent spamming*/
-            // struct Object *obj = (struct Object *) gObjectLists[OBJ_LIST_LEVEL].next;
-            // struct Object *first = (struct Object *) &gObjectLists[OBJ_LIST_LEVEL];
-            // while (obj != NULL && obj != first) {
-            //    if (obj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_KOOPA_SHELL]) {
-            //        obj_mark_for_deletion(obj);
-            //        break;
-            //    }
-            //    obj = (struct Object *) obj->header.next;
-            //}
 
             if ((m->action & ACT_GROUP_MASK) == ACT_GROUP_SUBMERGED) {
                 spawn_object_relative(0, 0, 100, 100, gCurrentObject, MODEL_KOOPA_SHELL,
